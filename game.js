@@ -69,6 +69,9 @@ var playerHeight = 10;
 var playerX = 0;
 var playerY = worldHeight - 30;
 
+var playerDX = 0;
+var playerDY = 0;
+
 
 
 function render () {
@@ -112,6 +115,13 @@ function init() {
 }
 
 
+function tick() {
+    playerX += playerDX;
+    playerY += playerDY;
+
+    render();
+}
+
 
 function kpress(event) {
 // console.log(event)
@@ -127,20 +137,23 @@ function kdown(event) {
           var move = false;
         switch (event.keyCode) {
         case 37 : // LEFT
-            --playerX;
+            --playerDX;
               move = true;
             break;
         case 38 : // UP
-            --playerY;
+            --playerDY;
               move = true;
             break;
         case 39 : // RIGHT
-            ++playerX;
+            ++playerDX;
               move = true;
             break;
         case 40 : // DOWN
-            ++playerY;
+            ++playerDY;
               move = true;
+            break;
+        case 32 : // SPACE
+            playerY -= 10;
             break;
         default:
         }
@@ -150,7 +163,7 @@ function kdown(event) {
     return true;
 }
 
-//var turnInterval = window.setInterval(takeTurn, 200);
+var interval = window.setInterval(tick, 25);
 window.onkeypress = kpress;
 window.onkeyup = kup;
 window.onkeydown = kdown;
