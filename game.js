@@ -1,9 +1,46 @@
 var context;
 var canvas;
 
+blue = 'rgb(0,190,255)';
+red = 'rgb(255,0,0)';
+navy = 'rgb(0,92,190)';
+
+var mapColumns = 100;
+var mapRows = 100;
+
+var map = new Array(mapColumns);
+for (var ii = 0; ii < map.length; ++ii) {
+    map[ii] = new Array(mapRows)
+    for (var jj = 0; jj < map[ii].length; ++jj) {
+        map[ii][jj] = Math.floor(Math.random() * 2);
+    }
+};
+
+var pixelsPerTile = 10;
+var worldWidth = mapColumns * pixelsPerTile;
+var worldHeight = mapRows * pixelsPerTile;
+
+var cameraX = worldWidth / 2.0;
+var cameraY = worldHeight / 2.0;
+
 function render () {
-    context.fillStyle = 'rgb(200,0,0)';
-    context.fillRect(20,20,55, 55);
+    for (var ii = 0; ii < map.length; ++ii) {
+        for (var jj = 0; jj < map[ii].length; ++jj) {
+            switch (map[ii][jj]) {
+            case 0 :
+                context.fillStyle = blue;
+                break;
+            case 1 :
+                context.fillStyle = red;
+                break;
+            default:
+            }
+            context.fillRect(ii * pixelsPerTile, jj * pixelsPerTile, pixelsPerTile, pixelsPerTile);
+        }
+    }
+
+    context.fillStyle = navy;
+    context.fillRect(50,50,20, 20);
 }
 
 
