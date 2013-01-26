@@ -1,3 +1,22 @@
+var context;
+var canvas;
+
+function render () {
+    context.fillStyle = 'rgb(200,0,0)';
+    context.fillRect(20,20,55, 55);
+}
+
+
+function init() {
+    console.log("initing");
+    canvas = document.getElementById('canvas');
+    if (canvas.getContext) {
+        context = canvas.getContext('2d');
+    }
+    render();
+}
+
+
 
 function kpress(event) {
 // console.log(event)
@@ -10,36 +29,29 @@ function kup(event) {
 function kdown(event) {
 //    console.log(event);
     if (event.which != 0) {
-        var targetrow = player.row;
-        var targetcol = player.col;
-        var move = false;
+          var move = false;
         switch (event.keyCode) {
         case 37 : // LEFT
-            targetcol = player.col - 1;
-            move = true;
+              move = true;
             break;
         case 38 : // UP
-            targetrow = player.row - 1;
-            move = true;
+              move = true;
             break;
         case 39 : // RIGHT
-            targetcol = player.col + 1;
-            move = true;
+              move = true;
             break;
         case 40 : // DOWN
-            targetrow = player.row + 1;
-            move = true;
+              move = true;
             break;
         default:
         }
-
+    }
     render();
 
     return true;
 }
 
-
-turnInterval = window.setInterval(takeTurn, 200);
+//var turnInterval = window.setInterval(takeTurn, 200);
 window.onkeypress = kpress;
 window.onkeyup = kup;
 window.onkeydown = kdown;
