@@ -4,26 +4,27 @@ var canvas;
 blue = 'rgb(0,190,255)';
 red = 'rgb(255,0,0)';
 navy = 'rgb(0,92,190)';
+background = 'rgb(100,100,100)'
 
 var mapColumns = 100;
 var mapRows = 100;
 
-var map = new Array(mapColumns);
-for (var ii = 0; ii < map.length; ++ii) {
-    map[ii] = new Array(mapRows)
-    for (var jj = 0; jj < map[ii].length; ++jj) {
-        map[ii][jj] = Math.floor(Math.random() * 2);
-    }
-};
+var map;
 
-var pixelsPerTile = 10;
+var pixelsPerTile = 20;
 var worldWidth = mapColumns * pixelsPerTile;
 var worldHeight = mapRows * pixelsPerTile;
 
-var cameraX = worldWidth / 2.0;
-var cameraY = worldHeight / 2.0;
+var cameraX = 0;//worldWidth / 2.0;
+var cameraY = 0;//worldHeight / 2.0;
+
+var playerWidth = 10;
+var playerHeight = 10;
 
 function render () {
+    context.fillStyle = background;
+    context.fillRect(0, 0, worldWidth, worldHeight);
+
     for (var ii = 0; ii < map.length; ++ii) {
         for (var jj = 0; jj < map[ii].length; ++jj) {
             switch (map[ii][jj]) {
@@ -34,13 +35,16 @@ function render () {
                 context.fillStyle = red;
                 break;
             default:
+                continue;
             }
-            context.fillRect(ii * pixelsPerTile, jj * pixelsPerTile, pixelsPerTile, pixelsPerTile);
+            context.fillRect(ii * pixelsPerTile - cameraX,
+                             jj * pixelsPerTile - cameraY,
+                             pixelsPerTile, pixelsPerTile);
         }
     }
 
     context.fillStyle = navy;
-    context.fillRect(50,50,20, 20);
+    context.fillRect(50, 50, playerWidth, playerHeight);
 }
 
 
@@ -50,6 +54,16 @@ function init() {
     if (canvas.getContext) {
         context = canvas.getContext('2d');
     }
+
+    map = new Array(mapColumns);
+    for (var ii = 0; ii < map.length; ++ii) {
+        map[ii] = new Array(mapRows);
+        for (var jj = 0; jj < map[ii].length; ++jj) {
+            map[ii][jj] = Math.floor(Math.random() * 3);
+        }
+    };
+
+
     render();
 }
 
@@ -69,15 +83,19 @@ function kdown(event) {
           var move = false;
         switch (event.keyCode) {
         case 37 : // LEFT
+            --cameraX;
               move = true;
             break;
         case 38 : // UP
+            --cameraY;
               move = true;
             break;
         case 39 : // RIGHT
+            ++cameraX;
               move = true;
             break;
         case 40 : // DOWN
+            ++cameraY;
               move = true;
             break;
         default:
