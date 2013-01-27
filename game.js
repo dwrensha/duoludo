@@ -53,8 +53,8 @@ var map =
      ];
 
 function Vec2(x, y) {
-    this.x = x
-    this.y = y
+    this.x = x;
+    this.y = y;
 }
 
 function getMapTile (map, x, y) {
@@ -69,18 +69,14 @@ var worldHeight = mapRows * pixelsPerTile;
 var cameraX = 0;
 var cameraY = worldHeight - 300;
 
-function Player() {
-    this.pos = new Vec2(0, 0);
+function Player(x, y) {
+    this.width = 10;
+    this.height = 10;
+    this.pos = new Vec2(x, y);
     this.vel = new Vec2(0, 0);
-    this.wantsToJump = false;
 }
 
-var player = new Player();
-player.pos.x = 0;
-player.pos.y = worldHeight - 30;
-
-var playerWidth = 10;
-var playerHeight = 10;
+var player = new Player(0, worldHeight - 30);
 
 function worldToMap (p) {
     return new Vec2(Math.floor(p.x / pixelsPerTile), Math.floor(p.y / pixelsPerTile));
@@ -119,27 +115,32 @@ function render () {
 
     context.fillStyle = navy;
     context.fillRect(player.pos.x - cameraX, player.pos.y - cameraY,
-                     playerWidth, playerHeight);
+                     player.width, player.height);
 }
 
 
 function init() {
-    console.log("initing");
     canvas = document.getElementById('canvas');
     if (canvas.getContext) {
         context = canvas.getContext('2d');
     }
-
     render();
 }
 
-keys = Array(256);
+var NUM_KEYS = 256;
+var keys = Array();
+var keysNewlyDown = Array(NUM_KEYS);
 
-for (var ii = 0; ii < 256; ++ii) {
+for (var ii = 0; ii < NUM_KEYS; ++ii) {
     keys[ii] = 0;
+    keysNewlyDown[ii] = 0;
 }
 
 function playerAct() {
+
+    // gravity
+    player.vel.y += 1;
+
     if (keys[37] == 1) {
         // LEFT
         --player.vel.x;
@@ -157,11 +158,27 @@ function playerAct() {
         ++player.vel.y;
     }
 
+    var left = player.pos.x - 1;
+    var right = player.pos.x + player.width + 1;
+    var top = player.pos.y - 1;
+    var bottom = player.pos.y + player.height + 1;
 
-    if (keys[32] == 1){
-        // SPACE
-        player.wantsToJump = true;
+    var groundUnderFeet = (getWorldTile(map, new Vec2(left, bottom)) != 0) ||
+                          (getWorldTile(map, new Vec2(right, bottom)) != 0);
+
+    if (groundUnderFeet) {
+        player.vel.y = 0;
     }
+
+    if (groundUnderFeet && keysNewlyDown[32] == 1){
+        // SPACE
+        player.vel.y -= 5;
+    }
+
+
+    player.pos.x += player.vel.x;
+
+    player.pos.y += player.vel.y;
 
 
 }
@@ -169,10 +186,13 @@ function playerAct() {
 
 function tick() {
     playerAct();
-    player.pos.x += player.vel.x;
-    player.pos.y += player.vel.y;
 
     render();
+
+    for (var ii = 0; ii < NUM_KEYS; ++ii) {
+        keysNewlyDown[ii] = 0;
+    }
+
 }
 
 function kpress(event) {
@@ -192,6 +212,7 @@ function kdown(event) {
 //    console.log(event);
     if (event.which != 0) {
         keys[event.keyCode] = 1;
+        keysNewlyDown[event.keyCode] = 1;
     }
 }
 
