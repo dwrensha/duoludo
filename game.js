@@ -52,26 +52,45 @@ var map =
      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ];
 
+function Vec2(x, y) {
+    this.x = x
+    this.y = y
+}
+
 function getMapTile (map, x, y) {
     return map[ y * mapColumns + x ];
 }
+
 
 var pixelsPerTile = 20;
 var worldWidth = mapColumns * pixelsPerTile;
 var worldHeight = mapRows * pixelsPerTile;
 
 var cameraX = 0;
- var cameraY = worldHeight - 300;
+var cameraY = worldHeight - 300;
+
+function Player() {
+    this.pos = new Vec2(0, 0);
+    this.vel = new Vec2(0, 0);
+    this.wantsToJump = false;
+}
+
+var player = new Player();
+player.pos.x = 0;
+player.pos.y = worldHeight - 30;
 
 var playerWidth = 10;
 var playerHeight = 10;
 
-var playerX = 0;
-var playerY = worldHeight - 30;
+function worldToMap (p) {
+    return new Vec2(Math.floor(p.x / pixelsPerTile), Math.floor(p.y / pixelsPerTile));
+}
 
-var playerDX = 0;
-var playerDY = 0;
-
+//
+function getWorldTile (map, p) {
+    var mapPos = worldToMap(p)
+    return getMapTile(map, mapPos.x, mapPos.y);
+}
 
 
 function render () {
@@ -99,7 +118,7 @@ function render () {
     }
 
     context.fillStyle = navy;
-    context.fillRect(playerX - cameraX, playerY - cameraY,
+    context.fillRect(player.pos.x - cameraX, player.pos.y - cameraY,
                      playerWidth, playerHeight);
 }
 
@@ -123,23 +142,25 @@ for (var ii = 0; ii < 256; ++ii) {
 function playerAct() {
     if (keys[37] == 1) {
         // LEFT
-        --playerDX;
-    }
-    if (keys[38] == 1) {
-        // UP
-        --playerDY;
+        --player.vel.x;
     }
     if (keys[39] == 1) {
         // RIGHT
-        ++playerDX;
+        ++player.vel.x;
+    }
+    if (keys[38] == 1) {
+        // UP
+        --player.vel.y;
     }
     if (keys[40] == 1) {
         // DOWN
-        ++playerDY;
+        ++player.vel.y;
     }
+
+
     if (keys[32] == 1){
         // SPACE
-        playerDY -= 5;
+        player.wantsToJump = true;
     }
 
 
@@ -148,12 +169,11 @@ function playerAct() {
 
 function tick() {
     playerAct();
-    playerX += playerDX;
-    playerY += playerDY;
+    player.pos.x += player.vel.x;
+    player.pos.y += player.vel.y;
 
     render();
 }
-
 
 function kpress(event) {
 // console.log(event)
@@ -167,12 +187,14 @@ function kup(event) {
 
 }
 
+
 function kdown(event) {
 //    console.log(event);
     if (event.which != 0) {
         keys[event.keyCode] = 1;
     }
 }
+
 
 var interval = window.setInterval(tick, 25);
 window.onkeypress = kpress;
