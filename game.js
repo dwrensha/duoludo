@@ -34,10 +34,10 @@ var map =
      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,0,0,0,0,0,0,0,0,1,1,2,2,2,2,2,2,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -69,6 +69,10 @@ function vec2plus (v1, v2) {
     return new Vec2(v1.x + v2.x, v1.y + v2.y);
 }
 
+function vec2minus (v1, v2) {
+    return new Vec2(v1.x - v2.x, v1.y - v2.y);
+}
+
 function getMapTile (map, x, y) {
     return map[ y * mapColumns + x ];
 }
@@ -77,14 +81,23 @@ var pixelsPerTile = 20;
 var worldWidth = mapColumns * pixelsPerTile;
 var worldHeight = mapRows * pixelsPerTile;
 
-var cameraX = 0;
-var cameraY = worldHeight - 300;
+function Camera(x, y) {
+    this.pos = new Vec2(x, y);
+    this.vel = new Vec2(0, 0);
+}
+
+var camera = new Camera(0, worldHeight - 320);
+
 
 function Player(x, y) {
     this.width = 10;
     this.height = 10;
     this.pos = new Vec2(x, y);
     this.vel = new Vec2(0, 0);
+    this.center = function () {
+        return vec2plus(this.pos, new Vec2(this.width / 2.0,
+                                           this.height / 2.0));
+    }
 }
 
 var player = new Player(50, worldHeight - 30);
@@ -118,14 +131,14 @@ function render () {
             default:
                 continue;
             }
-            context.fillRect(ii * pixelsPerTile - cameraX,
-                             jj * pixelsPerTile - cameraY,
+            context.fillRect(ii * pixelsPerTile - camera.pos.x,
+                             jj * pixelsPerTile - camera.pos.y,
                              pixelsPerTile, pixelsPerTile);
         }
     }
 
     context.fillStyle = navy;
-    context.fillRect(player.pos.x - cameraX, player.pos.y - cameraY,
+    context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
                      player.width, player.height);
 }
 
@@ -238,7 +251,6 @@ function playerAct() {
         player.vel.y = 0;
     }
 
-
     // binary search. advance until we hit something.
     var leftbound = vec2copy(player.pos);
     var rightbound = vec2plus(leftbound, player.vel);
@@ -263,9 +275,29 @@ function playerAct() {
 
 }
 
+function adjustCamera() {
+    var center = player.center()
+    var offset = vec2minus(center, camera.pos);
+
+    var margin = 0.3;
+    if (offset.x > (1.0 - margin) * canvas.width) {
+        camera.pos.x = center.x - (1.0 - margin) * canvas.width
+    } else if (offset.x < margin * canvas.width) {
+        camera.pos.x = center.x - margin * canvas.width
+    }
+
+    if (offset.y > (1.0 - margin) * canvas.height) {
+        camera.pos.y = center.y - (1.0 - margin) * canvas.height
+    } else if (offset.y < margin * canvas.height) {
+        camera.pos.y = center.y - margin * canvas.height
+    }
+
+}
+
 
 function tick() {
     playerAct();
+    adjustCamera();
 
     render();
 
