@@ -55,9 +55,18 @@ var map =
 function Vec2(x, y) {
     this.x = x;
     this.y = y;
-    this.plus = function (v2) {return new Vec2(this.x + v2.x, this.y + v2.y);}
-    this.stimes = function (s) {return new Vec2(this.x * s, this.y * s);}
-    this.copy = function () {return new Vec2(this.x, this.y);};
+}
+
+function vec2copy (v) {
+    return new Vec2(v.x, v.y);
+}
+
+function vec2stimes(s, v) {
+    return new Vec2(v.x * s, v.y * s);
+}
+
+function vec2plus (v1, v2) {
+    return new Vec2(v1.x + v2.x, v1.y + v2.y);
 }
 
 function getMapTile (map, x, y) {
@@ -231,8 +240,8 @@ function playerAct() {
 
 
     // binary search. advance until we hit something.
-    var leftbound = player.pos.copy();
-    var rightbound = leftbound.plus(player.vel);
+    var leftbound = vec2copy(player.pos);
+    var rightbound = vec2plus(leftbound, player.vel);
 
     if (!overlaps(rightbound)) {
         player.pos = rightbound;
@@ -241,7 +250,8 @@ function playerAct() {
 
     while ((Math.abs (leftbound.x - rightbound.x) > 0.2) ||
            (Math.abs (leftbound.y - rightbound.y) > 0.2) ) {
-        var mid = leftbound.stimes(0.5).plus (rightbound.stimes(0.5));
+        var mid = vec2plus(vec2stimes(0.5, leftbound),
+                           vec2stimes(0.5, rightbound));
         if (overlaps(mid)) {
             rightbound = mid
         } else {
