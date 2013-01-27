@@ -114,8 +114,40 @@ function init() {
     render();
 }
 
+keys = Array(256);
+
+for (var ii = 0; ii < 256; ++ii) {
+    keys[ii] = 0;
+}
+
+function playerAct() {
+    if (keys[37] == 1) {
+        // LEFT
+        --playerDX;
+    }
+    if (keys[38] == 1) {
+        // UP
+        --playerDY;
+    }
+    if (keys[39] == 1) {
+        // RIGHT
+        ++playerDX;
+    }
+    if (keys[40] == 1) {
+        // DOWN
+        ++playerDY;
+    }
+    if (keys[32] == 1){
+        // SPACE
+        playerDY -= 5;
+    }
+
+
+}
+
 
 function tick() {
+    playerAct();
     playerX += playerDX;
     playerY += playerDY;
 
@@ -129,38 +161,17 @@ function kpress(event) {
 
 function kup(event) {
 // console.log(event)
+    if (event.which != 0) {
+        keys[event.keyCode] = 0;
+    }
+
 }
 
 function kdown(event) {
 //    console.log(event);
     if (event.which != 0) {
-          var move = false;
-        switch (event.keyCode) {
-        case 37 : // LEFT
-            --playerDX;
-              move = true;
-            break;
-        case 38 : // UP
-            --playerDY;
-              move = true;
-            break;
-        case 39 : // RIGHT
-            ++playerDX;
-              move = true;
-            break;
-        case 40 : // DOWN
-            ++playerDY;
-              move = true;
-            break;
-        case 32 : // SPACE
-            playerY -= 10;
-            break;
-        default:
-        }
+        keys[event.keyCode] = 1;
     }
-    render();
-
-    return true;
 }
 
 var interval = window.setInterval(tick, 25);
