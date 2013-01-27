@@ -47,8 +47,8 @@ var map =
      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
      ];
 
@@ -76,7 +76,7 @@ function Player(x, y) {
     this.vel = new Vec2(0, 0);
 }
 
-var player = new Player(0, worldHeight - 30);
+var player = new Player(50, worldHeight - 30);
 
 function worldToMap (p) {
     return new Vec2(Math.floor(p.x / pixelsPerTile), Math.floor(p.y / pixelsPerTile));
@@ -136,18 +136,24 @@ for (var ii = 0; ii < NUM_KEYS; ++ii) {
     keysNewlyDown[ii] = 0;
 }
 
+var maxdx = 10;
+
 function playerAct() {
 
-    // gravity
-    player.vel.y += 1;
-
+    var move = false;
     if (keys[37] == 1) {
         // LEFT
-        --player.vel.x;
+        move = true
+        if (Math.abs(player.vel.x) < maxdx) {
+            --player.vel.x;
+        }
     }
     if (keys[39] == 1) {
         // RIGHT
-        ++player.vel.x;
+        move = true
+        if (Math.abs(player.vel.x) < maxdx) {
+            ++player.vel.x;
+        }
     }
     if (keys[38] == 1) {
         // UP
@@ -159,25 +165,37 @@ function playerAct() {
     }
 
     var left = player.pos.x - 1;
-    var right = player.pos.x + player.width + 1;
+    var right = player.pos.x + player.width;
     var top = player.pos.y - 1;
-    var bottom = player.pos.y + player.height + 1;
+    var bottom = player.pos.y + player.height;
 
     var groundUnderFeet = (getWorldTile(map, new Vec2(left, bottom)) != 0) ||
                           (getWorldTile(map, new Vec2(right, bottom)) != 0);
 
+
+
     if (groundUnderFeet) {
         player.vel.y = 0;
+        //friction
+        if (! move) {
+            if (player.vel.x > 0) {
+                --player.vel.x;
+            } else if (player.vel.x < 0) {
+                ++player.vel.x;
+            }
+        }
+    } else {
+        // gravity
+        player.vel.y += 1;
     }
 
     if (groundUnderFeet && keysNewlyDown[32] == 1){
         // SPACE
-        player.vel.y -= 5;
+        player.vel.y -= 10;
     }
 
 
     player.pos.x += player.vel.x;
-
     player.pos.y += player.vel.y;
 
 
