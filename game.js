@@ -228,17 +228,33 @@ function playerAct() {
     var top = player.pos.y - 1;
     var bottom = player.pos.y + player.height;
 
-    var groundUnderFeet = (getWorldTile(map, new Vec2(left + 1, bottom)) != 0) ||
-                          (getWorldTile(map, new Vec2(right - 1, bottom)) != 0);
+    var underFeet = [getWorldTile(map, new Vec2(left + 1, bottom)),
+                     getWorldTile(map, new Vec2(right - 1, bottom))];
 
-    var ceilingAboveHead = (getWorldTile(map, new Vec2(left + 1, top)) != 0) ||
-                           (getWorldTile(map, new Vec2(right - 1, top)) != 0);
+    var aboveHead = [getWorldTile(map, new Vec2(left + 1, top)),
+                     getWorldTile(map, new Vec2(right - 1, top))];
 
-    var wallLeft = (getWorldTile(map, new Vec2(left, bottom - 1)) != 0) ||
-                   (getWorldTile(map, new Vec2(left, top + 1)) != 0);
+    var toLeft = [getWorldTile(map, new Vec2(left, bottom - 1)),
+                  getWorldTile(map, new Vec2(left, top + 1))];
 
-    var wallRight = (getWorldTile(map, new Vec2(right, bottom - 1)) != 0) ||
-                    (getWorldTile(map, new Vec2(right, top + 1)) != 0);
+    var toRight = [getWorldTile(map, new Vec2(right, bottom - 1)),
+                   getWorldTile(map, new Vec2(right, top + 1))];
+
+
+    if (underFeet[0] == 2 || underFeet[1] == 2 ||
+        aboveHead[0] == 2 || aboveHead[1] == 2 ||
+        toLeft[0] == 2 || toLeft[1] == 2 ||
+        toRight[0] == 2 || toRight[1] == 2) {
+        console.log("you're dead");
+    }
+
+    var groundUnderFeet = (underFeet[0] != 0) || (underFeet[1] != 0);
+
+    var ceilingAboveHead = (aboveHead[0] != 0) || (aboveHead[1] != 0);
+
+    var wallToLeft = (toLeft[0] != 0) || (toLeft[1] != 0);
+
+    var wallToRight = (toRight[0] != 0) || (toRight[1] != 0);
 
 
     if (groundUnderFeet) {
@@ -256,16 +272,13 @@ function playerAct() {
     }
 
 
-
-
-
     if (groundUnderFeet && keysNewlyDown[spacebar] == 1){
         player.jumping = 0;
-    } else if ( wallLeft && keysNewlyDown[spacebar] ) {
+    } else if ( wallToLeft && keysNewlyDown[spacebar] ) {
         player.vel.y = 0;
         player.vel.x += 5;
         player.jumping = 2;
-    } else if (wallRight && keysNewlyDown[spacebar]) {
+    } else if (wallToRight && keysNewlyDown[spacebar]) {
         player.vel.y = 0;
         player.vel.x -= 5;
         player.jumping = 2;
@@ -295,9 +308,9 @@ function playerAct() {
         }
     }
 
-    if (wallLeft && player.vel.x < 0) {
+    if (wallToLeft && player.vel.x < 0) {
         player.vel.x = 0;
-    } else if (wallRight && player.vel.x > 0) {
+    } else if (wallToRight && player.vel.x > 0) {
         player.vel.x = 0;
     }
     if (ceilingAboveHead && player.vel.y < 0) {
@@ -327,6 +340,7 @@ function playerAct() {
     player.pos = new Vec2(Math.floor(leftbound.x), Math.floor(leftbound.y))
 
 }
+
 
 function adjustCamera() {
     var center = player.center()
