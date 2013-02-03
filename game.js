@@ -2,6 +2,7 @@ var context;
 var canvas;
 
 blue = 'rgb(0,190,255)';
+magenta = 'rgb(90, 70, 105)';
 red = 'rgb(255,0,0)';
 navy = 'rgb(0,92,190)';
 background = 'rgb(125,125,125)';
@@ -127,7 +128,7 @@ function render () {
                 context.fillStyle = blue;
                 break;
             case 2 :
-                context.fillStyle = red;
+                context.fillStyle = magenta;
                 break;
             default:
                 continue;
