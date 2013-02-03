@@ -45,10 +45,10 @@ var map =
      1,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
      1,0,0,0,1,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-     2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-     1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+     1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,
+     2,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,
+     1,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,
+     1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,
      1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
      ];
 
@@ -179,20 +179,13 @@ function overlaps (p) {
 
 function playerAct() {
 
-    var move = false;
     if (keys[37] == 1) {
         // LEFT
-        move = true
-        if (Math.abs(player.vel.x) < maxdx) {
-            --player.vel.x;
-        }
+        player.vel.x -= 2;
     }
     if (keys[39] == 1) {
         // RIGHT
-        move = true
-        if (Math.abs(player.vel.x) < maxdx) {
-            ++player.vel.x;
-        }
+        player.vel.x += 2;
     }
     if (keys[38] == 1) {
         // UP
@@ -202,6 +195,14 @@ function playerAct() {
         // DOWN
         ++player.vel.y;
     }
+
+    // clamp the x velocity
+    if (player.vel.x > maxdx) {
+        player.vel.x = maxdx;
+    } else if (player.vel.x < -maxdx) {
+        player.vel.x = -maxdx;
+    }
+
 
     var left = player.pos.x - 1;
     var right = player.pos.x + player.width;
@@ -225,19 +226,18 @@ function playerAct() {
         //console.log('ground under feet')
         player.vel.y = 0;
         //friction
-        if (! move) {
-            if (player.vel.x > 0) {
-                --player.vel.x;
-            } else if (player.vel.x < 0) {
-                ++player.vel.x;
-            }
+        if (player.vel.x > 0) {
+            --player.vel.x;
+        } else if (player.vel.x < 0) {
+            ++player.vel.x;
+        }
         }
     } else {
         // gravity
         player.vel.y += 1;
     }
 
-    if (groundUnderFeet && keysNewlyDown[32] == 1){
+    if (groundUnderFeet && keysNewlyDown[' '.charCodeAt(0)] == 1){
         // SPACE
         player.vel.y -= 10;
     }
