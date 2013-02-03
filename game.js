@@ -1,13 +1,12 @@
 var context;
 var canvas;
 
-safeColor = 'rgb(163,169,72)';
-dangerColor = 'rgb(206, 24, 54)';
-red = 'rgb(255,0,0)';
-green = 'rgb(55, 80, 65)';
-playerColor = 'rgb(237,185,46)';
-playerColor2 = 'rgb(248,89,49)';
-background = 'rgb(0,153,137)';
+var background = 'rgb(255,235,200)';
+var safeColor = 'rgb(99,47,83)';
+var dangerColor = 'rgb(207, 30, 72)';
+var playerColor = 'rgb(130,160,145)';
+var playerOutlineColor = 'rgb(90,140,151)';
+
 
 var spacebar = ' '.charCodeAt(0)
 
@@ -158,10 +157,10 @@ function render () {
         }
     }
 
-    context.fillStyle = playerColor;
+    context.fillStyle = playerOutlineColor;
     context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
                      player.width, player.height);
-    context.fillStyle = playerColor2;
+    context.fillStyle = playerColor;
     context.fillRect(player.pos.x - camera.pos.x + 1,
                      player.pos.y - camera.pos.y + 1,
                      player.width - 2, player.height - 2 );
