@@ -355,8 +355,10 @@ function kup(event) {
 function kdown(event) {
 //    console.log(event);
     if (event.which != 0) {
+        if (keys[event.keyCode] == 0) {
+            keysNewlyDown[event.keyCode] = 1;
+        }
         keys[event.keyCode] = 1;
-        keysNewlyDown[event.keyCode] = 1;
     }
 }
 
