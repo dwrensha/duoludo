@@ -1,11 +1,13 @@
 var context;
 var canvas;
 
-blue = 'rgb(0,190,255)';
-magenta = 'rgb(90, 70, 105)';
+safeColor = 'rgb(163,169,72)';
+dangerColor = 'rgb(206, 24, 54)';
 red = 'rgb(255,0,0)';
-navy = 'rgb(0,92,190)';
-background = 'rgb(125,125,125)';
+green = 'rgb(55, 80, 65)';
+playerColor = 'rgb(237,185,46)';
+playerColor2 = 'rgb(248,89,49)';
+background = 'rgb(0,153,137)';
 
 var spacebar = ' '.charCodeAt(0)
 
@@ -127,10 +129,10 @@ function render () {
             case 0 :
                 continue
             case 1 :
-                context.fillStyle = blue;
+                context.fillStyle = safeColor;
                 break;
             case 2 :
-                context.fillStyle = magenta;
+                context.fillStyle = dangerColor;
                 break;
             default:
                 continue;
@@ -141,9 +143,13 @@ function render () {
         }
     }
 
-    context.fillStyle = navy;
+    context.fillStyle = playerColor;
     context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
                      player.width, player.height);
+    context.fillStyle = playerColor2;
+    context.fillRect(player.pos.x - camera.pos.x + 1,
+                     player.pos.y - camera.pos.y + 1,
+                     player.width - 2, player.height - 2 );
 }
 
 
