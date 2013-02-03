@@ -1,11 +1,11 @@
 var context;
 var canvas;
 
-var background = 'rgb(255,235,200)';
-var safeColor = 'rgb(99,47,83)';
-var dangerColor = 'rgb(207, 30, 72)';
-var playerColor = 'rgb(130,160,145)';
-var playerOutlineColor = 'rgb(90,140,151)';
+var background = 'rgb(0,0,0)';
+var safeColor = 'rgb(83,0,135)';
+var dangerColor = 'rgb(252, 20, 62)';
+var playerColor = 'rgb(255,125,16)';
+var playerOutlineColor = 'rgb(255,178,56)';
 
 
 var spacebar = ' '.charCodeAt(0)
@@ -185,6 +185,7 @@ for (var ii = 0; ii < NUM_KEYS; ++ii) {
 }
 
 var maxdx = 7;
+var maxdy = pixelsPerTile;
 
 function overlaps (p) {
     var left = p.x ;
@@ -288,6 +289,11 @@ function playerAct() {
         player.vel.x = maxdx;
     } else if (player.vel.x < -maxdx) {
         player.vel.x = -maxdx;
+    }
+
+    // clamp the y velocity
+    if (player.vel.y > maxdy) {
+        player.vel.y = maxdy;
     }
 
 
