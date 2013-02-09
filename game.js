@@ -357,7 +357,7 @@ function kdown(event) {
 
         if (event.keyCode == 'M'.charCodeAt(0)) {
             op = document.getElementById('output');
-            op.innerHTML = map;
+            op.innerHTML = "var map = [" + map + "];";
         }
 
 
