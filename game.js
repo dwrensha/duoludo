@@ -14,9 +14,10 @@ var blinkPatterns =
     [[0],
      [1],
      [2],
-     [1,2],
-     [1,1,2,2],
-     [1,2,1,2,1,1,2,2]];
+     [3],
+     [1,3],
+     [1,1,3,3],
+     [1,3,1,3,1,1,3,3]];
 
 function Vec2(x, y) {
     this.x = x;
@@ -108,6 +109,9 @@ function render () {
                 context.fillStyle = safeColor;
                 break;
             case 2 :
+                context.fillStyle = safeColor;
+                break;
+            case 3 :
                 context.fillStyle = dangerColor;
                 break;
             default:
@@ -368,7 +372,12 @@ function mdown(event) {
     var x = event.clientX - canvas.offsetLeft + camera.pos.x;
     var y = event.clientY - canvas.offsetTop + camera.pos.y;
     var m = worldToMap(new Vec2(x,y))
-    setMapTile(map, m.x, m.y, 1);
+    var v = 1;
+    var tile = parseInt(document.getElementById('form').tilename.value);
+    if (tile >= 0 && tile < blinkPatterns.length) {
+        v = tile;
+    }
+    setMapTile(map, m.x, m.y, v);
     console.log('mouse down: ' + m.x + ", " +  m.y);
 }
 
