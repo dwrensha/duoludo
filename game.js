@@ -44,26 +44,26 @@ function vec2minus (v1, v2) {
 var ticks = 0;
 
 function getMapTile (map, x, y) {
-    if (x < 0 || y < 0 || x > mapColumns - 1 || y > mapRows - 1) {
+    if (x < 0 || y < 0 || x > map.columns - 1 || y > map.rows - 1) {
         return 1;
     }
-    var idx = map[ y * mapColumns + x ];
+    var idx = map.values[ y * map.columns + x ];
     var pattern = blinkPatterns[idx];
     return pattern[Math.floor(ticks / 20.0) % pattern.length]
 }
 
 function setMapTile (map, x, y, v) {
-    if (x < 0 || y < 0 || x > mapColumns - 1 || y > mapRows - 1) {
+    if (x < 0 || y < 0 || x > map.columns - 1 || y > map.rows - 1) {
         return false;
     }
-    map[ y * mapColumns + x ] = v;
+    map.values[ y * map.columns + x ] = v;
     return true;
 }
 
 
 var pixelsPerTile = 20;
-var worldWidth = mapColumns * pixelsPerTile;
-var worldHeight = mapRows * pixelsPerTile;
+var worldWidth = map.columns * pixelsPerTile;
+var worldHeight = map.rows * pixelsPerTile;
 
 function Camera(x, y) {
     this.pos = new Vec2(x, y);
@@ -101,8 +101,8 @@ function render () {
     context.fillStyle = background;
     context.fillRect(0, 0, worldWidth, worldHeight);
 
-    for (var ii = 0; ii < mapColumns; ++ii) {
-        for (var jj = 0; jj < mapRows; ++jj) {
+    for (var ii = 0; ii < map.columns; ++ii) {
+        for (var jj = 0; jj < map.rows; ++jj) {
             switch (getMapTile(map,ii,jj)) {
             case 0 :
                 continue
@@ -362,7 +362,7 @@ function kdown(event) {
 
         if (event.keyCode == 'M'.charCodeAt(0)) {
             op = document.getElementById('output');
-            op.innerHTML = "var map = [" + map + "];";
+            op.innerHTML = "var values = [" + map.values + "];";
         }
 
 
