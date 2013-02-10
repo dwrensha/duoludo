@@ -18,9 +18,9 @@ var zepto = (function () {
          [1],
          [2],
          [3],
-         [1,3],
-         [1,1,3,3],
-         [1,3,1,3,1,1,3,3]];
+         [2,3],
+         [2,2,3,3],
+         [2,3,2,3,2,2,3,3]];
 
     function Vec2(x, y) {
         this.x = x;
@@ -43,15 +43,11 @@ var zepto = (function () {
         return new Vec2(v1.x - v2.x, v1.y - v2.y);
     }
 
-    var ticks = 0;
-
     function getMapTile (map, x, y) {
         if (x < 0 || y < 0 || x > map.columns - 1 || y > map.rows - 1) {
             return 1;
         }
-        var idx = map.values[ y * map.columns + x ];
-        var pattern = blinkPatterns[idx];
-        return pattern[Math.floor(ticks / 20.0) % pattern.length]
+        return map.values[ y * map.columns + x ];
     }
 
     function setMapTile (map, x, y, v) {
@@ -72,8 +68,6 @@ var zepto = (function () {
         this.vel = new Vec2(0, 0);
     }
 
-    var camera = new Camera(0, worldHeight - 320);
-
     function Player(x, y) {
         this.width = 10;
         this.height = 10;
@@ -87,8 +81,6 @@ var zepto = (function () {
                                                this.height / 2.0));
     };
 
-    var player = new Player(50, worldHeight - 30);
-
     function worldToMap (p) {
         return new Vec2(Math.floor(p.x / pixelsPerTile), Math.floor(p.y / pixelsPerTile));
     }
@@ -99,14 +91,20 @@ var zepto = (function () {
         return getMapTile(map, mapPos.x, mapPos.y);
     }
 
+    function getTileState (idx, ticks) {
+        var pattern = blinkPatterns[idx];
+        return pattern[Math.floor(ticks / 20.0) % pattern.length]
+    }
 
-    function render () {
+    function render (state) {
+        var player = state.player
+        var camera = state.camera
         context.fillStyle = background;
         context.fillRect(0, 0, worldWidth, worldHeight);
 
         for (var ii = 0; ii < map.columns; ++ii) {
             for (var jj = 0; jj < map.rows; ++jj) {
-                switch (getMapTile(map,ii,jj)) {
+                switch (getTileState(getMapTile(map,ii,jj), state.ticks)) {
                 case 0 :
                     continue
                 case 1 :
@@ -150,7 +148,7 @@ var zepto = (function () {
     var maxdx = 7;
     var maxdy = pixelsPerTile;
 
-    function overlaps (p) {
+    function overlaps (p, player) {
         var left = p.x ;
         var right = p.x + player.width - 1;
         var top = p.y;
@@ -164,7 +162,7 @@ var zepto = (function () {
     }
 
 
-    function playerAct() {
+    function playerAct(player) {
 
         if (keys[37] == 1) {
             // LEFT
@@ -286,7 +284,7 @@ var zepto = (function () {
         var leftbound = vec2copy(player.pos);
         var rightbound = vec2plus(leftbound, player.vel);
 
-        if (!overlaps(rightbound)) {
+        if (!overlaps(rightbound, player)) {
             player.pos = rightbound;
             return;
         }
@@ -295,7 +293,7 @@ var zepto = (function () {
                (Math.abs (leftbound.y - rightbound.y) > 0.2) ) {
             var mid = vec2plus(vec2stimes(0.5, leftbound),
                                vec2stimes(0.5, rightbound));
-            if (overlaps(mid)) {
+            if (overlaps(mid, player)) {
                 rightbound = mid
             } else {
                 leftbound = mid
@@ -307,7 +305,7 @@ var zepto = (function () {
     }
 
 
-    function adjustCamera() {
+    function adjustCamera(player, camera) {
         var center = player.center()
         var offset = vec2minus(center, camera.pos);
 
@@ -327,24 +325,24 @@ var zepto = (function () {
     }
 
 
-    function tick() {
-        playerAct();
-        adjustCamera();
+    function tick(state) {
+        playerAct(state.player);
+        adjustCamera(state.player, state.camera);
 
-        render();
+        render(state);
 
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keysNewlyDown[ii] = 0;
         }
-        ++ticks;
-
+        ++state.ticks;
+        return state;
     }
 
-    function kpress(event) {
+    function kpress(event, state) {
         // console.log(event)
     }
 
-    function kup(event) {
+    function kup(event, state) {
         // console.log(event)
         if (event.which != 0) {
             keys[event.keyCode] = 0;
@@ -352,7 +350,7 @@ var zepto = (function () {
     }
 
 
-    function kdown(event) {
+    function kdown(event, state) {
         //    console.log(event);
         if (event.which != 0) {
             if (keys[event.keyCode] == 0) {
@@ -367,9 +365,9 @@ var zepto = (function () {
         }
     }
 
-    function mdown(event) {
-        var x = event.clientX - canvas.offsetLeft + camera.pos.x;
-        var y = event.clientY - canvas.offsetTop + camera.pos.y;
+    function mdown(event, state) {
+        var x = event.clientX - canvas.offsetLeft + state.camera.pos.x;
+        var y = event.clientY - canvas.offsetTop + state.camera.pos.y;
         var m = worldToMap(new Vec2(x,y))
         var v = 2;
         var tile = parseInt(document.getElementById('form').tilename.value);
@@ -386,7 +384,11 @@ var zepto = (function () {
             context = canvas.getContext('2d');
         }
         canvas.onmousedown = mdown;
-        render();
+        return {
+            player: new Player(50, worldHeight - 30),
+            camera: new Camera(0, worldHeight - 320),
+            ticks: 0
+        }
     }
 
     return {
@@ -394,14 +396,8 @@ var zepto = (function () {
         tick: tick,
         kpress: kpress,
         kup: kup,
-        kdown: kdown
+        kdown: kdown,
+        mdown: mdown
     };
 } ());
-
-// tick 40 times per second
-var interval = window.setInterval(zepto.tick, 25);
-
-window.onkeypress = zepto.kpress;
-window.onkeyup = zepto.kup;
-window.onkeydown = zepto.kdown;
 
