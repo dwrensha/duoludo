@@ -201,10 +201,10 @@ function playerAct() {
                    getWorldTile(map, new Vec2(right, top + 1))];
 
 
-    if (underFeet[0] == 2 || underFeet[1] == 2 ||
-        aboveHead[0] == 2 || aboveHead[1] == 2 ||
-        toLeft[0] == 2 || toLeft[1] == 2 ||
-        toRight[0] == 2 || toRight[1] == 2) {
+    if (underFeet[0] == 3 || underFeet[1] == 3 ||
+        aboveHead[0] == 3 || aboveHead[1] == 3 ||
+        toLeft[0] == 3 || toLeft[1] == 3 ||
+        toRight[0] == 3 || toRight[1] == 3) {
         console.log("you're dead");
     }
 
