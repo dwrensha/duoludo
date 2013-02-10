@@ -79,12 +79,13 @@ var zepto = (function () {
         this.height = 10;
         this.pos = new Vec2(x, y);
         this.vel = new Vec2(0, 0);
-        this.jumping = -1 // not jumping
-        this.center = function () {
+        this.jumping = -1; // not jumping
+    };
+
+    Player.prototype.center = function () {
             return vec2plus(this.pos, new Vec2(this.width / 2.0,
                                                this.height / 2.0));
-        }
-    }
+    };
 
     var player = new Player(50, worldHeight - 30);
 
@@ -361,7 +362,7 @@ var zepto = (function () {
 
             if (event.keyCode == 'M'.charCodeAt(0)) {
                 op = document.getElementById('output');
-                op.innerHTML = "var values = [" + map.values + "];";
+                op.innerHTML = "m.values = [" + map.values + "];";
             }
         }
     }
