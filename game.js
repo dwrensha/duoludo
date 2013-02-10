@@ -6,6 +6,7 @@ var safeColor = 'rgb(83,0,135)';
 var dangerColor = 'rgb(252, 20, 62)';
 var playerColor = 'rgb(255,125,16)';
 var playerOutlineColor = 'rgb(255,178,56)';
+var checkpointColor = 'rgb(47,47,47)';
 
 
 var spacebar = ' '.charCodeAt(0)
@@ -106,7 +107,7 @@ function render () {
             case 0 :
                 continue
             case 1 :
-                context.fillStyle = safeColor;
+                context.fillStyle = checkpointColor;
                 break;
             case 2 :
                 context.fillStyle = safeColor;
@@ -153,10 +154,10 @@ function overlaps (p) {
     var bottom = p.y + player.height - 1;
 
 
-    return  ((getWorldTile(map, new Vec2(left, bottom)) != 0) ||
-             (getWorldTile(map, new Vec2(right, bottom)) != 0) ||
-             (getWorldTile(map, new Vec2(left, top)) != 0) ||
-             (getWorldTile(map, new Vec2(right, top)) != 0));
+    return  ((getWorldTile(map, new Vec2(left, bottom)) > 1) ||
+             (getWorldTile(map, new Vec2(right, bottom)) > 1) ||
+             (getWorldTile(map, new Vec2(left, top)) > 1) ||
+             (getWorldTile(map, new Vec2(right, top)) > 1));
 
 }
 
@@ -207,13 +208,13 @@ function playerAct() {
         console.log("you're dead");
     }
 
-    var groundUnderFeet = (underFeet[0] != 0) || (underFeet[1] != 0);
+    var groundUnderFeet = (underFeet[0] > 1) || (underFeet[1] > 1);
 
-    var ceilingAboveHead = (aboveHead[0] != 0) || (aboveHead[1] != 0);
+    var ceilingAboveHead = (aboveHead[0] > 1) || (aboveHead[1] > 1);
 
-    var wallToLeft = (toLeft[0] != 0) || (toLeft[1] != 0);
+    var wallToLeft = (toLeft[0] > 1) || (toLeft[1] > 1);
 
-    var wallToRight = (toRight[0] != 0) || (toRight[1] != 0);
+    var wallToRight = (toRight[0] > 1) || (toRight[1] > 1);
 
 
     if (groundUnderFeet) {
@@ -372,7 +373,7 @@ function mdown(event) {
     var x = event.clientX - canvas.offsetLeft + camera.pos.x;
     var y = event.clientY - canvas.offsetTop + camera.pos.y;
     var m = worldToMap(new Vec2(x,y))
-    var v = 1;
+    var v = 2;
     var tile = parseInt(document.getElementById('form').tilename.value);
     if (tile >= 0 && tile < blinkPatterns.length) {
         v = tile;
