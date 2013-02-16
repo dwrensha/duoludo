@@ -7,14 +7,12 @@ function init() {
     canvas = document.getElementById('canvas');
     state = game.init(canvas);
     canvas.onmousedown = mdown;
+    window.onkeyup = kup;
+    window.onkeydown = kdown;
 }
 
 function tick() {
     state = game.tick(state);
-}
-
-function kpress(event) {
-    game.kpress(event, state);
 }
 
 function kup(event) {
@@ -31,7 +29,3 @@ function mdown(event) {
 
 // tick 40 times per second
 var interval = window.setInterval(tick, 25);
-
-window.onkeypress = kpress;
-window.onkeyup = kup;
-window.onkeydown = kdown;

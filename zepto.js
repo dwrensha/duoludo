@@ -30,7 +30,7 @@ var zepto = (function () {
     function vec2copy (v) {
         return new Vec2(v.x, v.y);
     }
-
+    
     function vec2stimes(s, v) {
         return new Vec2(v.x * s, v.y * s);
     }
@@ -324,7 +324,6 @@ var zepto = (function () {
 
     }
 
-
     function tick(state) {
         playerAct(state.player);
         adjustCamera(state.player, state.camera);
@@ -336,10 +335,6 @@ var zepto = (function () {
         }
         ++state.ticks;
         return state;
-    }
-
-    function kpress(event, state) {
-        // console.log(event)
     }
 
     function kup(event, state) {
@@ -357,11 +352,6 @@ var zepto = (function () {
                 keysNewlyDown[event.keyCode] = 1;
             }
             keys[event.keyCode] = 1;
-
-            if (event.keyCode == 'M'.charCodeAt(0)) {
-                op = document.getElementById('output');
-                op.innerHTML = "m.values = [" + map.values + "];";
-            }
         }
     }
 
@@ -373,8 +363,12 @@ var zepto = (function () {
         var tile = parseInt(document.getElementById('form').tilename.value);
         if (tile >= 0 && tile < blinkPatterns.length) {
             v = tile;
+            setMapTile(map, m.x, m.y, v);
+        } else if (document.getElementById('form').tilename.value == 'map') {
+            op = document.getElementById('output');
+            op.innerHTML = "m.values = [" + map.values + "];";
         }
-        setMapTile(map, m.x, m.y, v);
+
         console.log('mouse down: ' + m.x + ", " +  m.y);
     }
 
@@ -383,7 +377,7 @@ var zepto = (function () {
         if (canvas.getContext) {
             context = canvas.getContext('2d');
         }
-        canvas.onmousedown = mdown;
+
         return {
             player: new Player(50, worldHeight - 30),
             camera: new Camera(0, worldHeight - 320),
@@ -394,7 +388,6 @@ var zepto = (function () {
     return {
         init: init,
         tick: tick,
-        kpress: kpress,
         kup: kup,
         kdown: kdown,
         mdown: mdown
