@@ -359,14 +359,19 @@ var zepto = (function () {
         var x = event.clientX - canvas.offsetLeft + state.camera.pos.x;
         var y = event.clientY - canvas.offsetTop + state.camera.pos.y;
         var m = worldToMap(new Vec2(x,y))
-        var v = 2;
-        var tile = parseInt(document.getElementById('form').tilename.value);
+
+        var input = document.getElementById('form').input.value;
+        var tile = parseInt(input);
+        var op = document.getElementById('output');
+
         if (tile >= 0 && tile < blinkPatterns.length) {
             v = tile;
             setMapTile(map, m.x, m.y, v);
-        } else if (document.getElementById('form').tilename.value == 'map') {
-            op = document.getElementById('output');
+            op.innerHTML = "";
+        } else if (input == 'map') {
             op.innerHTML = "m.values = [" + map.values + "];";
+        } else if (input == 'state') {
+            op.innerHTML = state.toSource();
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
