@@ -76,9 +76,9 @@ var zepto = (function () {
         this.jumping = -1; // not jumping
     };
 
-    Player.prototype.center = function () {
-            return vec2plus(this.pos, new Vec2(this.width / 2.0,
-                                               this.height / 2.0));
+    playerCenter = function (player) {
+        return vec2plus(player.pos, new Vec2(player.width / 2.0,
+                                             player.height / 2.0));
     };
 
     function worldToMap (p) {
@@ -301,7 +301,7 @@ var zepto = (function () {
 
 
     function adjustCamera(player, camera) {
-        var center = player.center()
+        var center = playerCenter(player)
         var offset = vec2minus(center, camera.pos);
 
         var margin = 0.3;
@@ -369,6 +369,9 @@ var zepto = (function () {
             op.innerHTML = "m.values = [" + map.values + "];";
         } else if (input == 'state') {
             op.innerHTML = state.toSource();
+        } else {
+            // XXX
+            eval(input);
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
