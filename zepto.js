@@ -96,8 +96,6 @@ var zepto = (function () {
         return pattern[Math.floor(ticks / 20.0) % pattern.length]
     }
 
-    var state;
-
     function render (state) {
         var player = state.player
         var camera = state.camera
@@ -178,7 +176,6 @@ var zepto = (function () {
             ++player.vel.y;
         }
 
-
         var left = player.pos.x - 1;
         var right = player.pos.x + player.width;
         var top = player.pos.y - 1;
@@ -201,7 +198,7 @@ var zepto = (function () {
             aboveHead[0] == 3 || aboveHead[1] == 3 ||
             toLeft[0] == 3 || toLeft[1] == 3 ||
             toRight[0] == 3 || toRight[1] == 3) {
-            console.log("you're dead");
+            isDead = true;
         }
 
         var groundUnderFeet = (underFeet[0] > 1) || (underFeet[1] > 1);
@@ -301,6 +298,48 @@ var zepto = (function () {
 
     }
 
+    function isgameover() {
+        var left = state.player.pos.x - 1;
+        var right = state.player.pos.x + state.player.width;
+        var top = state.player.pos.y - 1;
+        var bottom = state.player.pos.y + state.player.height;
+
+        var underFeet = [getWorldTile(map, new Vec2(left + 1, bottom)),
+                        getWorldTile(map, new Vec2(right - 1, bottom))];
+
+        var aboveHead = [getWorldTile(map, new Vec2(left + 1, top)),
+                         getWorldTile(map, new Vec2(right - 1, top))];
+
+        var toLeft = [getWorldTile(map, new Vec2(left, bottom - 1)),
+                      getWorldTile(map, new Vec2(left, top + 1))];
+
+        var toRight = [getWorldTile(map, new Vec2(right, bottom - 1)),
+                       getWorldTile(map, new Vec2(right, top + 1))];
+
+
+        if (underFeet[0] == 3 || underFeet[1] == 3 ||
+            aboveHead[0] == 3 || aboveHead[1] == 3 ||
+            toLeft[0] == 3 || toLeft[1] == 3 ||
+            toRight[0] == 3 || toRight[1] == 3) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    function atcheckpoint() {
+        var x = state.player.pos.x + (state.player.width / 2);
+        var y = state.player.pos.y + (state.player.height / 2);
+
+        if ( 1 == getWorldTile(map, new Vec2(x, y))) {
+            return true;
+        }
+
+        return false;
+
+    }
+
 
     function adjustCamera(player, camera) {
         var center = playerCenter(player)
@@ -320,6 +359,8 @@ var zepto = (function () {
         }
 
     }
+
+    var state;
 
     function tick() {
         playerAct(state.player);
@@ -399,7 +440,9 @@ var zepto = (function () {
         tick: tick,
         kup: kup,
         kdown: kdown,
-        mdown: mdown
+        mdown: mdown,
+        isgameover: isgameover,
+        atcheckpoint: atcheckpoint
     };
 } ());
 

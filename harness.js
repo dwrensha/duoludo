@@ -22,6 +22,13 @@ function init() {
 
 function tick() {
     game.tick();
+    if (game.isgameover()) {
+        console.log("you're dead");
+    }
+    if (game.atcheckpoint()) {
+        console.log("at checkpoint");
+    }
+
     ++ticks;
 }
 
