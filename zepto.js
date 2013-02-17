@@ -30,7 +30,7 @@ var zepto = (function () {
     function vec2copy (v) {
         return new Vec2(v.x, v.y);
     }
-    
+
     function vec2stimes(s, v) {
         return new Vec2(v.x * s, v.y * s);
     }
@@ -139,11 +139,6 @@ var zepto = (function () {
     var NUM_KEYS = 256;
     var keys = Array();
     var keysNewlyDown = Array(NUM_KEYS);
-
-    for (var ii = 0; ii < NUM_KEYS; ++ii) {
-        keys[ii] = 0;
-        keysNewlyDown[ii] = 0;
-    }
 
     var maxdx = 7;
     var maxdy = pixelsPerTile;
@@ -342,17 +337,19 @@ var zepto = (function () {
         if (event.which != 0) {
             keys[event.keyCode] = 0;
         }
+        return state;
     }
 
 
     function kdown(event, state) {
-        //    console.log(event);
+        //console.log(event);
         if (event.which != 0) {
             if (keys[event.keyCode] == 0) {
                 keysNewlyDown[event.keyCode] = 1;
             }
             keys[event.keyCode] = 1;
         }
+        return state;
     }
 
     function mdown(event, state) {
@@ -375,12 +372,18 @@ var zepto = (function () {
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
+        return state;
     }
 
     function init(acanvas) {
         canvas = acanvas
         if (canvas.getContext) {
             context = canvas.getContext('2d');
+        }
+
+        for (var ii = 0; ii < NUM_KEYS; ++ii) {
+            keys[ii] = 0;
+            keysNewlyDown[ii] = 0;
         }
 
         return {

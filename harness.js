@@ -16,15 +16,15 @@ function tick() {
 }
 
 function kup(event) {
-    game.kup(event, state);
+    state = game.kup(event, state);
 }
 
 function kdown(event) {
-    game.kdown(event, state);
+    state = game.kdown(event, state);
 }
 
 function mdown(event) {
-    game.mdown(event, state);
+    state = game.mdown(event, state);
 }
 
 // tick 40 times per second
