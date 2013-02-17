@@ -96,6 +96,8 @@ var zepto = (function () {
         return pattern[Math.floor(ticks / 20.0) % pattern.length]
     }
 
+    var state;
+
     function render (state) {
         var player = state.player
         var camera = state.camera
@@ -319,7 +321,7 @@ var zepto = (function () {
 
     }
 
-    function tick(state) {
+    function tick() {
         playerAct(state.player);
         adjustCamera(state.player, state.camera);
 
@@ -329,19 +331,17 @@ var zepto = (function () {
             keysNewlyDown[ii] = 0;
         }
         ++state.ticks;
-        return state;
     }
 
-    function kup(event, state) {
+    function kup(event) {
         // console.log(event)
         if (event.which != 0) {
             keys[event.keyCode] = 0;
         }
-        return state;
     }
 
 
-    function kdown(event, state) {
+    function kdown(event) {
         //console.log(event);
         if (event.which != 0) {
             if (keys[event.keyCode] == 0) {
@@ -349,10 +349,9 @@ var zepto = (function () {
             }
             keys[event.keyCode] = 1;
         }
-        return state;
     }
 
-    function mdown(event, state) {
+    function mdown(event) {
         var x = event.clientX - canvas.offsetLeft + state.camera.pos.x;
         var y = event.clientY - canvas.offsetTop + state.camera.pos.y;
         var m = worldToMap(new Vec2(x,y))
@@ -375,7 +374,6 @@ var zepto = (function () {
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
-        return state;
     }
 
     function init(acanvas) {
@@ -389,11 +387,11 @@ var zepto = (function () {
             keysNewlyDown[ii] = 0;
         }
 
-        return {
+        state = {
             player: new Player(50, worldHeight - 30),
             camera: new Camera(0, worldHeight - 320),
             ticks: 0
-        }
+        };
     }
 
     return {

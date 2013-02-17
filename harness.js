@@ -1,6 +1,5 @@
 var game = zepto
 
-var state;
 var canvas;
 
 var ticks;
@@ -13,7 +12,7 @@ function StampedEvent (stamp, event) {
 
 function init() {
     canvas = document.getElementById('canvas');
-    state = game.init(canvas);
+    game.init(canvas);
     canvas.onmousedown = mdown;
     window.onkeyup = kup;
     window.onkeydown = kdown;
@@ -22,23 +21,23 @@ function init() {
 }
 
 function tick() {
-    state = game.tick(state);
+    game.tick();
     ++ticks;
 }
 
 function kup(event) {
     events.push(new StampedEvent(ticks, event));
-    state = game.kup(event, state);
+    game.kup(event);
 }
 
 function kdown(event) {
     events.push(new StampedEvent(ticks, event));
-    state = game.kdown(event, state);
+    game.kdown(event);
 }
 
 function mdown(event) {
     events.push(new StampedEvent(ticks, event));
-    state = game.mdown(event, state);
+    game.mdown(event);
 }
 
 // tick 40 times per second
