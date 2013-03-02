@@ -3,7 +3,11 @@ var game = zepto
 var canvas;
 
 var ticks;
+var ticker;
 var events;
+
+
+var stdout;
 
 function StampedEvent (stamp, event) {
     this.stamp = ticks;
@@ -18,12 +22,15 @@ function init() {
     window.onkeydown = kdown;
     ticks = 0;
     events = Array();
+    stdout = document.getElementById('stdout');
 }
 
 function tick() {
     game.tick();
     if (game.isgameover()) {
         console.log("you're dead");
+        stdout.innerHTML = "you're dead";
+        clearInterval(ticker);
     }
     if (game.atcheckpoint()) {
         console.log("at checkpoint");
@@ -48,4 +55,4 @@ function mdown(event) {
 }
 
 // tick 40 times per second
-var interval = window.setInterval(tick, 25);
+ticker = window.setInterval(tick, 25);

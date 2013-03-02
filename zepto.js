@@ -399,7 +399,7 @@ var zepto = (function () {
 
         var input = document.getElementById('form').input.value;
         var tile = parseInt(input);
-        var op = document.getElementById('output');
+        var op = document.getElementById('stderr');
 
         if (tile >= 0 && tile < blinkPatterns.length) {
             v = tile;
