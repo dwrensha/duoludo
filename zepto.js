@@ -74,6 +74,7 @@ var zepto = (function () {
         this.pos = new Vec2(x, y);
         this.vel = new Vec2(0, 0);
         this.jumping = -1; // not jumping
+        this.ticksDead = -1; // not dead
     };
 
     playerCenter = function (player) {
@@ -125,13 +126,31 @@ var zepto = (function () {
             }
         }
 
-        context.fillStyle = playerOutlineColor;
-        context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
-                         player.width, player.height);
-        context.fillStyle = playerColor;
-        context.fillRect(player.pos.x - camera.pos.x + 1,
-                         player.pos.y - camera.pos.y + 1,
-                         player.width - 2, player.height - 2 );
+
+        if (player.ticksDead < 0) { // not dead
+            context.fillStyle = playerOutlineColor;
+            context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
+                             player.width, player.height);
+            context.fillStyle = playerColor;
+            context.fillRect(player.pos.x - camera.pos.x + 1,
+                             player.pos.y - camera.pos.y + 1,
+                             player.width - 2, player.height - 2 );
+        } else {
+            t = Math.floor(player.ticksDead / 2);
+            if (t * 2 < player.width) {
+                context.fillStyle = dangerColor;
+                context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
+                                 player.width, player.height);
+            }
+
+            context.fillStyle = playerColor;
+            context.fillRect(player.pos.x - camera.pos.x + t,
+                             player.pos.y - camera.pos.y + t,
+                             player.width - (2 * t),
+                             player.height - (2 * t));
+
+
+        }
     }
 
 
@@ -158,6 +177,11 @@ var zepto = (function () {
 
 
     function playerAct(player) {
+
+        if (player.ticksDead >= 0) {
+            ++player.ticksDead;
+            return;
+        }
 
         if (keys[37] == 1) {
             // LEFT
@@ -198,7 +222,8 @@ var zepto = (function () {
             aboveHead[0] == 3 || aboveHead[1] == 3 ||
             toLeft[0] == 3 || toLeft[1] == 3 ||
             toRight[0] == 3 || toRight[1] == 3) {
-            isDead = true;
+            player.ticksDead = 0;
+            return;
         }
 
         var groundUnderFeet = (underFeet[0] > 1) || (underFeet[1] > 1);
@@ -299,33 +324,10 @@ var zepto = (function () {
     }
 
     function isgameover() {
-        var left = state.player.pos.x - 1;
-        var right = state.player.pos.x + state.player.width;
-        var top = state.player.pos.y - 1;
-        var bottom = state.player.pos.y + state.player.height;
-
-        var underFeet = [getWorldTile(map, new Vec2(left + 1, bottom)),
-                        getWorldTile(map, new Vec2(right - 1, bottom))];
-
-        var aboveHead = [getWorldTile(map, new Vec2(left + 1, top)),
-                         getWorldTile(map, new Vec2(right - 1, top))];
-
-        var toLeft = [getWorldTile(map, new Vec2(left, bottom - 1)),
-                      getWorldTile(map, new Vec2(left, top + 1))];
-
-        var toRight = [getWorldTile(map, new Vec2(right, bottom - 1)),
-                       getWorldTile(map, new Vec2(right, top + 1))];
-
-
-        if (underFeet[0] == 3 || underFeet[1] == 3 ||
-            aboveHead[0] == 3 || aboveHead[1] == 3 ||
-            toLeft[0] == 3 || toLeft[1] == 3 ||
-            toRight[0] == 3 || toRight[1] == 3) {
+        if (state.player.ticksDead > 10) {
             return true;
         }
-
         return false;
-
     }
 
     function atcheckpoint() {
