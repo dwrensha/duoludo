@@ -17,6 +17,13 @@ function StampedEvent (stamp, event) {
     this.event = event;
 }
 
+function recordizeEvent(event) {
+    return {"type": event.type,
+            "keyCode": event.keyCode
+           };
+}
+
+
 function startPlaying() {
     stdout.innerHTML = "YOU ARE NOW PLAYING";
     game.init(canvas);
@@ -97,17 +104,19 @@ function tick() {
 }
 
 function kup(event) {
+    var event = recordizeEvent(event);
     events.push(new StampedEvent(ticks, event));
     game.kup(event);
 }
 
 function kdown(event) {
+    var event = recordizeEvent(event);
     events.push(new StampedEvent(ticks, event));
     game.kdown(event);
 }
 
 function mdown(event) {
-    events.push(new StampedEvent(ticks, event));
+//    events.push(new StampedEvent(ticks, event));
     game.mdown(event);
 }
 
