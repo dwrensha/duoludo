@@ -218,10 +218,14 @@ var zepto = (function () {
                        getWorldTile(map, new Vec2(right, top + 1))];
 
 
-        if (underFeet[0] == 3 || underFeet[1] == 3 ||
-            aboveHead[0] == 3 || aboveHead[1] == 3 ||
-            toLeft[0] == 3 || toLeft[1] == 3 ||
-            toRight[0] == 3 || toRight[1] == 3) {
+        if (getTileState(underFeet[0], state.ticks) == 3 ||
+            getTileState(underFeet[1], state.ticks) == 3 ||
+            getTileState(aboveHead[0], state.ticks) == 3 ||
+            getTileState(aboveHead[1], state.ticks) == 3 ||
+            getTileState(toLeft[0], state.ticks) == 3 ||
+            getTileState(toLeft[1], state.ticks) == 3 ||
+            getTileState(toRight[0], state.ticks) == 3 ||
+            getTileState(toRight[1], state.ticks) == 3) {
             player.ticksDead = 0;
             return;
         }

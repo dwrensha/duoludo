@@ -8,6 +8,10 @@ var events;
 
 var stdout;
 
+// Tick about 40 times per second.
+// This should sync okay with the music at 144 bpm.
+var tickMillis = 26.041;
+
 function StampedEvent (stamp, event) {
     this.stamp = ticks;
     this.event = event;
@@ -15,25 +19,26 @@ function StampedEvent (stamp, event) {
 
 function startPlaying() {
     stdout.innerHTML = "YOU ARE NOW PLAYING";
-    canvas = document.getElementById('canvas');
     game.init(canvas);
     canvas.onmousedown = mdown;
     window.onkeyup = kup;
     window.onkeydown = kdown;
     ticks = 0;
     events = Array();
-    // tick 40 times per second
-    ticker = window.setInterval(tick, 25);
+    ticker = window.setInterval(tick, tickMillis);
 }
 
 function mainKdown(event) {
     if (event.keyCode == ' '.charCodeAt(0)) {
         startPlaying();
+    } else if (event.keyCode == 'R'.charCodeAt(0)) {
+        startReplaying();
     }
 }
 
 function mainMenu() {
     stdout = document.getElementById('stdout');
+    canvas = document.getElementById('canvas');
     stdout.innerHTML = "MAIN MENU. SPACE TO PLAY";
     window.onkeydown = mainKdown;
 }
