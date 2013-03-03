@@ -337,9 +337,10 @@ var zepto = (function () {
     function atcheckpoint() {
         var x = state.player.pos.x + (state.player.width / 2);
         var y = state.player.pos.y + (state.player.height / 2);
+        var w =  new Vec2(x, y);
 
-        if ( 1 == getWorldTile(map, new Vec2(x, y))) {
-            return true;
+        if ( 1 == getWorldTile(map, w)) {
+            return worldToMap(w);
         }
 
         return false;

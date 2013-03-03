@@ -9,7 +9,7 @@ var events;
 var stdout;
 
 // Tick about 40 times per second.
-// This should sync okay with the music at 144 bpm.
+ // This should sync okay with the music at 144 bpm.
 var tickMillis = 26.041;
 
 function StampedEvent (stamp, event) {
@@ -96,8 +96,9 @@ function tick() {
         events.push(new StampedEvent(ticks, {'type':'gameover'}));
         stopPlaying();
     }
-    if (game.atcheckpoint()) {
-        console.log("at checkpoint");
+    cp = game.atcheckpoint();
+    if (cp) {
+        console.log("at checkpoint: " + JSON.stringify(cp));
     }
 
     ++ticks;
