@@ -30,7 +30,6 @@ function startPlaying() {
 
 function startReplaying() {
     events.reverse();
-    console.log(events);
     stdout.innerHTML = "REPLAY";
     game.init(canvas);
     ticks = 0;
@@ -38,11 +37,22 @@ function startReplaying() {
 }
 
 function tickReplay() {
-//    var event = events.pop();
-//    while(event.stamp < ticks) {
-//        console.out(event);
-//        event = events.pop();
-//    }
+    var stampedEvent = events[events.length - 1];
+    while(stampedEvent && (stampedEvent.stamp <= ticks) && (events.length > 0)) {
+        stampedEvent = events.pop();
+        event = stampedEvent.event;
+        switch (event.type) {
+        case "keydown":
+            game.kdown(event);
+            break;
+        case "keyup":
+            game.kup(event);
+            break;
+        case "gameover":
+            stopPlaying();
+        }
+        stampedEvent = events[events.length - 1];
+    }
 
     game.tick();
     ++ticks;
@@ -60,7 +70,7 @@ function mainKdown(event) {
 function mainMenu() {
     stdout = document.getElementById('stdout');
     canvas = document.getElementById('canvas');
-    stdout.innerHTML = "MAIN MENU. SPACE TO PLAY";
+    stdout.innerHTML += "MAIN MENU. SPACE TO PLAY";
     window.onkeydown = mainKdown;
 }
 
@@ -73,6 +83,7 @@ function tick() {
     game.tick();
     if (game.isgameover()) {
         stdout.innerHTML = "you're dead";
+        events.push(new StampedEvent(ticks, {'type':'gameover'}));
         stopPlaying();
     }
     if (game.atcheckpoint()) {
