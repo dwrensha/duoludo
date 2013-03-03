@@ -28,10 +28,31 @@ function startPlaying() {
     ticker = window.setInterval(tick, tickMillis);
 }
 
+function startReplaying() {
+    events.reverse();
+    console.log(events);
+    stdout.innerHTML = "REPLAY";
+    game.init(canvas);
+    ticks = 0;
+    ticker = window.setInterval(tickReplay, tickMillis);
+}
+
+function tickReplay() {
+//    var event = events.pop();
+//    while(event.stamp < ticks) {
+//        console.out(event);
+//        event = events.pop();
+//    }
+
+    game.tick();
+    ++ticks;
+}
+
+
 function mainKdown(event) {
     if (event.keyCode == ' '.charCodeAt(0)) {
         startPlaying();
-    } else if (event.keyCode == 'R'.charCodeAt(0)) {
+    } else if (event.keyCode == 82) {
         startReplaying();
     }
 }
