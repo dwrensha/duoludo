@@ -412,7 +412,7 @@ var zepto = (function () {
         } else if (input == 'map') {
             op.innerHTML = "m.values = [" + map.values + "];";
         } else if (input == 'state') {
-            op.innerHTML = state.toSource();
+            op.innerHTML = JSON.stringify(state);
         } else {
             // XXX
             eval(input);

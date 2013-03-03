@@ -32,6 +32,9 @@ function startReplaying() {
     events.reverse();
     stdout.innerHTML = "REPLAY";
     game.init(canvas);
+    canvas.onmousedown = null;
+    window.onkeyup = null;
+    window.onkeydown = null;
     ticks = 0;
     ticker = window.setInterval(tickReplay, tickMillis);
 }
