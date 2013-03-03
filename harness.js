@@ -6,7 +6,6 @@ var ticks;
 var ticker;
 var events;
 
-
 var stdout;
 
 function StampedEvent (stamp, event) {
@@ -14,7 +13,8 @@ function StampedEvent (stamp, event) {
     this.event = event;
 }
 
-function init() {
+function startPlaying() {
+    stdout.innerHTML = "YOU ARE NOW PLAYING";
     canvas = document.getElementById('canvas');
     game.init(canvas);
     canvas.onmousedown = mdown;
@@ -22,15 +22,32 @@ function init() {
     window.onkeydown = kdown;
     ticks = 0;
     events = Array();
+    // tick 40 times per second
+    ticker = window.setInterval(tick, 25);
+}
+
+function mainKdown(event) {
+    if (event.keyCode == ' '.charCodeAt(0)) {
+        startPlaying();
+    }
+}
+
+function mainMenu() {
     stdout = document.getElementById('stdout');
+    stdout.innerHTML = "MAIN MENU. SPACE TO PLAY";
+    window.onkeydown = mainKdown;
+}
+
+function stopPlaying() {
+    clearInterval(ticker);
+    mainMenu();
 }
 
 function tick() {
     game.tick();
     if (game.isgameover()) {
-        console.log("you're dead");
         stdout.innerHTML = "you're dead";
-        clearInterval(ticker);
+        stopPlaying();
     }
     if (game.atcheckpoint()) {
         console.log("at checkpoint");
@@ -54,5 +71,4 @@ function mdown(event) {
     game.mdown(event);
 }
 
-// tick 40 times per second
-ticker = window.setInterval(tick, 25);
+

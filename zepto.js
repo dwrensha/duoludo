@@ -377,7 +377,6 @@ var zepto = (function () {
     }
 
     function kup(event) {
-        // console.log(event)
         if (event.which != 0) {
             keys[event.keyCode] = 0;
         }
@@ -385,7 +384,6 @@ var zepto = (function () {
 
 
     function kdown(event) {
-        //console.log(event);
         if (event.which != 0) {
             if (keys[event.keyCode] == 0) {
                 keysNewlyDown[event.keyCode] = 1;
