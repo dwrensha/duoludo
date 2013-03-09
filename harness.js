@@ -63,6 +63,7 @@ var replayMode = {
 
 
 var mainMode = {
+    paths : Array(),
     events : Array(),
 
     kdown : function(event) {
@@ -74,10 +75,14 @@ var mainMode = {
     },
 
     menu : function () {
-        stdout = document.getElementById('stdout');
-        canvas = document.getElementById('canvas');
         stdout.innerHTML += "MAIN MENU. SPACE TO PLAY";
         window.onkeydown = this.kdown.bind(this);
+    },
+
+    registerPath : function (path) {
+        this.events = path.events;
+        this.paths.push(path);
+        console.log(path);
     }
 
 }
@@ -89,14 +94,19 @@ var playMode = {
         canvas.onmousedown = this.mdown.bind(this);
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
+        this.path = {player : "dwrensha",
+                     startTime: new Date()};
         this.ticks = 0;
         this.events = Array();
         this.ticker = window.setInterval(this.tick.bind(this), tickMillis);
     },
 
-    stop : function () {
+    stop : function (endCheckpoint) {
         clearInterval(this.ticker);
-        mainMode.events = this.events;
+        this.path.endCheckpoint = endCheckpoint;
+        this.path.events = this.events;
+        this.endState = game.state;
+        mainMode.registerPath(this.path);
         mainMode.menu();
     },
 
@@ -105,11 +115,12 @@ var playMode = {
         if (game.isgameover()) {
             stdout.innerHTML = "you're dead";
             this.events.push(new StampedEvent(this.ticks, {'type':'gameover'}));
-            this.stop();
+            this.stop("gameover");
         }
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + JSON.stringify(cp));
+            // this.stop(cp);
         }
 
         ++this.ticks;
@@ -136,5 +147,8 @@ var playMode = {
 
 
 function init() {
+    stdout = document.getElementById('stdout');
+    canvas = document.getElementById('canvas');
+
     mainMode.menu();
 }
