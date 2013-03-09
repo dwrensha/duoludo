@@ -1,7 +1,6 @@
 var game = zepto
 
 var canvas;
-var events;
 var stdout;
 
 // Tick about 40 times per second.
@@ -20,8 +19,9 @@ function recordizeEvent(event) {
 }
 
 var replayMode = {
-    start : function () {
-        events.reverse();
+    start : function (events) {
+        // copy and reverse |events|
+        this.events = events.slice().reverse();
         stdout.innerHTML = "REPLAY";
         game.init(canvas);
         canvas.onmousedown = null;
@@ -37,10 +37,11 @@ var replayMode = {
     },
 
     tick : function () {
-        var stampedEvent = events[events.length - 1];
-        while(stampedEvent && (stampedEvent.stamp <= this.ticks) && (events.length > 0)) {
-            stampedEvent = events.pop();
-            event = stampedEvent.event;
+        var stampedEvent = this.events[this.events.length - 1];
+        while(stampedEvent && (stampedEvent.stamp <= this.ticks) &&
+              (this.events.length > 0)) {
+            stampedEvent = this.events.pop();
+            var event = stampedEvent.event;
             switch (event.type) {
             case "keydown":
                 game.kdown(event);
@@ -51,7 +52,7 @@ var replayMode = {
             case "gameover":
                 this.stop();
             }
-            stampedEvent = events[events.length - 1];
+            stampedEvent = this.events[this.events.length - 1];
         }
 
         game.tick();
@@ -62,11 +63,13 @@ var replayMode = {
 
 
 var mainMode = {
+    events : Array(),
+
     kdown : function(event) {
         if (event.keyCode == ' '.charCodeAt(0)) {
             playMode.start();
         } else if (event.keyCode == 82 /* 'r' */ ) {
-            replayMode.start();
+            replayMode.start(this.events);
         }
     },
 
@@ -87,12 +90,13 @@ var playMode = {
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
         this.ticks = 0;
-        events = Array();
+        this.events = Array();
         this.ticker = window.setInterval(this.tick.bind(this), tickMillis);
     },
 
     stop : function () {
         clearInterval(this.ticker);
+        mainMode.events = this.events;
         mainMode.menu();
     },
 
@@ -100,7 +104,7 @@ var playMode = {
         game.tick();
         if (game.isgameover()) {
             stdout.innerHTML = "you're dead";
-            events.push(new StampedEvent(this.ticks, {'type':'gameover'}));
+            this.events.push(new StampedEvent(this.ticks, {'type':'gameover'}));
             this.stop();
         }
         cp = game.atcheckpoint();
@@ -113,13 +117,13 @@ var playMode = {
 
     kup : function (event) {
         var revent = recordizeEvent(event);
-        events.push(new StampedEvent(this.ticks, revent));
+        this.events.push(new StampedEvent(this.ticks, revent));
         game.kup(revent);
     },
 
     kdown : function(event) {
         var revent = recordizeEvent(event);
-        events.push(new StampedEvent(this.ticks, revent));
+        this.events.push(new StampedEvent(this.ticks, revent));
         game.kdown(revent);
     },
 
