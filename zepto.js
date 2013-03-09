@@ -427,21 +427,34 @@ var zepto = (function () {
         if (canvas.getContext) {
             context = canvas.getContext('2d');
         }
+    }
 
+    // startState is optional.
+    function start(startState) {
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keys[ii] = 0;
             keysNewlyDown[ii] = 0;
         }
 
-        state = {
-            player: new Player(50, worldHeight - 30),
-            camera: new Camera(0, worldHeight - 320),
-            ticks: 0
-        };
+        if (startState) {
+            state = startState;
+        } else {
+            state = {
+                player: new Player(50, worldHeight - 30),
+                camera: new Camera(0, worldHeight - 320),
+                ticks: 0
+            };
+        }
+    }
+
+    function getstate() {
+        return state;
     }
 
     return {
         init: init,
+        start: start,
+        getstate: getstate,
         tick: tick,
         kup: kup,
         kdown: kdown,

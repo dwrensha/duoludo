@@ -23,7 +23,7 @@ var replayMode = {
         // copy and reverse |events|
         this.events = events.slice().reverse();
         stdout.innerHTML = "REPLAY";
-        game.init(canvas);
+        game.start();
         canvas.onmousedown = null;
         window.onkeyup = null;
         window.onkeydown = null;
@@ -50,6 +50,7 @@ var replayMode = {
                 game.kup(event);
                 break;
             case "gameover":
+            case "checkpoint":
                 this.stop();
             }
             stampedEvent = this.events[this.events.length - 1];
@@ -88,14 +89,32 @@ var mainMode = {
 }
 
 var playMode = {
-    start : function () {
+
+    // startState is optional.
+    start : function (startState) {
         stdout.innerHTML = "YOU ARE NOW PLAYING";
-        game.init(canvas);
+
+        this.checkpointmode = document.getElementById('checkpointmode').input.checked;
+
+        console.log(this.checkpointmode);
+        game.start(startState);
         canvas.onmousedown = this.mdown.bind(this);
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
+
+
         this.path = {player : "dwrensha",
-                     startTime: new Date()};
+                     startTime: new Date(),
+                     startState: game.getstate()};
+
+
+        cp = game.atcheckpoint();
+        if (cp) {
+            this.path.startCheckpoint = cp;
+        } else {
+            this.path.startCheckpoint = "start";
+        }
+
         this.ticks = 0;
         this.events = Array();
         this.ticker = window.setInterval(this.tick.bind(this), tickMillis);
@@ -105,7 +124,7 @@ var playMode = {
         clearInterval(this.ticker);
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
-        this.endState = game.state;
+        this.path.endState = game.getstate();
         mainMode.registerPath(this.path);
         mainMode.menu();
     },
@@ -120,7 +139,10 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + JSON.stringify(cp));
-            // this.stop(cp);
+            if (this.checkpointmode) {
+                this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
+                this.stop(cp);
+            }
         }
 
         ++this.ticks;
@@ -150,5 +172,6 @@ function init() {
     stdout = document.getElementById('stdout');
     canvas = document.getElementById('canvas');
 
+    game.init(canvas);
     mainMode.menu();
 }
