@@ -93,10 +93,8 @@ var playMode = {
     // startState is optional.
     start : function (startState) {
         stdout.innerHTML = "YOU ARE NOW PLAYING";
+        this.checkpointbox = document.getElementById('checkpointmode'),
 
-        this.checkpointmode = document.getElementById('checkpointmode').input.checked;
-
-        console.log(this.checkpointmode);
         game.start(startState);
         canvas.onmousedown = this.mdown.bind(this);
         window.onkeyup = this.kup.bind(this);
@@ -104,7 +102,7 @@ var playMode = {
 
 
         this.path = {player : "dwrensha",
-                     startTime: new Date(),
+                     startTime: (new Date()).toUTCString(),
                      startState: game.getstate()};
 
 
@@ -139,7 +137,8 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + JSON.stringify(cp));
-            if (this.checkpointmode) {
+            if (this.checkpointbox.input.checked &&
+                (cp != this.path.startCheckpoint) ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
