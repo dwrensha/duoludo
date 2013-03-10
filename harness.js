@@ -10,26 +10,41 @@ var tickMillis = 26.041;
 function StampedEvent (ticks, event) {
     this.stamp = ticks;
     this.event = event;
-}
+};
 
 function recordizeEvent(event) {
     return {"type": event.type,
             "keyCode": event.keyCode
            };
-}
+};
 
-function addToPathList(path) {
-    var pathlist = document.getElementById('pathlist');
-    var div = document.createElement('div');
-    var input = document.createElement('input');
-    input.setAttribute('type', 'radio');
-    input.setAttribute('name', 'path');
-    var label = document.createElement('label');
-    label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
-    div.appendChild(input);
-    div.appendChild(label);
-    pathlist.appendChild(div);
-}
+
+var pathLists = {
+    add : function (path) {
+        var pathlist = document.getElementById('pathlist');
+        var div = document.createElement('div');
+        var input = document.createElement('input');
+        input.setAttribute('type', 'radio');
+        input.setAttribute('name', 'path');
+        input.setAttribute('pathID', path.pathID);
+        var label = document.createElement('label');
+        label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
+        div.appendChild(input);
+        div.appendChild(label);
+        pathlist.appendChild(div);
+    },
+
+    findSelected : function() {
+        var elts = document.getElementsByName('path')
+        for (var ii = 0; ii < elts.length; ++ii) {
+            if (elts[ii].checked) {
+                return elts[ii].getAttribute('pathID');
+            }
+        }
+
+        return null;
+    }
+};
 
 var replayMode = {
     start : function (events) {
@@ -72,8 +87,7 @@ var replayMode = {
         game.tick();
         ++this.ticks;
     }
-
-}
+};
 
 
 var mainMode = {
@@ -96,11 +110,10 @@ var mainMode = {
     registerPath : function (path) {
         this.events = path.events;
         this.paths.push(path);
-        addToPathList(path);
+        pathLists.add(path);
         console.log(path);
     }
-
-}
+};
 
 var playMode = {
 
@@ -185,7 +198,7 @@ var playMode = {
         game.mdown(event);
     }
 
-}
+};
 
 
 function init() {
@@ -194,4 +207,4 @@ function init() {
 
     game.init(canvas);
     mainMode.menu();
-}
+};
