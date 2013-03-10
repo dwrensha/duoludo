@@ -18,9 +18,13 @@ var zepto = (function () {
          [1],
          [2],
          [3],
-         [2,3],
-         [2,2,3,3],
-         [2,3,2,3,2,2,3,3]];
+         [2,3], //4
+         [2,2,3,3], //5
+         [2,2,2,3,3,3], //6
+         [2,2,2,2,3,3,3,3], //7
+         [2,2,2,2,2,3,3,3,3,3], //8
+         [2,2,2,2,2,2,3,3,3,3,3,3], //9
+        ];
 
     function Vec2(x, y) {
         this.x = x;
@@ -94,7 +98,7 @@ var zepto = (function () {
 
     function getTileState (idx, ticks) {
         var pattern = blinkPatterns[idx];
-        return pattern[Math.floor(ticks / 20.0) % pattern.length]
+        return pattern[Math.floor(ticks / 10.0) % pattern.length]
     }
 
     function render (state) {
