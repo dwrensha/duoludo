@@ -181,10 +181,9 @@ var playMode = {
         }
         cp = game.atcheckpoint();
         if (cp) {
-            console.log("at checkpoint: " + JSON.stringify(cp));
+            console.log("at checkpoint: " + cp);
             if (this.checkpointbox.input.checked &&
-                // ugh, is there a better way to check for equality?
-                (JSON.stringify(cp) != JSON.stringify(this.path.startCheckpoint)) ) {
+                cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }

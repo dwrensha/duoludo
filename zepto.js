@@ -342,7 +342,7 @@ var zepto = (function () {
         var w =  new Vec2(x, y);
 
         if ( 1 == getWorldTile(map, w)) {
-            return worldToMap(w);
+            return JSON.stringify(worldToMap(w));
         }
 
         return false;
@@ -436,8 +436,7 @@ var zepto = (function () {
         }
 
         if (startState) {
-            // copy the state
-            state = JSON.parse(JSON.stringify(startState));
+            state = JSON.parse(startState);
         } else {
             state = {
                 player: new Player(50, worldHeight - 30),
@@ -448,7 +447,7 @@ var zepto = (function () {
     }
 
     function getstate() {
-        return JSON.parse(JSON.stringify(state));
+        return JSON.stringify(state);
     }
 
     return {
