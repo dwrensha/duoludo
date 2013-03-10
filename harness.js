@@ -46,11 +46,11 @@ var pathLists = {
 };
 
 var replayMode = {
-    start : function (events) {
+    start : function (path) {
         // copy and reverse |events|
-        this.events = events.slice().reverse();
+        this.events = path.events.slice().reverse();
         stdout.innerHTML = "REPLAY";
-        game.start();
+        game.start(path.startState);
         canvas.onmousedown = null;
         window.onkeyup = null;
         window.onkeydown = null;
@@ -91,30 +91,29 @@ var replayMode = {
 
 var mainMode = {
     paths : Array(),
-    events : Array(),
 
     lookupPath : function(pathID) {
         for (var ii = 0; ii < this.paths.length; ++ii) {
             if (this.paths[ii].pathID == pathID) {
-                console.log("returning: " + JSON.stringify(this.paths[ii]));
                 return this.paths[ii];
             }
         }
-        console.log("WHAT");
         return null;
     },
 
     kdown : function(event) {
         if (event.keyCode == ' '.charCodeAt(0)) {
             var selected = pathLists.findSelected();
-            console.log("selected: " + selected);
             if (selected) {
                 playMode.start(this.lookupPath(selected.valueOf()).endState);
             } else {
                 playMode.start();
             }
         } else if (event.keyCode == 82 /* 'r' */ ) {
-            replayMode.start(this.events);
+            var selected = pathLists.findSelected();
+            if (selected) {
+                replayMode.start(this.lookupPath(selected.valueOf()));
+            }
         }
     },
 
@@ -124,10 +123,8 @@ var mainMode = {
     },
 
     registerPath : function (path) {
-        this.events = path.events;
         this.paths.push(path);
         pathLists.add(path);
-        console.log(path);
     }
 };
 
@@ -186,6 +183,7 @@ var playMode = {
         if (cp) {
             console.log("at checkpoint: " + JSON.stringify(cp));
             if (this.checkpointbox.input.checked &&
+                // ugh, is there a better way to check for equality?
                 (JSON.stringify(cp) != JSON.stringify(this.path.startCheckpoint)) ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);

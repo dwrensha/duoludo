@@ -416,9 +416,6 @@ var zepto = (function () {
             op.innerHTML = "m.values = [" + map.values + "];";
         } else if (input == 'state') {
             op.innerHTML = JSON.stringify(state);
-        } else {
-            // XXX
-            eval(input);
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
@@ -451,7 +448,7 @@ var zepto = (function () {
     }
 
     function getstate() {
-        return state;
+        return JSON.parse(JSON.stringify(state));
     }
 
     return {
