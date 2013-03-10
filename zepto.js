@@ -439,7 +439,8 @@ var zepto = (function () {
         }
 
         if (startState) {
-            state = startState;
+            // copy the state
+            state = JSON.parse(JSON.stringify(startState));
         } else {
             state = {
                 player: new Player(50, worldHeight - 30),

@@ -4,7 +4,7 @@ var canvas;
 var stdout;
 
 // Tick about 40 times per second.
- // This should sync okay with the music at 144 bpm.
+// This should sync okay with the music at 144 bpm.
 var tickMillis = 26.041;
 
 function StampedEvent (ticks, event) {
@@ -41,7 +41,6 @@ var pathLists = {
                 return elts[ii].getAttribute('pathID');
             }
         }
-
         return null;
     }
 };
@@ -94,9 +93,26 @@ var mainMode = {
     paths : Array(),
     events : Array(),
 
+    lookupPath : function(pathID) {
+        for (var ii = 0; ii < this.paths.length; ++ii) {
+            if (this.paths[ii].pathID == pathID) {
+                console.log("returning: " + JSON.stringify(this.paths[ii]));
+                return this.paths[ii];
+            }
+        }
+        console.log("WHAT");
+        return null;
+    },
+
     kdown : function(event) {
         if (event.keyCode == ' '.charCodeAt(0)) {
-            playMode.start();
+            var selected = pathLists.findSelected();
+            console.log("selected: " + selected);
+            if (selected) {
+                playMode.start(this.lookupPath(selected.valueOf()).endState);
+            } else {
+                playMode.start();
+            }
         } else if (event.keyCode == 82 /* 'r' */ ) {
             replayMode.start(this.events);
         }
@@ -133,11 +149,9 @@ var playMode = {
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
-
         this.path = {player : "dwrensha",
                      startTime: (new Date()).toUTCString(),
                      startState: game.getstate()};
-
 
         cp = game.atcheckpoint();
         if (cp) {
@@ -172,7 +186,7 @@ var playMode = {
         if (cp) {
             console.log("at checkpoint: " + JSON.stringify(cp));
             if (this.checkpointbox.input.checked &&
-                (cp != this.path.startCheckpoint) ) {
+                (JSON.stringify(cp) != JSON.stringify(this.path.startCheckpoint)) ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
