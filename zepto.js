@@ -193,7 +193,8 @@ var zepto = (function () {
         }
         if (keys[38] == 1) {
             // UP
-            --player.vel.y;
+            // moon jumps are cheating
+            //--player.vel.y;
         }
         if (keys[40] == 1) {
             // DOWN

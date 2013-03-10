@@ -5,5 +5,8 @@ body { font-family: Helvetica, Sans, Arial;
        margin-left: auto;
        margin-right: auto;
        text-align: center;
-       width: 800px;
+       width: 600px;
      }
+.pathlist {
+    text-align: left;
+}
