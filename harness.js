@@ -18,6 +18,19 @@ function recordizeEvent(event) {
            };
 }
 
+function addToPathList(path) {
+    var pathlist = document.getElementById('pathlist');
+    var div = document.createElement('div');
+    var input = document.createElement('input');
+    input.setAttribute('type', 'radio');
+    input.setAttribute('name', 'path');
+    var label = document.createElement('label');
+    label.innerHTML = "HELLO";
+    div.appendChild(input);
+    div.appendChild(label);
+    pathlist.appendChild(div);
+}
+
 var replayMode = {
     start : function (events) {
         // copy and reverse |events|
@@ -83,6 +96,7 @@ var mainMode = {
     registerPath : function (path) {
         this.events = path.events;
         this.paths.push(path);
+        addToPathList(path);
         console.log(path);
     }
 

@@ -198,7 +198,8 @@ var zepto = (function () {
         }
         if (keys[40] == 1) {
             // DOWN
-            ++player.vel.y;
+            // stomping is not useful
+            //++player.vel.y;
         }
 
         var left = player.pos.x - 1;
