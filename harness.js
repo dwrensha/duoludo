@@ -25,7 +25,7 @@ function addToPathList(path) {
     input.setAttribute('type', 'radio');
     input.setAttribute('name', 'path');
     var label = document.createElement('label');
-    label.innerHTML = "HELLO";
+    label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
     div.appendChild(input);
     div.appendChild(label);
     pathlist.appendChild(div);
@@ -104,6 +104,12 @@ var mainMode = {
 
 var playMode = {
 
+    lastPathID : 0,
+    getPathID: function () {
+        ++this.lastPathID;
+        return this.lastPathID;
+    },
+
     // startState is optional.
     start : function (startState) {
         stdout.innerHTML = "YOU ARE NOW PLAYING";
@@ -137,6 +143,7 @@ var playMode = {
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
         this.path.endState = game.getstate();
+        this.path.pathID = this.getPathID();
         mainMode.registerPath(this.path);
         mainMode.menu();
     },
