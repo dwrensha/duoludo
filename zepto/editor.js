@@ -1,4 +1,4 @@
-var zepto = (function () {
+var editor = (function () {
 
     var context;
     var canvas;
@@ -12,6 +12,19 @@ var zepto = (function () {
 
 
     var spacebar = ' '.charCodeAt(0)
+
+    var blinkPatterns =
+        [[0],
+         [1],
+         [2],
+         [3],
+         [2,3], //4
+         [2,2,3,3], //5
+         [2,2,2,3,3,3], //6
+         [2,2,2,2,3,3,3,3], //7
+         [2,2,2,2,2,3,3,3,3,3], //8
+         [2,2,2,2,2,2,3,3,3,3,3,3], //9
+        ];
 
     function Vec2(x, y) {
         this.x = x;
@@ -33,6 +46,22 @@ var zepto = (function () {
     function vec2minus (v1, v2) {
         return new Vec2(v1.x - v2.x, v1.y - v2.y);
     }
+
+    function getMapTile (map, x, y) {
+        if (x < 0 || y < 0 || x > map.columns - 1 || y > map.rows - 1) {
+            return 1;
+        }
+        return map.values[ y * map.columns + x ];
+    }
+
+    function setMapTile (map, x, y, v) {
+        if (x < 0 || y < 0 || x > map.columns - 1 || y > map.rows - 1) {
+            return false;
+        }
+        map.values[ y * map.columns + x ] = v;
+        return true;
+    }
+
 
     var pixelsPerTile = 20;
     var worldWidth = map.columns * pixelsPerTile;
@@ -64,7 +93,12 @@ var zepto = (function () {
     //
     function getWorldTile (map, p) {
         var mapPos = worldToMap(p)
-        return map.getTile(mapPos.x, mapPos.y);
+        return getMapTile(map, mapPos.x, mapPos.y);
+    }
+
+    function getTileState (idx, ticks) {
+        var pattern = blinkPatterns[idx];
+        return pattern[Math.floor(ticks / 10.0) % pattern.length]
     }
 
     function render (state) {
@@ -75,7 +109,7 @@ var zepto = (function () {
 
         for (var ii = 0; ii < map.columns; ++ii) {
             for (var jj = 0; jj < map.rows; ++jj) {
-                switch (map.getBlinkState(map.getTile(ii,jj), state.ticks)) {
+                switch (getTileState(getMapTile(map,ii,jj), state.ticks)) {
                 case 0 :
                     continue
                 case 1 :
@@ -122,6 +156,8 @@ var zepto = (function () {
 
         }
     }
+
+
 
     var NUM_KEYS = 256;
     var keys = Array();
@@ -188,14 +224,14 @@ var zepto = (function () {
                        getWorldTile(map, new Vec2(right, top + 1))];
 
 
-        if (map.getBlinkState(underFeet[0], state.ticks) == 3 ||
-            map.getBlinkState(underFeet[1], state.ticks) == 3 ||
-            map.getBlinkState(aboveHead[0], state.ticks) == 3 ||
-            map.getBlinkState(aboveHead[1], state.ticks) == 3 ||
-            map.getBlinkState(toLeft[0], state.ticks) == 3 ||
-            map.getBlinkState(toLeft[1], state.ticks) == 3 ||
-            map.getBlinkState(toRight[0], state.ticks) == 3 ||
-            map.getBlinkState(toRight[1], state.ticks) == 3) {
+        if (getTileState(underFeet[0], state.ticks) == 3 ||
+            getTileState(underFeet[1], state.ticks) == 3 ||
+            getTileState(aboveHead[0], state.ticks) == 3 ||
+            getTileState(aboveHead[1], state.ticks) == 3 ||
+            getTileState(toLeft[0], state.ticks) == 3 ||
+            getTileState(toLeft[1], state.ticks) == 3 ||
+            getTileState(toRight[0], state.ticks) == 3 ||
+            getTileState(toRight[1], state.ticks) == 3) {
             player.ticksDead = 0;
             return;
         }
@@ -380,12 +416,12 @@ var zepto = (function () {
         var tile = parseInt(input);
         var op = document.getElementById('stderr');
 
-        if (tile >= 0 && tile < map.blinkPatterns.length) {
+        if (tile >= 0 && tile < blinkPatterns.length) {
             v = tile;
-            map.setTile(m.x, m.y, v);
+            setMapTile(map, m.x, m.y, v);
             op.innerHTML = "";
         } else if (input == 'map') {
-            op.innerHTML = "theMap.values = [" + map.values + "];";
+            op.innerHTML = "m.values = [" + map.values + "];";
         } else if (input == 'state') {
             op.innerHTML = JSON.stringify(state);
         }
