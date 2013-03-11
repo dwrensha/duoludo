@@ -3,14 +3,6 @@ var zepto = (function () {
     var context;
     var canvas;
 
-    var background = 'rgb(0,0,0)';
-    var safeColor = 'rgb(83,0,135)';
-    var dangerColor = 'rgb(252, 20, 62)';
-    var playerColor = 'rgb(255,125,16)';
-    var playerOutlineColor = 'rgb(255,178,56)';
-    var checkpointColor = 'rgb(42,42,42)';
-
-
     var spacebar = ' '.charCodeAt(0)
 
     function Vec2(x, y) {
@@ -70,7 +62,7 @@ var zepto = (function () {
     function render (state) {
         var player = state.player
         var camera = state.camera
-        context.fillStyle = background;
+        context.fillStyle = map.backgroundColor;
         context.fillRect(0, 0, worldWidth, worldHeight);
 
         for (var ii = 0; ii < map.columns; ++ii) {
@@ -79,13 +71,13 @@ var zepto = (function () {
                 case 0 :
                     continue
                 case 1 :
-                    context.fillStyle = checkpointColor;
+                    context.fillStyle = map.checkpointColor;
                     break;
                 case 2 :
-                    context.fillStyle = safeColor;
+                    context.fillStyle = map.safeColor;
                     break;
                 case 3 :
-                    context.fillStyle = dangerColor;
+                    context.fillStyle = map.dangerColor;
                     break;
                 default:
                     continue;
@@ -98,22 +90,22 @@ var zepto = (function () {
 
 
         if (player.ticksDead < 0) { // not dead
-            context.fillStyle = playerOutlineColor;
+            context.fillStyle = map.playerOutlineColor;
             context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
                              player.width, player.height);
-            context.fillStyle = playerColor;
+            context.fillStyle = map.playerColor;
             context.fillRect(player.pos.x - camera.pos.x + 1,
                              player.pos.y - camera.pos.y + 1,
                              player.width - 2, player.height - 2 );
         } else {
             t = Math.floor(player.ticksDead / 2);
             if (t * 2 < player.width) {
-                context.fillStyle = dangerColor;
+                context.fillStyle = map.dangerColor;
                 context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
                                  player.width, player.height);
             }
 
-            context.fillStyle = playerColor;
+            context.fillStyle = map.playerColor;
             context.fillRect(player.pos.x - camera.pos.x + t,
                              player.pos.y - camera.pos.y + t,
                              player.width - (2 * t),
@@ -371,28 +363,6 @@ var zepto = (function () {
         }
     }
 
-    function mdown(event) {
-        var x = event.clientX - canvas.offsetLeft + state.camera.pos.x;
-        var y = event.clientY - canvas.offsetTop + state.camera.pos.y;
-        var m = worldToMap(new Vec2(x,y))
-
-        var input = document.getElementById('form').input.value;
-        var tile = parseInt(input);
-        var op = document.getElementById('stderr');
-
-        if (tile >= 0 && tile < map.blinkPatterns.length) {
-            v = tile;
-            map.setTile(m.x, m.y, v);
-            op.innerHTML = "";
-        } else if (input == 'map') {
-            op.innerHTML = "theMap.values = [" + map.values + "];";
-        } else if (input == 'state') {
-            op.innerHTML = JSON.stringify(state);
-        }
-
-        console.log('mouse down: ' + m.x + ", " +  m.y);
-    }
-
     function init(acanvas) {
         canvas = acanvas
         if (canvas.getContext) {
@@ -429,7 +399,6 @@ var zepto = (function () {
         tick: tick,
         kup: kup,
         kdown: kdown,
-        mdown: mdown,
         isgameover: isgameover,
         atcheckpoint: atcheckpoint,
         tickMillis: tickMillis

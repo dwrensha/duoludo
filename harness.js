@@ -138,7 +138,6 @@ var playMode = {
         this.checkpointbox = document.getElementById('checkpointmode'),
 
         game.start(startState);
-        canvas.onmousedown = this.mdown.bind(this);
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
@@ -199,11 +198,6 @@ var playMode = {
         this.events.push(new StampedEvent(this.ticks, revent));
         game.kdown(revent);
     },
-
-    mdown : function (event) {
-        //    events.push(new StampedEvent(ticks, event));
-        game.mdown(event);
-    }
 
 };
 
