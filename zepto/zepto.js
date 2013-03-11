@@ -373,6 +373,10 @@ var zepto = (function () {
 
     }
 
+    // Tick about 40 times per second.
+    // This should sync okay with the music at 144 bpm.
+    var tickMillis = 26.041;
+
     var state;
 
     function tick() {
@@ -463,7 +467,8 @@ var zepto = (function () {
         kdown: kdown,
         mdown: mdown,
         isgameover: isgameover,
-        atcheckpoint: atcheckpoint
+        atcheckpoint: atcheckpoint,
+        tickMillis: tickMillis
     };
 } ());
 

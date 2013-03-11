@@ -3,10 +3,6 @@ var game = zepto
 var canvas;
 var stdout;
 
-// Tick about 40 times per second.
-// This should sync okay with the music at 144 bpm.
-var tickMillis = 26.041;
-
 function StampedEvent (ticks, event) {
     this.stamp = ticks;
     this.event = event;
@@ -55,7 +51,7 @@ var replayMode = {
         window.onkeyup = null;
         window.onkeydown = null;
         this.ticks = 0;
-        this.ticker = window.setInterval(this.tick.bind(this), tickMillis);
+        this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
 
    stop : function () {
@@ -159,7 +155,7 @@ var playMode = {
 
         this.ticks = 0;
         this.events = Array();
-        this.ticker = window.setInterval(this.tick.bind(this), tickMillis);
+        this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
 
     stop : function (endCheckpoint) {
