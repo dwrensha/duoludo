@@ -29,6 +29,9 @@ var zepto = (function () {
     var pixelsPerTile = 20;
     var worldWidth = map.columns * pixelsPerTile;
     var worldHeight = map.rows * pixelsPerTile;
+    var playerWidth = 10;
+    var playerHeight = 10;
+
 
     function Camera(x, y) {
         this.pos = new Vec2(x, y);
@@ -36,8 +39,6 @@ var zepto = (function () {
     }
 
     function Player(x, y) {
-        this.width = 10;
-        this.height = 10;
         this.pos = new Vec2(x, y);
         this.vel = new Vec2(0, 0);
         this.jumping = -1; // not jumping
@@ -45,8 +46,8 @@ var zepto = (function () {
     };
 
     playerCenter = function (player) {
-        return vec2plus(player.pos, new Vec2(player.width / 2.0,
-                                             player.height / 2.0));
+        return vec2plus(player.pos, new Vec2(playerWidth / 2.0,
+                                             playerHeight / 2.0));
     };
 
     function worldToMap (p) {
@@ -92,24 +93,24 @@ var zepto = (function () {
         if (player.ticksDead < 0) { // not dead
             context.fillStyle = map.playerOutlineColor;
             context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
-                             player.width, player.height);
+                             playerWidth, playerHeight);
             context.fillStyle = map.playerColor;
             context.fillRect(player.pos.x - camera.pos.x + 1,
                              player.pos.y - camera.pos.y + 1,
-                             player.width - 2, player.height - 2 );
+                             playerWidth - 2, playerHeight - 2 );
         } else {
             t = Math.floor(player.ticksDead / 2);
-            if (t * 2 < player.width) {
+            if (t * 2 < playerWidth) {
                 context.fillStyle = map.dangerColor;
                 context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
-                                 player.width, player.height);
+                                 playerWidth, playerHeight);
             }
 
             context.fillStyle = map.playerColor;
             context.fillRect(player.pos.x - camera.pos.x + t,
                              player.pos.y - camera.pos.y + t,
-                             player.width - (2 * t),
-                             player.height - (2 * t));
+                             playerWidth - (2 * t),
+                             playerHeight - (2 * t));
 
 
         }
@@ -124,9 +125,9 @@ var zepto = (function () {
 
     function overlaps (p, player) {
         var left = p.x ;
-        var right = p.x + player.width - 1;
+        var right = p.x + playerWidth - 1;
         var top = p.y;
-        var bottom = p.y + player.height - 1;
+        var bottom = p.y + playerHeight - 1;
 
 
         return  ((getWorldTile(map, new Vec2(left, bottom)) > 1) ||
@@ -163,9 +164,9 @@ var zepto = (function () {
         }
 
         var left = player.pos.x - 1;
-        var right = player.pos.x + player.width;
+        var right = player.pos.x + playerWidth;
         var top = player.pos.y - 1;
-        var bottom = player.pos.y + player.height;
+        var bottom = player.pos.y + playerHeight;
 
         var underFeet = [getWorldTile(map, new Vec2(left + 1, bottom)),
                          getWorldTile(map, new Vec2(right - 1, bottom))];
@@ -297,8 +298,8 @@ var zepto = (function () {
     }
 
     function atcheckpoint() {
-        var x = state.player.pos.x + (state.player.width / 2);
-        var y = state.player.pos.y + (state.player.height / 2);
+        var x = state.player.pos.x + (playerWidth / 2);
+        var y = state.player.pos.y + (playerHeight / 2);
         var w =  new Vec2(x, y);
 
         if ( 1 == getWorldTile(map, w)) {
