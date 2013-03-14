@@ -382,7 +382,7 @@ var zepto = (function () {
             state = JSON.parse(startState);
         } else {
             state = {
-                player: new Player(50, worldHeight - 30),
+                player: new Player(35, worldHeight - 30),
                 camera: new Camera(0, worldHeight - 320),
                 ticks: 0
             };
