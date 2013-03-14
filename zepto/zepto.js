@@ -120,7 +120,7 @@ var zepto = (function () {
     var keys = Array();
     var keysNewlyDown = Array(NUM_KEYS);
 
-    var maxdx = 7;
+    var maxdx = 5;
     var maxdy = pixelsPerTile;
 
     function overlaps (p, player) {
