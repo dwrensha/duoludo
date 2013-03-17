@@ -98,7 +98,7 @@ var mainMode = {
     },
 
     kdown : function(event) {
-        if (event.keyCode == ' '.charCodeAt(0)) {
+        if (event.keyCode == 13) { // ENTER
             var selected = pathLists.findSelected();
             if (selected) {
                 playMode.start(this.lookupPath(selected.valueOf()).endState);
@@ -114,7 +114,7 @@ var mainMode = {
     },
 
     menu : function () {
-        stdout.innerHTML += "MAIN MENU. SPACE TO PLAY";
+        stdout.innerHTML += "MAIN MENU. ENTER TO PLAY";
         window.onkeydown = this.kdown.bind(this);
     },
 
