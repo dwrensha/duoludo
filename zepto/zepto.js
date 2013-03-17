@@ -120,7 +120,7 @@ var zepto = (function () {
     var keys = Array();
     var keysNewlyDown = Array(NUM_KEYS);
 
-    var maxdx = 5;
+    var maxdx = 6;
     var maxdy = pixelsPerTile;
 
     function overlaps (p, player) {
@@ -202,6 +202,8 @@ var zepto = (function () {
         var wallToRight = (toRight[0] > 1) || (toRight[1] > 1);
 
 
+
+
         if (groundUnderFeet) {
             //console.log('ground under feet')
             player.vel.y = 0;
@@ -211,9 +213,18 @@ var zepto = (function () {
             } else if (player.vel.x < 0) {
                 ++player.vel.x;
             }
+
         } else {
             // gravity
             player.vel.y += 1;
+
+            //friction
+            if (player.vel.x > 2) {
+                --player.vel.x;
+            } else if (player.vel.x < -2) {
+                ++player.vel.x;
+            }
+
         }
 
 
@@ -221,11 +232,11 @@ var zepto = (function () {
             player.jumping = 0;
         } else if ( wallToLeft && keysNewlyDown[spacebar] ) {
             player.vel.y = 0;
-            player.vel.x += 5;
+            player.vel.x += 6;
             player.jumping = 2;
         } else if (wallToRight && keysNewlyDown[spacebar]) {
             player.vel.y = 0;
-            player.vel.x -= 5;
+            player.vel.x -= 6;
             player.jumping = 2;
         }
 
