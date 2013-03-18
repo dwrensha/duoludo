@@ -339,6 +339,18 @@ var zepto = (function () {
             camera.pos.y = center.y - margin * canvas.height
         }
 
+        if (camera.pos.x < 0) {
+            camera.pos.x = 0;
+        } else if (camera.pos.x + canvas.width > worldWidth) {
+            camera.pos.x = worldWidth - canvas.width;
+        }
+
+        if (camera.pos.y < 0) {
+            camera.pos.y = 0;
+        } else if (camera.pos.y + canvas.height > worldHeight) {
+            camera.pos.y = worldHeight - canvas.height;
+        }
+
     }
 
     // Tick about 40 times per second.
