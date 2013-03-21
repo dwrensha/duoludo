@@ -2,6 +2,7 @@ var zepto = (function () {
 
     var context;
     var canvas;
+    var audio;
 
     var spacebar = ' '.charCodeAt(0)
 
@@ -387,8 +388,12 @@ var zepto = (function () {
         }
     }
 
-    function init(acanvas) {
+    function init(acanvas, anaudio) {
         canvas = acanvas
+        audio = anaudio
+        document.getElementById('oggmusic').setAttribute('src', 'zepto/zeptodance.ogg');
+        document.getElementById('mp3music').setAttribute('src', 'zepto/zeptodance.mp3');
+        audio.load();
         if (canvas.getContext) {
             context = canvas.getContext('2d');
         }
@@ -396,6 +401,7 @@ var zepto = (function () {
 
     // startState is optional.
     function start(startState) {
+
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keys[ii] = 0;
             keysNewlyDown[ii] = 0;

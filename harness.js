@@ -134,6 +134,7 @@ var playMode = {
 
     // startState is optional.
     start : function (startState) {
+        document.getElementById('music').play();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
         this.checkpointbox = document.getElementById('checkpointmode'),
 
@@ -158,6 +159,7 @@ var playMode = {
     },
 
     stop : function (endCheckpoint) {
+        document.getElementById('music').pause();
         clearInterval(this.ticker);
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
@@ -205,7 +207,8 @@ var playMode = {
 function init() {
     stdout = document.getElementById('stdout');
     canvas = document.getElementById('canvas');
+    audio = document.getElementById('music');
 
-    game.init(canvas);
+    game.init(canvas, music);
     mainMode.menu();
 };
