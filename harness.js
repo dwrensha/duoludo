@@ -16,7 +16,6 @@ function recordizeEvent(event) {
 
 var pathLists = {
     add : function (path) {
-        var pathlist = document.getElementById('pathlist');
         var div = document.createElement('div');
         var input = document.createElement('input');
         input.setAttribute('type', 'radio');
@@ -26,7 +25,7 @@ var pathLists = {
         label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
         div.appendChild(input);
         div.appendChild(label);
-        pathlist.appendChild(div);
+        document.getElementById('pathlist').appendChild(div);
     },
 
     findSelected : function() {
@@ -37,6 +36,14 @@ var pathLists = {
             }
         }
         return null;
+    },
+
+    hide : function() {
+        document.getElementById('pathlist').style.display = 'none';
+    },
+
+    show : function() {
+        document.getElementById('pathlist').style.display = 'block';
     }
 };
 
@@ -133,6 +140,7 @@ var playMode = {
 
     // startState is optional.
     start : function (startState) {
+        pathLists.hide();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
         this.checkpointbox = document.getElementById('checkpointmode'),
 
@@ -158,6 +166,7 @@ var playMode = {
 
     stop : function (endCheckpoint) {
         clearInterval(this.ticker);
+        pathLists.show();
         game.stop();
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;

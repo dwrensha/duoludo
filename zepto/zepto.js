@@ -421,7 +421,6 @@ var zepto = (function () {
 
     // startState is optional.
     function start(startState) {
-        console.log(audio.currentTime);
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keys[ii] = 0;
             keysNewlyDown[ii] = 0;
