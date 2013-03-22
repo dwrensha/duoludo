@@ -1,6 +1,5 @@
 var game = zepto
 
-var canvas;
 var stdout;
 
 function StampedEvent (ticks, event) {
@@ -47,7 +46,6 @@ var replayMode = {
         this.events = path.events.slice().reverse();
         stdout.innerHTML = "REPLAY";
         game.start(path.startState);
-        canvas.onmousedown = null;
         window.onkeyup = null;
         window.onkeydown = null;
         this.ticks = 0;
@@ -134,7 +132,6 @@ var playMode = {
 
     // startState is optional.
     start : function (startState) {
-        document.getElementById('music').play();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
         this.checkpointbox = document.getElementById('checkpointmode'),
 
@@ -159,8 +156,8 @@ var playMode = {
     },
 
     stop : function (endCheckpoint) {
-        document.getElementById('music').pause();
         clearInterval(this.ticker);
+        game.stop();
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
         this.path.endState = game.getstate();
@@ -206,9 +203,8 @@ var playMode = {
 
 function init() {
     stdout = document.getElementById('stdout');
-    canvas = document.getElementById('canvas');
-    audio = document.getElementById('music');
+    gameDiv = document.getElementById('game')
 
-    game.init(canvas, music);
+    game.init(gameDiv);
     mainMode.menu();
 };

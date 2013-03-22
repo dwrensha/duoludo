@@ -388,11 +388,30 @@ var zepto = (function () {
         }
     }
 
-    function init(acanvas, anaudio) {
-        canvas = acanvas
-        audio = anaudio
-        document.getElementById('oggmusic').setAttribute('src', 'zepto/zeptodance.ogg');
-        document.getElementById('mp3music').setAttribute('src', 'zepto/zeptodance.mp3');
+    function init(gameDiv) {
+        var canvasDiv = document.createElement("div");
+        gameDiv.appendChild(canvasDiv);
+        canvas = document.createElement('canvas');
+        canvas.setAttribute('width','400');
+        canvas.setAttribute('height','400');
+        canvasDiv.appendChild(canvas);
+
+        audio = document.createElement("audio");
+        audio.setAttribute('loop', 'true');
+        gameDiv.appendChild(audio);
+
+        var oggsource = document.createElement('source');
+        oggsource.setAttribute('src', 'zepto/zeptodance.ogg');
+        audio.appendChild(oggsource);
+
+        var mp3source = document.createElement('source');
+        mp3source.setAttribute('src', 'zepto/zeptodance.mp3');
+        audio.appendChild(mp3source);
+
+//<p>
+//Arrow keys to move. Space to jump.
+//</p>
+
         audio.load();
         if (canvas.getContext) {
             context = canvas.getContext('2d');
@@ -401,7 +420,7 @@ var zepto = (function () {
 
     // startState is optional.
     function start(startState) {
-
+        audio.play()
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keys[ii] = 0;
             keysNewlyDown[ii] = 0;
@@ -418,6 +437,10 @@ var zepto = (function () {
         }
     }
 
+    function stop() {
+        audio.pause()
+    }
+
     function getstate() {
         return JSON.stringify(state);
     }
@@ -425,6 +448,7 @@ var zepto = (function () {
     return {
         init: init,
         start: start,
+        stop: stop,
         getstate: getstate,
         tick: tick,
         kup: kup,
