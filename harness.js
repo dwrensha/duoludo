@@ -14,7 +14,7 @@ function recordizeEvent(event) {
 };
 
 
-var pathLists = {
+var pathlist = {
     add : function (path) {
         var div = document.createElement('div');
         var input = document.createElement('input');
@@ -105,14 +105,14 @@ var mainMode = {
 
     kdown : function(event) {
         if (event.keyCode == 13) { // ENTER
-            var selected = pathLists.findSelected();
+            var selected = pathlist.findSelected();
             if (selected) {
                 playMode.start(this.lookupPath(selected.valueOf()).endState);
             } else {
                 playMode.start();
             }
         } else if (event.keyCode == 82 /* 'r' */ ) {
-            var selected = pathLists.findSelected();
+            var selected = pathlist.findSelected();
             if (selected) {
                 replayMode.start(this.lookupPath(selected.valueOf()));
             }
@@ -126,7 +126,7 @@ var mainMode = {
 
     registerPath : function (path) {
         this.paths.push(path);
-        pathLists.add(path);
+        pathlist.add(path);
     }
 };
 
@@ -140,7 +140,7 @@ var playMode = {
 
     // startState is optional.
     start : function (startState) {
-        pathLists.hide();
+        pathlist.hide();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
         this.checkpointbox = document.getElementById('checkpointmode'),
 
@@ -166,7 +166,7 @@ var playMode = {
 
     stop : function (endCheckpoint) {
         clearInterval(this.ticker);
-        pathLists.show();
+        pathlist.show();
         game.stop();
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
