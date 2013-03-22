@@ -370,6 +370,7 @@ var zepto = (function () {
             keysNewlyDown[ii] = 0;
         }
         ++state.ticks;
+        state.musicTime = audio.currentTime;
     }
 
     function kup(event) {
@@ -420,7 +421,7 @@ var zepto = (function () {
 
     // startState is optional.
     function start(startState) {
-        audio.play()
+        console.log(audio.currentTime);
         for (var ii = 0; ii < NUM_KEYS; ++ii) {
             keys[ii] = 0;
             keysNewlyDown[ii] = 0;
@@ -432,9 +433,12 @@ var zepto = (function () {
             state = {
                 player: new Player(35, worldHeight - 30),
                 camera: new Camera(0, worldHeight - 320),
-                ticks: 0
+                ticks: 0,
+                musicTime: 0
             };
         }
+        audio.currentTime = state.musicTime;
+        audio.play();
     }
 
     function stop() {

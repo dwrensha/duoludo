@@ -54,6 +54,7 @@ var replayMode = {
 
    stop : function () {
         clearInterval(this.ticker);
+        game.stop();
         mainMode.menu();
     },
 
