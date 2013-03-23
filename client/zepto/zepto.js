@@ -418,6 +418,7 @@ var zepto = (function () {
 
         audio = document.createElement("audio");
         audio.setAttribute('loop', 'true');
+        audio.setAttribute('preload', 'true');
         gameDiv.appendChild(audio);
 
         var oggsource = document.createElement('source');
@@ -436,6 +437,7 @@ var zepto = (function () {
         if (canvas.getContext) {
             context = canvas.getContext('2d');
         }
+
     }
 
     // startState is optional.
@@ -462,6 +464,7 @@ var zepto = (function () {
         }
         audio.currentTime = state.musicTime;
         audio.play();
+
     }
 
     function stop() {
