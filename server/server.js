@@ -3,6 +3,8 @@ var url = require('url');
 
 function start (route) {
 
+    var port = 8080;
+
     http.createServer(function(request, response) {
         var pathname = url.parse(request.url).pathname
         console.log("request for " + pathname + " received");
@@ -12,9 +14,9 @@ function start (route) {
         response.writeHead(200, {"Content-Type": "text/plain"});
         response.write("Hello World!");
         response.end();
-    }).listen(8888);
+    }).listen(port);
 
-    console.log("server has started");
+    console.log("server has started listening on port " + port);
 }
 
 exports.start = start;
