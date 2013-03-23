@@ -67,24 +67,33 @@ var zepto = (function () {
 
         for (var ii = 0; ii < map.columns; ++ii) {
             for (var jj = 0; jj < map.rows; ++jj) {
-                switch (map.getBlinkState(map.getTile(ii,jj), state.ticks)) {
-                case 0 :
-                    continue
-                case 1 :
-                    context.fillStyle = map.checkpointColor;
-                    break;
-                case 2 :
-                    context.fillStyle = map.safeColor;
-                    break;
-                case 3 :
-                    context.fillStyle = map.dangerColor;
-                    break;
-                default:
-                    continue;
+
+                var leftedge = ii * pixelsPerTile - camera.pos.x;
+                var topedge = jj * pixelsPerTile - camera.pos.y;
+
+                if (leftedge <= canvas.width &&
+                    topedge <= canvas.height &&
+                    leftedge + pixelsPerTile >= 0 &&
+                    topedge + pixelsPerTile >= 0) {
+
+                    switch (map.getBlinkState(map.getTile(ii,jj), state.ticks)) {
+                    case 0 :
+                        continue
+                    case 1 :
+                        context.fillStyle = map.checkpointColor;
+                        break;
+                    case 2 :
+                        context.fillStyle = map.safeColor;
+                        break;
+                    case 3 :
+                        context.fillStyle = map.dangerColor;
+                        break;
+                    default:
+                        continue;
+                    }
+                    context.fillRect(leftedge, topedge,
+                                     pixelsPerTile, pixelsPerTile);
                 }
-                context.fillRect(ii * pixelsPerTile - camera.pos.x,
-                                 jj * pixelsPerTile - camera.pos.y,
-                                 pixelsPerTile, pixelsPerTile);
             }
         }
 
