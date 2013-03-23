@@ -157,7 +157,9 @@ var playMode = {
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
-        this.path = {player : "dwrensha",
+        var username = "Harry Q. Bovik"; //document.getElementById('username').value;
+
+        this.path = {player : username,
                      startTime: (new Date()).toUTCString(),
                      startState: game.getstate()};
 
@@ -195,7 +197,7 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);
-            if (this.checkpointbox.input.checked &&
+            if (this.checkpointbox.checked &&
                 cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
