@@ -3,7 +3,7 @@ var game = zepto
 var stdout;
 
 function StampedEvent (ticks, event) {
-    this.stamp = ticks;
+    this.t = ticks;
     this.event = event;
 };
 
@@ -76,7 +76,7 @@ var replayMode = {
 
     tick : function () {
         var stampedEvent = this.events[this.events.length - 1];
-        while(stampedEvent && (stampedEvent.stamp <= this.ticks) &&
+        while(stampedEvent && (stampedEvent.t <= this.ticks) &&
               (this.events.length > 0)) {
             stampedEvent = this.events.pop();
             var event = stampedEvent.event;
