@@ -21,6 +21,9 @@ var pathlist = {
         input.setAttribute('type', 'radio');
         input.setAttribute('name', 'path');
         input.setAttribute('pathID', path.pathID);
+        if (path.endCheckpoint != "gameover") {
+            input.setAttribute('checked', 'true');
+        }
         var label = document.createElement('label');
         label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
         div.appendChild(input);
@@ -120,7 +123,7 @@ var mainMode = {
     },
 
     menu : function () {
-        stdout.innerHTML += "MAIN MENU. ENTER TO PLAY";
+        stdout.innerHTML = "MAIN MENU. PRESS ENTER TO PLAY";
         window.onkeydown = this.kdown.bind(this);
     },
 

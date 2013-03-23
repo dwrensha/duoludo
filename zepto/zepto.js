@@ -4,8 +4,6 @@ var zepto = (function () {
     var canvas;
     var audio;
 
-    var spacebar = ' '.charCodeAt(0)
-
     function Vec2(x, y) {
         this.x = x;
         this.y = y;
@@ -117,10 +115,6 @@ var zepto = (function () {
         }
     }
 
-    var NUM_KEYS = 256;
-    var keys = Array();
-    var keysNewlyDown = Array(NUM_KEYS);
-
     var maxdx = 6;
     var maxdy = pixelsPerTile;
 
@@ -145,23 +139,11 @@ var zepto = (function () {
             return;
         }
 
-        if (keys[37] == 1) {
-            // LEFT
+        if (state.keys.left > 0) {
             player.vel.x -= 2;
         }
-        if (keys[39] == 1) {
-            // RIGHT
+        if (state.keys.right > 0) {
             player.vel.x += 2;
-        }
-        if (keys[38] == 1) {
-            // UP
-            // moon jumps are cheating
-            //--player.vel.y;
-        }
-        if (keys[40] == 1) {
-            // DOWN
-            // stomping is not useful
-            //++player.vel.y;
         }
 
         var left = player.pos.x - 1;
@@ -203,8 +185,6 @@ var zepto = (function () {
         var wallToRight = (toRight[0] > 1) || (toRight[1] > 1);
 
 
-
-
         if (groundUnderFeet) {
             //console.log('ground under feet')
             player.vel.y = 0;
@@ -229,13 +209,13 @@ var zepto = (function () {
         }
 
 
-        if (groundUnderFeet && keysNewlyDown[spacebar] == 1){
+        if (groundUnderFeet && (state.keys.spacebar == 1)){
             player.jumping = 0;
-        } else if ( wallToLeft && keysNewlyDown[spacebar] ) {
+        } else if ( wallToLeft && (state.keys.spacebar == 1) ) {
             player.vel.y = 0;
             player.vel.x += 6;
             player.jumping = 2;
-        } else if (wallToRight && keysNewlyDown[spacebar]) {
+        } else if (wallToRight && (state.keys.spacebar == 1)) {
             player.vel.y = 0;
             player.vel.x -= 6;
             player.jumping = 2;
@@ -255,7 +235,7 @@ var zepto = (function () {
 
 
         if (player.jumping >= 0) {
-            if (keys[spacebar] == 1) {
+            if (state.keys.spacebar > 0) {
                 ++player.jumping;
                 if (player.jumping <= 3) {
                     player.vel.y -= 3;
@@ -362,30 +342,60 @@ var zepto = (function () {
 
     function tick() {
         playerAct(state.player);
+        updateKeys();
         adjustCamera(state.player, state.camera);
 
         render(state);
 
-        for (var ii = 0; ii < NUM_KEYS; ++ii) {
-            keysNewlyDown[ii] = 0;
-        }
         ++state.ticks;
         state.musicTime = audio.currentTime;
     }
 
-    function kup(event) {
-        if (event.which != 0) {
-            keys[event.keyCode] = 0;
+    function updateKeys() {
+        if (state.keys.left > 0) {
+            ++state.keys.left;
         }
+        if (state.keys.right > 0) {
+            ++state.keys.right;
+        }
+        if (state.keys.spacebar > 0) {
+            ++state.keys.spacebar;
+        }
+    }
+
+    function kup(event) {
+        switch (event.keyCode) {
+            case 37: // LEFT
+              state.keys.left = 0;
+              break;
+            case 39: //RIGHT
+              state.keys.right = 0;
+              break;
+            case 32: //SPACE
+              state.keys.spacebar = 0;
+              break;
+        }
+
     }
 
 
     function kdown(event) {
-        if (event.which != 0) {
-            if (keys[event.keyCode] == 0) {
-                keysNewlyDown[event.keyCode] = 1;
-            }
-            keys[event.keyCode] = 1;
+        switch (event.keyCode) {
+            case 37: // LEFT
+              if (state.keys.left == 0) {
+                  state.keys.left = 1;
+              }
+              break;
+            case 39: //RIGHT
+              if (state.keys.right == 0) {
+                  state.keys.right = 1;
+              }
+              break;
+            case 32: //SPACE
+              if (state.keys.spacebar == 0) {
+                  state.keys.spacebar = 1;
+              }
+              break;
         }
     }
 
@@ -421,18 +431,23 @@ var zepto = (function () {
 
     // startState is optional.
     function start(startState) {
-        for (var ii = 0; ii < NUM_KEYS; ++ii) {
-            keys[ii] = 0;
-            keysNewlyDown[ii] = 0;
-        }
 
         if (startState) {
             state = JSON.parse(startState);
+            // Not pressing anything to start.
+            state.keys = { left : 0,
+                           right : 0,
+                           spacebar : 0
+                         };
         } else {
             state = {
                 player: new Player(35, worldHeight - 30),
                 camera: new Camera(0, worldHeight - 320),
                 ticks: 0,
+                keys: { left : 0,
+                        right : 0,
+                        spacebar : 0
+                      },
                 musicTime: 0
             };
         }
