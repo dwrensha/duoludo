@@ -29,6 +29,12 @@ var pathlist = {
         div.appendChild(input);
         div.appendChild(label);
         document.getElementById('pathlist').appendChild(div);
+
+
+        var req = new XMLHttpRequest();
+        req.open("POST", "index.html", true);
+        req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+        req.send(JSON.stringify(path));
     },
 
     findSelected : function() {
