@@ -96,6 +96,7 @@ var replayMode = {
         }
 
         game.tick();
+        game.render();
         ++this.ticks;
     }
 };
@@ -192,6 +193,7 @@ var playMode = {
 
     tick : function () {
         game.tick();
+        game.render();
         if (game.isgameover()) {
             stdout.innerHTML = "you're dead";
             this.events.push(new StampedEvent(this.ticks, {'type':'gameover'}));

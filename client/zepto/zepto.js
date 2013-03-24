@@ -59,7 +59,7 @@ var zepto = (function () {
         return map.getTile(mapPos.x, mapPos.y);
     }
 
-    function render (state) {
+    function render () {
         var player = state.player
         var camera = state.camera
         context.fillStyle = map.backgroundColor;
@@ -354,8 +354,6 @@ var zepto = (function () {
         updateKeys();
         adjustCamera(state.player, state.camera);
 
-        render(state);
-
         ++state.ticks;
         state.musicTime = audio.currentTime;
     }
@@ -499,6 +497,7 @@ var zepto = (function () {
         prestop : prestop,
         stop: stop,
         getstate: getstate,
+        render: render,
         tick: tick,
         kup: kup,
         kdown: kdown,
