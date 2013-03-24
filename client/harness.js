@@ -4,7 +4,7 @@ var stdout;
 
 function StampedEvent (ticks, event) {
     this.t = ticks;
-    this.event = event;
+    this.e = event;
 };
 
 function recordizeEvent(event) {
@@ -79,7 +79,7 @@ var replayMode = {
         while(stampedEvent && (stampedEvent.t <= this.ticks) &&
               (this.events.length > 0)) {
             stampedEvent = this.events.pop();
-            var event = stampedEvent.event;
+            var event = stampedEvent.e;
             switch (event.type) {
             case "keydown":
                 game.kdown(event);
@@ -159,7 +159,7 @@ var playMode = {
 
         var username = document.getElementById('username').value;
 
-        this.path = {player : username,
+        this.path = {username : username,
                      startTime: (new Date()).toUTCString(),
                      startState: game.getstate()};
 
@@ -229,6 +229,7 @@ function init() {
     game.init(gameDiv);
     stdout.innerHTML = "Enter your username to begin.";
     document.getElementById('username').removeAttribute('disabled');
+    document.getElementById('usernamebutton').focus();
 };
 
 
