@@ -1,20 +1,12 @@
 var http = require('http');
 var url = require('url');
 
-var static = require('node-static');
-
 var connect = require('connect');
 
 function start (route) {
-
-    var server = connect.createServer ( connect.static( __dirname + '/../client'));
-    server.listen(8080);
-    return;
-
     var port = 8080;
-    var file = new static.Server(__dirname + '/../client');
 
-    http.createServer(function(request, response) {
+    var pathListen = function(request, response) {
         console.log(request.headers);
         var pathname = url.parse(request.url).pathname
         console.log("request for " + pathname + " received");
@@ -26,20 +18,18 @@ function start (route) {
                 console.log('data: ' + stream);
             });
             response.writeHead(200, {"Content-Type": "text/plain"});
-            response.write("Hello World!");
+            response.write("got it");
             response.end();
             return
         }
-
-	request.addListener('end', function() {
-	    file.serve(request, response);
-	});
-
-
         route(pathname);
+    }
 
+    connect()
+    .use(connect.static( __dirname + '/../client'))
+    .use(pathListen)
+    .listen(port);
 
-    }).listen(port);
 
     console.log("server has started listening on port " + port);
 }
