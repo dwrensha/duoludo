@@ -223,7 +223,6 @@ var playMode = {
 
 
 function init() {
-    console.log('init');
     stdout = document.getElementById('stdout');
     gameDiv = document.getElementById('game')
 
@@ -235,7 +234,6 @@ function init() {
 
 
 function gotusername() {
-    console.log('got username');
     document.getElementById('username').setAttribute('disabled', 'true');
     document.getElementById('usernamebutton').style.display = 'none';
     document.getElementById('usernamebutton').blur();
