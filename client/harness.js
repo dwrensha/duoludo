@@ -25,7 +25,7 @@ var pathlist = {
             input.setAttribute('checked', 'true');
         }
         var label = document.createElement('label');
-        label.innerHTML = path.pathID + ': ' + path.player + ' ' + path.startTime;
+        label.innerHTML = path.pathID + ': ' + path.username + ' ' + path.startTime;
         div.appendChild(input);
         div.appendChild(label);
         document.getElementById('pathlist').appendChild(div);
@@ -157,7 +157,7 @@ var playMode = {
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
-        var username = document.getElementById('username').value;
+        var username = document.getElementById('username').getAttribute('value');
 
         this.path = {username : username,
                      startTime: (new Date()).toUTCString(),
@@ -228,14 +228,13 @@ function init() {
 
     game.init(gameDiv);
     stdout.innerHTML = "Enter your username to begin.";
-    document.getElementById('username').removeAttribute('disabled');
     document.getElementById('usernamebutton').focus();
 };
 
 
 function gotusername() {
-    document.getElementById('username').setAttribute('disabled', 'true');
-    document.getElementById('usernamebutton').style.display = 'none';
-    document.getElementById('usernamebutton').blur();
+    var username = document.getElementById('usernameinput').value;
+    document.getElementById('username').innerHTML = 'username: ' + username;
+    document.getElementById('username').setAttribute('value', username);
     mainMode.menu();
 }
