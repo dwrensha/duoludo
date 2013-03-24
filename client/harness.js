@@ -21,6 +21,7 @@ var pathlist = {
         input.setAttribute('type', 'radio');
         input.setAttribute('name', 'path');
         input.setAttribute('pathID', path.pathID);
+        input.setAttribute('onclick','game.load(mainMode.lookupPath(getAttribute(\'pathID\')).endState);game.render();');
         if (path.endCheckpoint != "gameover") {
             input.setAttribute('checked', 'true');
         }
