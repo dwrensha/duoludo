@@ -10,8 +10,6 @@ function start () {
     function addPath (pathString) {
         path = JSON.parse(pathString);
 
-        console.log(path);
-
         // TODO some basic validation of the path
 
         MongoClient.connect("mongodb://localhost:27017/duoludo", function(err, db) {
@@ -21,8 +19,9 @@ function start () {
                 console.log("successfully connected to mongoDB");
             }
 
-            var collection = db.collection('paths', function (err, collection) {
+            db.collection('paths', function (err, collection) {
                 collection.insert(path, {w:1}, function (err, collection) {
+                    db.close();
                     if (err) {
                         console.log('error');
                         return console.dir(err);
@@ -31,8 +30,6 @@ function start () {
                     }
                 } );
             });
-
-            db.close();
         });
     }
 
