@@ -455,8 +455,7 @@ var zepto = (function () {
     }
 
     // startState is optional.
-    function start(startState) {
-
+    function load(startState) {
         if (startState) {
             state = JSON.parse(startState);
         } else {
@@ -471,6 +470,10 @@ var zepto = (function () {
                 musicTime: 0
             };
         }
+    }
+
+
+    function start() {
         audio.currentTime = state.musicTime;
         if (audio.readyState == 4){
             audio.play();
@@ -491,6 +494,7 @@ var zepto = (function () {
 
     return {
         init: init,
+        load: load,
         start: start,
         prestop : prestop,
         stop: stop,

@@ -61,7 +61,8 @@ var replayMode = {
         // copy and reverse |events|
         this.events = path.events.slice().reverse();
         stdout.innerHTML = "REPLAY";
-        game.start(path.startState);
+        game.load(path.startState);
+        game.start()
         window.onkeyup = null;
         window.onkeydown = null;
         this.ticks = 0;
@@ -153,7 +154,8 @@ var playMode = {
         stdout.innerHTML = "YOU ARE NOW PLAYING";
         this.checkpointbox = document.getElementById('checkpointmode'),
 
-        game.start(startState);
+        game.load(startState);
+        game.start()
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
