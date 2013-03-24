@@ -471,6 +471,7 @@ var zepto = (function () {
             audio.play();
         } else {
             console.log("NOT ENOUGH");
+            audio.play();
         }
 
     }
