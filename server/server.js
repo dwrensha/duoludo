@@ -3,7 +3,13 @@ var url = require('url');
 
 var static = require('node-static');
 
+var connect = require('connect');
+
 function start (route) {
+
+    var server = connect.createServer ( connect.static( __dirname + '/../client'));
+    server.listen(8080);
+    return;
 
     var port = 8080;
     var file = new static.Server(__dirname + '/../client');
