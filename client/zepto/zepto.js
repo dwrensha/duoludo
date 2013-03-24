@@ -440,16 +440,25 @@ var zepto = (function () {
 
     }
 
+
+    // During normal play, prestop is called immediately before stop.
+    // During playback prestop (but not stop) will
+    // be called at the "checkpoint" events where individual paths were
+    // stitched together.
+    function prestop() {
+        // release all keys
+        state.keys = { left : 0,
+                       right : 0,
+                       spacebar : 0
+                     };
+
+    }
+
     // startState is optional.
     function start(startState) {
 
         if (startState) {
             state = JSON.parse(startState);
-            // Not pressing anything to start.
-            state.keys = { left : 0,
-                           right : 0,
-                           spacebar : 0
-                         };
         } else {
             state = {
                 player: new Player(35, worldHeight - 30),
@@ -483,6 +492,7 @@ var zepto = (function () {
     return {
         init: init,
         start: start,
+        prestop : prestop,
         stop: stop,
         getstate: getstate,
         tick: tick,

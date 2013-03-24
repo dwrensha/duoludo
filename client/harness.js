@@ -178,6 +178,7 @@ var playMode = {
     stop : function (endCheckpoint) {
         clearInterval(this.ticker);
         pathlist.show();
+        game.prestop();
         game.stop();
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
