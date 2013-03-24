@@ -463,10 +463,6 @@ var zepto = (function () {
             };
         }
         audio.currentTime = state.musicTime;
-        for (var ii = 0; ii < audio.seekable.length; ++ii){
-            console.log("seekable: " + audio.seekable.start(ii) + " to " +
-                        audio.seekable.end(ii));
-        }
         if (audio.readyState == 4){
             audio.play();
         } else {
