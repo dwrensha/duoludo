@@ -63,6 +63,7 @@ var map = (function () {
     theMap.playerColor = 'rgb(255,125,16)';
     theMap.playerOutlineColor = 'rgb(255,178,56)';
     theMap.checkpointColor = 'rgb(42,42,42)';
+    theMap.gameoverColor = 'rgba(0,0,0,0.35)';
 
     // Return the index of the blink pattern at tile x, y
     theMap.getTile = function (x, y) {

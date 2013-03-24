@@ -107,18 +107,22 @@ var zepto = (function () {
                              player.pos.y - camera.pos.y + 1,
                              playerWidth - 2, playerHeight - 2 );
         } else {
+            context.fillStyle = map.dangerColor;
+            context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
+                             playerWidth, playerHeight);
+
             t = Math.floor(player.ticksDead / 2);
             if (t * 2 < playerWidth) {
-                context.fillStyle = map.dangerColor;
-                context.fillRect(player.pos.x - camera.pos.x, player.pos.y - camera.pos.y,
-                                 playerWidth, playerHeight);
-            }
 
-            context.fillStyle = map.playerColor;
-            context.fillRect(player.pos.x - camera.pos.x + t,
-                             player.pos.y - camera.pos.y + t,
-                             playerWidth - (2 * t),
-                             playerHeight - (2 * t));
+                context.fillStyle = map.playerColor;
+                context.fillRect(player.pos.x - camera.pos.x + t,
+                                 player.pos.y - camera.pos.y + t,
+                                 playerWidth - (2 * t),
+                                 playerHeight - (2 * t));
+            } else {
+                context.fillStyle = map.gameoverColor;
+                context.fillRect(0,0,canvas.width, canvas.height);
+            }
 
 
         }
