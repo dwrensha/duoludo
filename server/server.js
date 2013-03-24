@@ -7,21 +7,35 @@ var MongoClient = require('mongodb').MongoClient;
 function start () {
     var port = 8080;
 
-    MongoClient.connect("mongodb://localhost:27017/duoludo", function(err, db) {
-        if (err) {
-            return console.dir(err);
-        } else {
-            console.log("successfully connected to mongoDB");
-        }
+    function addPath (pathString) {
+        path = JSON.parse(pathString);
 
-        var collection = db.createCollection('test', function (err, collection) {
-            var doc1 = {'hello':'doc1'};
-            var doc2 = {'hello':'doc2'};
+        console.log(path);
 
-//            collection.insert(doc1, function (err, collection) {} );
+        // TODO some basic validation of the path
+
+        MongoClient.connect("mongodb://localhost:27017/duoludo", function(err, db) {
+            if (err) {
+                return console.dir(err);
+            } else {
+                console.log("successfully connected to mongoDB");
+            }
+
+            var collection = db.collection('paths', function (err, collection) {
+                collection.insert(path, {w:1}, function (err, collection) {
+                    if (err) {
+                        console.log('error');
+                        return console.dir(err);
+                    } else {
+                        console.log("sucessfully inserted into collection");
+                    }
+                } );
+            });
+
+            db.close();
         });
+    }
 
-    });
 
     var pathListen = function(request, response) {
         console.log(request.headers);
@@ -31,8 +45,12 @@ function start () {
 
         if (request.method == 'POST' ) {
             console.log('POST!');
+            var data = ''
             request.on('data', function (stream) {
-                console.log('data: ' + stream);
+                data = data + stream;
+            });
+            request.on('end', function () {
+                addPath(data);
             });
             response.writeHead(200, {"Content-Type": "text/plain"});
             response.write("got it");
