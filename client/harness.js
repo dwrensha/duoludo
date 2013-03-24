@@ -157,7 +157,7 @@ var playMode = {
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
-        var username = "Harry Q. Bovik"; //document.getElementById('username').value;
+        var username = document.getElementById('username').value;
 
         this.path = {player : username,
                      startTime: (new Date()).toUTCString(),
@@ -227,5 +227,13 @@ function init() {
     gameDiv = document.getElementById('game')
 
     game.init(gameDiv);
-    mainMode.menu();
+    stdout.innerHTML = "Enter your username to begin.";
+    document.getElementById('username').removeAttribute('disabled');
 };
+
+
+function gotusername() {
+    document.getElementById('username').setAttribute('disabled', 'true');
+    document.getElementById('usernamebutton').style.display = 'none';
+    mainMode.menu();
+}
