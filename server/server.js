@@ -1,10 +1,27 @@
 var http = require('http');
 var url = require('url');
-
 var connect = require('connect');
 
-function start (route) {
+var MongoClient = require('mongodb').MongoClient;
+
+function start () {
     var port = 8080;
+
+    MongoClient.connect("mongodb://localhost:27017/duoludo", function(err, db) {
+        if (err) {
+            return console.dir(err);
+        } else {
+            console.log("successfully connected to mongoDB");
+        }
+
+        var collection = db.createCollection('test', function (err, collection) {
+            var doc1 = {'hello':'doc1'};
+            var doc2 = {'hello':'doc2'};
+
+//            collection.insert(doc1, function (err, collection) {} );
+        });
+
+    });
 
     var pathListen = function(request, response) {
         console.log(request.headers);
@@ -20,9 +37,8 @@ function start (route) {
             response.writeHead(200, {"Content-Type": "text/plain"});
             response.write("got it");
             response.end();
-            return
+            return;
         }
-        route(pathname);
     }
 
     connect()
