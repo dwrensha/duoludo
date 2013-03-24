@@ -9,6 +9,10 @@ function start (route) {
     var file = new static.Server(__dirname + '/../client');
 
     http.createServer(function(request, response) {
+        console.log(request.headers);
+        var pathname = url.parse(request.url).pathname
+        console.log("request for " + pathname + " received");
+
 
         if (request.method == 'POST' ) {
             console.log('POST!');
@@ -25,8 +29,6 @@ function start (route) {
 	    file.serve(request, response);
 	});
 
-        var pathname = url.parse(request.url).pathname
-        console.log("request for " + pathname + " received");
 
         route(pathname);
 
