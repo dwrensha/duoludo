@@ -86,21 +86,26 @@ var editor = (function () {
     var state;
 
     function tick() {
+        var factor = 1;
+        if (keys[32] == 1) {
+            factor = 4;
+        }
+
         if (keys[37] == 1) {
             // LEFT
-            state.camera.pos.x -= 10;
+            state.camera.pos.x -= 10 * factor;
         }
         if (keys[39] == 1) {
             // RIGHT
-            state.camera.pos.x += 10;
+            state.camera.pos.x += 10 * factor;
         }
         if (keys[38] == 1) {
             // UP
-            state.camera.pos.y -= 10;
+            state.camera.pos.y -= 10 * factor;
         }
         if (keys[40] == 1) {
             // DOWN
-            state.camera.pos.y += 10;
+            state.camera.pos.y += 10 * factor;
         }
 
         render(state);
