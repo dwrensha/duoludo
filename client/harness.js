@@ -154,10 +154,11 @@ var playMode = {
     start : function (startState) {
         pathlist.hide();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
+
         this.checkpointbox = document.getElementById('checkpointmode'),
 
         game.load(startState);
-        game.start()
+        game.start();
         window.onkeyup = this.kup.bind(this);
         window.onkeydown = this.kdown.bind(this);
 
