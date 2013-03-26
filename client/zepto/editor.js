@@ -141,14 +141,34 @@ var editor = (function () {
         var tile = parseInt(input);
         var op = document.getElementById('stderr');
 
+
+        if ( keys[66] == 1) { // 'b'
+            if (state.rectangleBegin) {
+                m0 = state.rectangleBegin;
+                for (var ii = m0.x; ii <= m.x; ++ii) {
+                    for(var jj = m0.y; jj <= m.y; ++jj) {
+                        map.setTile(ii,jj, tile);
+                    }
+                }
+
+                state.rectangleBegin = null;
+                op.innerHTML = "";
+
+            } else {
+                state.rectangleBegin = m;
+                op.innerHTML = (JSON.stringify(m));
+            }
+            return;
+        }
+        state.rectangleBegin = null;
+        op.innerHTML = "";
+
         if (tile >= 0 && tile < map.blinkPatterns.length) {
             v = tile;
             map.setTile(m.x, m.y, v);
             op.innerHTML = "";
         } else if (input == 'map') {
             op.innerHTML = "theMap.values = [" + map.values + "];";
-        } else if (input == 'state') {
-            op.innerHTML = JSON.stringify(state);
         }
 
         console.log('mouse down: ' + m.x + ", " +  m.y);
@@ -162,7 +182,8 @@ var editor = (function () {
 
         state = {
             camera: new Camera(0, worldHeight - 320),
-            ticks: 0
+            ticks: 0,
+            rectangleBegin: null
         };
     }
 
