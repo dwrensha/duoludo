@@ -26,7 +26,7 @@ var pathlist = {
             input.setAttribute('checked', 'true');
         }
         var label = document.createElement('label');
-        label.innerHTML = path.pathID + ': ' + path.username + ' ' + path.startTime;
+        label.innerHTML = path.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
         div.appendChild(label);
         document.getElementById('pathlist').appendChild(div);
@@ -165,7 +165,7 @@ var playMode = {
         var username = document.getElementById('username').getAttribute('value');
 
         this.path = {username : username,
-                     startTime: (new Date()).toUTCString(),
+                     startTime:  Date.now(), // milliseconds since the dawn of time
                      startState: game.getstate()};
 
         cp = game.atcheckpoint();
