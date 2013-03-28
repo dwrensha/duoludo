@@ -464,7 +464,7 @@ var zepto = (function () {
             state = {
                 player: new Player(35, worldHeight - 30),
                 camera: new Camera(0, worldHeight - 320),
-//                player: new Player(1375* pixelsPerTile, worldHeight - 30),
+//                player: new Player(403 * pixelsPerTile, 1 * pixelsPerTile),
                 ticks: 0,
                 keys: { left : 0,
                         right : 0,
