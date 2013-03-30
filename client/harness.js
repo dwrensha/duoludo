@@ -18,12 +18,18 @@ var pathlist = {
     add : function (path) {
         var div = document.createElement('div');
         var input = document.createElement('input');
-        input.setAttribute('type', 'radio');
-        input.setAttribute('name', 'path');
-        input.setAttribute('pathID', path.pathID);
-        input.setAttribute('onclick','game.load(mainMode.lookupPath(getAttribute(\'pathID\')).endState);game.render();');
+        $(input).attr('type', 'radio')
+                .attr('name','path')
+                .attr('pathID', path.pathID);
+
+        $(input).click(function () {
+            self = this;
+            game.load(mainMode.lookupPath($(self).attr('pathID')).endState);
+            game.render();
+        });
+
         if (path.endCheckpoint != "gameover") {
-            input.setAttribute('checked', 'true');
+            $(input).attr('checked', 'true');
         }
         var label = document.createElement('label');
         label.innerHTML = path.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
