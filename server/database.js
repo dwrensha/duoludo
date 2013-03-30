@@ -36,18 +36,35 @@ function addPath (pathString) {
 function getSessionID (response) {
     connect (function (db) {
         db.collection('sessions', function (err, collection) {
-            collection.update({}, {$inc : {latestID : 1}}, {upsert:true, new:true},
-                              function (err) {
-                                  collection.find().toArray(function (err, docs) {
-                                      assert.equal(docs.length, 1);
-                                      response.write(JSON.stringify(docs[0].latestID));
-                                      response.end();
-                                  });
-                              });
+            collection.findAndModify({}, [['latestID', 1]],
+                                     {$inc : {latestID : 1}},
+                                     {new:true, w:1}, function (err, doc) {
+                                         response.write(JSON.stringify(doc.latestID));
+                                         response.end();
+                                         db.close()
+                                     });
+
         });
     });
-    return 0;
 }
 
+function initialize () {
+    connect (function (db) {
+        db.collection('sessions', function (err, collection) {
+            collection.find().toArray(function (err, docs) {
+                assert.ok(docs.length < 2);
+                if (docs.length < 1) {
+                    collection.insert({'latestID':0}, {w:1}, function (err, doc) {
+                        console.log('initialized the sessions collection');
+                    });
+                }
+            });
+        });
+    });
+}
+
+initialize();
+
+exports.initialize = initialize;
 exports.addPath = addPath;
 exports.getSessionID = getSessionID;
