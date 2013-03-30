@@ -177,8 +177,6 @@ var playMode = {
         pathlist.hide();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
 
-        this.checkpointbox = document.getElementById('checkpointmode'),
-
         game.load(startState);
         game.start();
         $(window).off('keyup keydown');
@@ -227,8 +225,7 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);
-            if (this.checkpointbox.checked &&
-                cp != this.path.startCheckpoint ) {
+            if (cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
