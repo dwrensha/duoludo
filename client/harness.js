@@ -46,13 +46,14 @@ var pathlist = {
 
         div.appendChild(closebutton);
 
-
         $('#pathlist').append(div);
 
         $.ajax({type:'POST',
                 url:'newpath',
                 data:JSON.stringify(path)
                })
+           .done( function (data) {
+           })
            .fail( function (xhr, status, thrown) {
                console.log('error: ' + thrown + " " + xhr.responseText);
            });
@@ -263,6 +264,17 @@ function init() {
     game.init(gameDiv);
     stdout.innerHTML = "Enter your username to begin.";
     document.getElementById('usernamebutton').focus();
+
+    $.ajax({type:'GET',
+            url:'newsession',
+           })
+           .done( function (data) {
+               console.log('session: ' + data);
+           })
+           .fail( function (xhr, status, thrown) {
+               console.log('error: ' + thrown + " " + xhr.responseText);
+           });
+
 };
 
 

@@ -1,7 +1,7 @@
 var http = require('http');
 var url = require('url');
 var connect = require('connect');
-var db = require('./db');
+var database = require('./database');
 
 
 function start () {
@@ -15,12 +15,11 @@ function start () {
             data = data + stream;
         });
         request.on('end', function () {
-            db.addPath(data);
+            database.addPath(data);
         });
         response.writeHead(200, {"Content-Type": "text/plain"});
         response.write("got it");
         response.end();
-        return;
     }
 
     var route = function(request, response) {
@@ -30,10 +29,10 @@ function start () {
 
         if (urlpathname == '/newpath' && request.method == 'POST') {
             processPath(request, response);
-            return;
         }
         else if (urlpathname == '/newsession' && request.method == 'GET') {
-
+            response.writeHead(200, {"Content-Type": "text/plain"});
+            database.getSessionID(response);
         }
     }
 
