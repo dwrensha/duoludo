@@ -34,7 +34,7 @@ var pathlist = {
         closebutton.innerHTML = '&times;';
         div.appendChild(closebutton);
 
-        document.getElementById('pathlist').appendChild(div);
+        $('#pathlist').append(div);
 
 
         var req = new XMLHttpRequest();
@@ -181,7 +181,7 @@ var playMode = {
         $(window).keyup(this.kup.bind(this));
         $(window).keydown(this.kdown.bind(this));
 
-        var username = document.getElementById('username').getAttribute('value');
+        var username = $('#username').attr('value');
 
         this.path = {username : username,
                      startTime:  Date.now(), // milliseconds since the dawn of time
