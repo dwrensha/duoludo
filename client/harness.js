@@ -275,11 +275,10 @@ function init() {
                console.log('error: ' + thrown + " " + xhr.responseText);
            });
 
+    $('#usernamebutton').click(function () {
+        var username = $('#usernameinput').val();
+        $('#username').html('username: ' + username).attr('value', username);
+        mainMode.menu();
+    });
+
 };
-
-
-function gotusername() {
-    var username = $('#usernameinput').val();
-    $('#username').html('username: ' + username).attr('value', username);
-    mainMode.menu();
-}
