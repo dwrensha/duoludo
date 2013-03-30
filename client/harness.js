@@ -29,6 +29,11 @@ var pathlist = {
         label.innerHTML = path.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
         div.appendChild(label);
+
+        var closebutton = document.createElement('button');
+        closebutton.innerHTML = '&times;';
+        div.appendChild(closebutton);
+
         document.getElementById('pathlist').appendChild(div);
 
 
@@ -105,7 +110,7 @@ var replayMode = {
     },
 
     kdown : function (event) {
-        if (event.keyCode == 27) {
+        if (event.keyCode == 27) { // ESC
             this.stop()
         }
     }
@@ -230,7 +235,7 @@ var playMode = {
     },
 
     kdown : function(event) {
-        if (event.keyCode == 27) {
+        if (event.keyCode == 27) { // ESC
             this.events.push(new StampedEvent(this.ticks, {'type':'abort'}));
             this.stop('abort')
         }
