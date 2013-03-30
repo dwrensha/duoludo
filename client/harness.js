@@ -49,11 +49,13 @@ var pathlist = {
 
         $('#pathlist').append(div);
 
-
-        var req = new XMLHttpRequest();
-        req.open("POST", "index.html", true);
-        req.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-        req.send(JSON.stringify(path));
+        $.ajax({type:'POST',
+                url:'newpath',
+                data:JSON.stringify(path)
+               })
+           .fail( function (xhr, status, thrown) {
+               console.log('error: ' + thrown + " " + xhr.responseText);
+           });
     },
 
     findSelected : function() {
@@ -117,7 +119,7 @@ var replayMode = {
     },
 
     kdown : function (event) {
-        if (event.keyCode == 27) { // ESC
+        if (event.keyCode == 88) { // X key
             this.stop()
         }
     }
@@ -241,7 +243,7 @@ var playMode = {
     },
 
     kdown : function(event) {
-        if (event.keyCode == 27) { // ESC
+        if (event.keyCode == 88) { // x key
             this.events.push(new StampedEvent(this.ticks, {'type':'abort'}));
             this.stop('abort')
         }
