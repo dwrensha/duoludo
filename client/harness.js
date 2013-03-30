@@ -15,14 +15,13 @@ function recordizeEvent(event) {
 
 
 var pathlist = {
-    sessionID : 0, // we'll GET a unique one from the server
 
     add : function (path) {
         var div = document.createElement('div');
         var input = document.createElement('input');
         $(input).attr('type', 'radio')
                 .attr('name','path')
-                .attr('pathID', path.pathID);
+                .attr('pathID', path.key.pathID);
 
         $(input).click(function () {
             self = this;
@@ -34,7 +33,7 @@ var pathlist = {
             $(input).attr('checked', 'true');
         }
         var label = document.createElement('label');
-        label.innerHTML = path.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
+        label.innerHTML = path.key.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
         div.appendChild(label);
 
@@ -134,7 +133,7 @@ var mainMode = {
 
     lookupPath : function(pathID) {
         for (var ii = 0; ii < this.paths.length; ++ii) {
-            if (this.paths[ii].pathID == pathID) {
+            if (this.paths[ii].key.pathID == pathID) {
                 return this.paths[ii];
             }
         }
@@ -145,7 +144,7 @@ var mainMode = {
         if (event.keyCode == 13) { // ENTER
             var selected = pathlist.findSelected();
             if (selected) {
-                playMode.start(this.lookupPath(selected.valueOf()).endState);
+                playMode.start(this.lookupPath(selected.valueOf()));
             } else {
                 playMode.start();
             }
@@ -170,18 +169,28 @@ var mainMode = {
 };
 
 var playMode = {
+    sessionID : 0, // we'll GET a unique one from the server
+
     lastPathID : 0,
     getPathID: function () {
         ++this.lastPathID;
         return this.lastPathID;
     },
 
-    // startState is optional.
-    start : function (startState) {
+    // prevPath is optional.
+    start : function (prevPath) {
         pathlist.hide();
         stdout.innerHTML = "YOU ARE NOW PLAYING";
 
-        game.load(startState);
+
+        var prev;
+        if (prevPath) {
+            game.load(prevPath.endState);
+            prev = prevPath.key;
+        } else {
+            game.load();
+            prev = "start";
+        }
         game.start();
         $(window).off('keyup keydown');
         $(window).keyup(this.kup.bind(this));
@@ -191,7 +200,8 @@ var playMode = {
 
         this.path = {username : username,
                      startTime:  Date.now(), // milliseconds since the dawn of time
-                     startState: game.getstate()};
+                     startState: game.getstate(),
+                     prev : prev};
 
         cp = game.atcheckpoint();
         if (cp) {
@@ -213,7 +223,9 @@ var playMode = {
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
         this.path.endState = game.getstate();
-        this.path.pathID = this.getPathID();
+        this.path.key = {
+            sessionID: this.sessionID,
+            pathID : this.getPathID()};
         mainMode.registerPath(this.path);
         mainMode.menu();
     },
@@ -271,7 +283,7 @@ function init() {
             url:'newsession',
            })
            .done( function (data) {
-               pathlist.sessionID = data.valueOf();
+               playMode.sessionID = data.valueOf();
                console.log('sessionID: ' + data.valueOf());
            })
            .fail( function (xhr, status, thrown) {
