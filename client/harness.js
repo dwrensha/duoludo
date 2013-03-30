@@ -44,21 +44,15 @@ var pathlist = {
     },
 
     findSelected : function() {
-        var elts = document.getElementsByName('path')
-        for (var ii = 0; ii < elts.length; ++ii) {
-            if (elts[ii].checked) {
-                return elts[ii].getAttribute('pathID');
-            }
-        }
-        return null;
+        return $('[name="path"]:checked').attr('pathID');
     },
 
     hide : function() {
-        document.getElementById('pathlist').style.display = 'none';
+        $('#pathlist').css('display','none');
     },
 
     show : function() {
-        document.getElementById('pathlist').style.display = 'block';
+        $('#pathlist').show();
     }
 };
 
@@ -70,8 +64,7 @@ var replayMode = {
         stdout.innerHTML = "REPLAY";
         game.load(path.startState);
         game.start()
-        $(window).unbind('keyup');
-        $(window).unbind('keydown');
+        $(window).off('keyup keydown');
         $(window).keydown(this.kdown.bind(this));
         this.ticks = 0;
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
@@ -148,8 +141,7 @@ var mainMode = {
 
     menu : function () {
         stdout.innerHTML = "MAIN MENU. PRESS ENTER TO PLAY";
-        $(window).unbind('keydown');
-        $(window).unbind('keyup');
+        $(window).off('keydown keyup');
         $(window).keydown(this.kdown.bind(this));
     },
 
@@ -176,8 +168,7 @@ var playMode = {
 
         game.load(startState);
         game.start();
-        $(window).unbind('keyup');
-        $(window).unbind('keydown');
+        $(window).off('keyup keydown');
         $(window).keyup(this.kup.bind(this));
         $(window).keydown(this.kdown.bind(this));
 
@@ -264,8 +255,7 @@ function init() {
 
 
 function gotusername() {
-    var username = document.getElementById('usernameinput').value;
-    document.getElementById('username').innerHTML = 'username: ' + username;
-    document.getElementById('username').setAttribute('value', username);
+    var username = $('#usernameinput').val();
+    $('#username').html('username: ' + username).attr('value', username);
     mainMode.menu();
 }
