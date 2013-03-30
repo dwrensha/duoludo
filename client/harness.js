@@ -59,19 +59,21 @@ var pathlist = {
 
 var replayMode = {
     start : function (path) {
+        pathlist.hide()
         // copy and reverse |events|
         this.events = path.events.slice().reverse();
         stdout.innerHTML = "REPLAY";
         game.load(path.startState);
         game.start()
         window.onkeyup = null;
-        window.onkeydown = null;
+        window.onkeydown = this.kdown.bind(this);
         this.ticks = 0;
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
 
    stop : function () {
         clearInterval(this.ticker);
+        pathlist.show();
         game.stop();
         mainMode.menu();
     },
@@ -90,6 +92,7 @@ var replayMode = {
                 game.kup(event);
                 break;
             case "gameover":
+            case "abort":
             case "checkpoint":
                 this.stop();
             }
@@ -99,6 +102,12 @@ var replayMode = {
         game.tick();
         game.render();
         ++this.ticks;
+    },
+
+    kdown : function (event) {
+        if (event.keyCode == 27) {
+            this.stop()
+        }
     }
 };
 
@@ -221,6 +230,11 @@ var playMode = {
     },
 
     kdown : function(event) {
+        if (event.keyCode == 27) {
+            this.events.push(new StampedEvent(this.ticks, {'type':'abort'}));
+            this.stop('abort')
+        }
+
         var revent = recordizeEvent(event);
         this.events.push(new StampedEvent(this.ticks, revent));
         game.kdown(revent);
