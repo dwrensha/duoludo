@@ -70,8 +70,9 @@ var replayMode = {
         stdout.innerHTML = "REPLAY";
         game.load(path.startState);
         game.start()
-        window.onkeyup = null;
-        window.onkeydown = this.kdown.bind(this);
+        $(window).unbind('keyup');
+        $(window).unbind('keydown');
+        $(window).keydown(this.kdown.bind(this));
         this.ticks = 0;
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
@@ -147,7 +148,9 @@ var mainMode = {
 
     menu : function () {
         stdout.innerHTML = "MAIN MENU. PRESS ENTER TO PLAY";
-        window.onkeydown = this.kdown.bind(this);
+        $(window).unbind('keydown');
+        $(window).unbind('keyup');
+        $(window).keydown(this.kdown.bind(this));
     },
 
     registerPath : function (path) {
@@ -173,8 +176,10 @@ var playMode = {
 
         game.load(startState);
         game.start();
-        window.onkeyup = this.kup.bind(this);
-        window.onkeydown = this.kdown.bind(this);
+        $(window).unbind('keyup');
+        $(window).unbind('keydown');
+        $(window).keyup(this.kup.bind(this));
+        $(window).keydown(this.kdown.bind(this));
 
         var username = document.getElementById('username').getAttribute('value');
 
