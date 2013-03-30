@@ -207,7 +207,7 @@ var playMode = {
         if (cp) {
             this.path.startCheckpoint = cp;
         } else {
-            this.path.startCheckpoint = "start";
+            this.path.startCheckpoint = "none";
         }
 
         this.ticks = 0;

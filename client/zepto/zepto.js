@@ -1,8 +1,17 @@
+// allow us to use this on the server side
+if (typeof exports != "undefined") {
+    var map = require('./map').map;
+}
+
+
 var zepto = (function () {
 
     var context;
     var canvas;
     var audio;
+
+    var canvasWidth = 400;
+    var canvasHeight = 400;
 
     function Vec2(x, y) {
         this.x = x;
@@ -23,6 +32,10 @@ var zepto = (function () {
 
     function vec2minus (v1, v2) {
         return new Vec2(v1.x - v2.x, v1.y - v2.y);
+    }
+
+    function vec2equals (v1, v2) {
+        return (v1.x == v2.x) && (v1.y == v2.y);
     }
 
     var pixelsPerTile = 20;
@@ -321,28 +334,28 @@ var zepto = (function () {
         var offset = vec2minus(center, camera.pos);
 
         var margin = 0.3;
-        if (offset.x > (1.0 - margin) * canvas.width) {
-            camera.pos.x = center.x - (1.0 - margin) * canvas.width
-        } else if (offset.x < margin * canvas.width) {
-            camera.pos.x = center.x - margin * canvas.width
+        if (offset.x > (1.0 - margin) * canvasWidth) {
+            camera.pos.x = center.x - (1.0 - margin) * canvasWidth
+        } else if (offset.x < margin * canvasWidth) {
+            camera.pos.x = center.x - margin * canvasWidth
         }
 
-        if (offset.y > (1.0 - margin) * canvas.height) {
-            camera.pos.y = center.y - (1.0 - margin) * canvas.height
-        } else if (offset.y < margin * canvas.height) {
-            camera.pos.y = center.y - margin * canvas.height
+        if (offset.y > (1.0 - margin) * canvasHeight) {
+            camera.pos.y = center.y - (1.0 - margin) * canvasHeight
+        } else if (offset.y < margin * canvasHeight) {
+            camera.pos.y = center.y - margin * canvasHeight
         }
 
         if (camera.pos.x < 0) {
             camera.pos.x = 0;
-        } else if (camera.pos.x + canvas.width > worldWidth) {
-            camera.pos.x = worldWidth - canvas.width;
+        } else if (camera.pos.x + canvasWidth > worldWidth) {
+            camera.pos.x = worldWidth - canvasWidth;
         }
 
         if (camera.pos.y < 0) {
             camera.pos.y = 0;
-        } else if (camera.pos.y + canvas.height > worldHeight) {
-            camera.pos.y = worldHeight - canvas.height;
+        } else if (camera.pos.y + canvasHeight > worldHeight) {
+            camera.pos.y = worldHeight - canvasHeight;
         }
 
     }
@@ -359,7 +372,9 @@ var zepto = (function () {
         adjustCamera(state.player, state.camera);
 
         ++state.ticks;
-        state.musicTime = audio.currentTime;
+        if (audio) {
+            state.musicTime = audio.currentTime;
+        }
     }
 
     function updateKeys() {
@@ -414,8 +429,8 @@ var zepto = (function () {
         var canvasDiv = document.createElement("div");
         gameDiv.appendChild(canvasDiv);
         canvas = document.createElement('canvas');
-        canvas.setAttribute('width','400');
-        canvas.setAttribute('height','400');
+        canvas.setAttribute('width',canvasWidth.toString());
+        canvas.setAttribute('height',canvasHeight.toString());
         canvasDiv.appendChild(canvas);
 
         audio = document.createElement("audio");
@@ -495,6 +510,19 @@ var zepto = (function () {
         return JSON.stringify(state);
     }
 
+    function playerequals (player1, player2) {
+        return (vec2equals (player1.pos, player2.pos) &&
+                vec2equals (player1.vel, player2.vel) &&
+                (player1.jumping == player2.jumping) &&
+                (player1.ticksDead == player2.ticksDead)
+               );
+    }
+
+   function stateequals (state1, state2) {
+       return ((state1.ticks == state2.ticks) &&
+               playerequals (state1.player, state2.player))
+    }
+
     return {
         init: init,
         load: load,
@@ -508,7 +536,13 @@ var zepto = (function () {
         kdown: kdown,
         isgameover: isgameover,
         atcheckpoint: atcheckpoint,
+        stateequals : stateequals,
         tickMillis: tickMillis
     };
 } ());
 
+
+// allow us to use this on the server side
+if (typeof exports != "undefined") {
+    exports.game = zepto;
+}

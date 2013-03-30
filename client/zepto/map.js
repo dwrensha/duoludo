@@ -156,3 +156,8 @@ var map = (function () {
 
     return theMap;
 } () );
+
+// allow us to use this on the server side
+if (typeof exports != "undefined") {
+    exports.map = map;
+}
