@@ -15,6 +15,8 @@ function recordizeEvent(event) {
 
 
 var pathlist = {
+    sessionID : 0, // we'll GET a unique one from the server
+
     add : function (path) {
         var div = document.createElement('div');
         var input = document.createElement('input');
@@ -168,7 +170,6 @@ var mainMode = {
 };
 
 var playMode = {
-
     lastPathID : 0,
     getPathID: function () {
         ++this.lastPathID;
@@ -265,20 +266,28 @@ function init() {
     stdout.innerHTML = "Enter your username to begin.";
     document.getElementById('usernamebutton').focus();
 
-    $.ajax({type:'GET',
+    var gotSessionID =
+        $.ajax({type:'GET',
             url:'newsession',
            })
            .done( function (data) {
-               console.log('session: ' + data);
+               pathlist.sessionID = data.valueOf();
+               console.log('sessionID: ' + data.valueOf());
            })
            .fail( function (xhr, status, thrown) {
                console.log('error: ' + thrown + " " + xhr.responseText);
            });
 
+    var gotUsername = $.Deferred();
     $('#usernamebutton').click(function () {
         var username = $('#usernameinput').val();
         $('#username').html('username: ' + username).attr('value', username);
+        gotUsername.resolve();
+    });
+
+    $.when( gotSessionID, gotUsername ).done (function () {
         mainMode.menu();
     });
+
 
 };
