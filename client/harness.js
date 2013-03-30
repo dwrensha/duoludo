@@ -32,7 +32,14 @@ var pathlist = {
 
         var closebutton = document.createElement('button');
         closebutton.innerHTML = '&times;';
+
+        $(closebutton).click(function () {
+            var parent = $(this).parent();
+            parent.slideUp(250, function () { parent.remove();});
+        })
+
         div.appendChild(closebutton);
+
 
         $('#pathlist').append(div);
 
