@@ -14,7 +14,7 @@ function validatePath (path) {
 
     // copy and reverse |events|
     var events = path.events.slice().reverse();
-    var ticks = 0;
+    var ticks = path.startTicks;
 
 
     // mimic the control flow in replayMode.tick

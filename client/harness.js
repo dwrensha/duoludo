@@ -75,6 +75,7 @@ var pathlist = {
 
 var replayMode = {
     start : function (path) {
+        console.log('replay: ' + JSON.stringify(path));
         pathlist.hide()
         // copy and reverse |events|
         this.events = path.events.slice().reverse();
@@ -83,7 +84,7 @@ var replayMode = {
         game.start()
         $(window).off('keyup keydown');
         $(window).keydown(this.kdown.bind(this));
-        this.ticks = 0;
+        this.ticks = path.startTicks;
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
 
@@ -187,7 +188,9 @@ var playMode = {
         if (prevPath) {
             game.load(prevPath.endState);
             prev = prevPath.key;
+            this.ticks = prevPath.endTicks;
         } else {
+            this.ticks = 0;
             game.load();
             prev = "start";
         }
@@ -201,6 +204,7 @@ var playMode = {
         this.path = {username : username,
                      startTime:  Date.now(), // milliseconds since the dawn of time
                      startState: game.getstate(),
+                     startTicks : this.ticks,
                      prev : prev};
 
         cp = game.atcheckpoint();
@@ -210,7 +214,6 @@ var playMode = {
             this.path.startCheckpoint = false;
         }
 
-        this.ticks = 0;
         this.events = Array();
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
     },
@@ -223,6 +226,7 @@ var playMode = {
         this.path.endCheckpoint = endCheckpoint;
         this.path.events = this.events;
         this.path.endState = game.getstate();
+        this.path.endTicks = this.ticks;
         this.path.key = {
             sessionID: this.sessionID,
             pathID : this.getPathID()};
