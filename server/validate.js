@@ -84,7 +84,6 @@ function updatePrev (path) {
 
 }
 
-
 function updateValidity (path, validity) {
     console.log('updating validity to ' + validity);
     var id = path._id;
@@ -101,6 +100,46 @@ function updateValidity (path, validity) {
 
 }
 
+function updateCumulativeValidity (path, validity) {
+    console.log('updating cumulative validity');
+    if (path.prev == 'start') {
+        database.connect(function (db) {
+            db.collection('paths', function(err, collection) {
+                assert.equal(err, null);
+                collection.update({_id : path._id}, {$set : {validFromStart : validity}}, {w:1, upsert:true}, function (err,doc){
+                    assert.equal(err,null);
+                    db.close();
+                });
+            });
+        });
+    } else if (path.prev.hasOwnProperty('sessionID')) {
+        // wait until it has an index there
+        return;
+    }
+    // if we are here, we know that path.prev is an ObjectId.
+    database.connect(function (db) {
+        db.collection('paths', function(err, collection) {
+            assert.equal(err, null);
+            collection.findOne({_id : path.prev}, function (err, prevPath) {
+                assert.equal(err,null);
+                if (!prevPath.hasOwnProperty('validFromStart') ) {
+                    console.log('not saturated yet');
+                    db.close();
+                    return;
+                }
+                console.log('prev vfs: ' + prevPath.validFromStart);
+                var validFromStart =  (validity && prevPath.validFromStart);
+                collection.update({_id : path._id}, {$set : {validFromStart : validFromStart}}, {w:1, upsert:true}, function (err,doc) {
+                    assert.equal(err,null);
+                    db.close();
+                    return;
+                });
+            });
+        });
+    });
+
+}
+
 function doValidation () {
     console.log('hello world');
 
@@ -111,9 +150,15 @@ function doValidation () {
                 db.close();
                 for (var ii = 0; ii < docs.length; ++ii) {
                     var path = docs[ii];
-                    var validity = validatePath(path);
                     updatePrev(path);
-                    updateValidity (path, validity);
+                    if (! path.hasOwnProperty('valid') ) {
+                        var validity = validatePath(path);
+                        updateValidity (path, validity);
+                    }
+                    if (path.hasOwnProperty('valid') &&
+                        (!path.hasOwnProperty('validFromStart'))) {
+                        updateCumulativeValidity(path, path.valid);
+                    }
                 }
             });
         });
