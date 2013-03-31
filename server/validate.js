@@ -1,6 +1,12 @@
 assert = require('assert');
 database = require('./database');
+
+var mongo = require('mongodb');
+//var BSON = mongo.BSONNative;
+//var ObjectId = BSON.ObjectID.createFromHexString;
+var ObjectId = require('mongodb').ObjectID
 game = require('../client/zepto/zepto').game;
+
 
 function validatePath (path) {
 
@@ -47,6 +53,24 @@ function validatePath (path) {
              game.atcheckpoint() == path.endCheckpoint );
 }
 
+function updateValidity (path, validity) {
+    console.log('updating validity to ' + validity);
+    var id = path._id.toString();
+    database.connect(function (db) {
+        db.collection('paths', function(err, collection) {
+            assert.equal(err, null);
+            collection.update({_id : ObjectId(id)}, {$set : {valid : validity}}, {w:1, upsert:true}, function (err, doc) {
+                if (err) {
+                    console.log('nope');
+                }
+                console.log('yep');
+                db.close();
+            });
+        });
+    });
+
+}
+
 function doValidation () {
     console.log('hello world');
 
@@ -54,11 +78,12 @@ function doValidation () {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
             collection.find().toArray( function(err, docs) {
-                for (var ii = 0; ii < docs.length; ++ ii) {
-                    var path = docs[ii];
-                    console.log(validatePath(path));
-                }
                 db.close();
+                for (var ii = 0; ii < docs.length; ++ii) {
+                    var path = docs[ii];
+                    var validity = validatePath(path);
+                    updateValidity (path, validity);
+                }
             });
         });
     });

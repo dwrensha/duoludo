@@ -413,7 +413,7 @@ var zepto = (function () {
 
     function kdown(event) {
         switch (event.keyCode) {
-            case 80: // P
+            case 88: // X
                pause = true;
                break;
             case 37: // LEFT
