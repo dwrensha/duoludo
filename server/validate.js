@@ -4,7 +4,7 @@ database = require('./database');
 //var mongo = require('mongodb');
 //var BSON = mongo.BSONNative;
 //var ObjectId = BSON.ObjectID.createFromHexString;
-//var ObjectId = require('mongodb').ObjectID
+var ObjectId = require('mongodb').ObjectID
 game = require('../client/zepto/zepto').game;
 
 
@@ -64,6 +64,7 @@ function updatePrev (path) {
         return;
     }
 
+    // if we are here, path.prev must be a record with a session ID and a pathID
     var sessionID = path.prev.sessionID;
     var pathID = path.prev.pathID;
 
@@ -74,7 +75,7 @@ function updatePrev (path) {
                 assert.equal(err, null);
                 var prevID = doc._id;
                 console.log('found the previous: ' + prevID);
-                collection.update({_id: id}, {$set : {prev : prevID}}, {w:1}, function (err, doc) {
+                collection.update({_id: id}, {$set : {prev : prevID.toString()}}, {w:1}, function (err, doc) {
                     assert.equal(err, null);
                     db.close();
                 });
@@ -121,7 +122,7 @@ function updateCumulativeValidity (path, validity) {
     database.connect(function (db) {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
-            collection.findOne({_id : path.prev}, function (err, prevPath) {
+            collection.findOne({_id : ObjectId(path.prev)}, function (err, prevPath) {
                 assert.equal(err,null);
                 if (!prevPath.hasOwnProperty('validFromStart') ) {
                     console.log('not saturated yet');

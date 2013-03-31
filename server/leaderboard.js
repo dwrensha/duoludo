@@ -9,10 +9,11 @@ function getBest(checkpoint) {
 
             // get the one with the smallest value for 'endTicks'
             collection.findOne({endCheckpoint : checkpoint, validFromStart:true},
-                               {'sort': 'endTicks', 'limit':20},
+                               {'sort': 'endTicks'},
                                function (err, path) {
                                    console.log('getting best for ' + checkpoint);
                                    console.log(path.endTicks);
+                                   console.log(JSON.stringify(path) + '\n');
                                    db.close();
                                });
         });
