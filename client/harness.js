@@ -25,8 +25,16 @@ var pathlist = {
 
         $(input).click(function () {
             self = this;
-            game.load(mainMode.lookupPath($(self).attr('pathID')).endState);
+            game.load(path.endState);
             game.render();
+        });
+
+        $(input).bind('startPlaying', function () {
+            playMode.start(path);
+        });
+
+        $(input).bind('startReplaying', function () {
+            replayMode.start(path);
         });
 
         if (path.endCheckpoint != "gameover") {
@@ -42,7 +50,9 @@ var pathlist = {
 
         $(closebutton).click(function () {
             var parent = $(this).parent();
-            parent.slideUp(250, function () { parent.remove();});
+            parent.slideUp(250, function () {
+                parent.remove();
+            });
         })
 
         div.appendChild(closebutton);
@@ -60,8 +70,12 @@ var pathlist = {
            });
     },
 
-    findSelected : function() {
-        return $('[name="path"]:checked').attr('pathID');
+    playSelected : function() {
+        return $('[name="path"]:checked').trigger('startPlaying');
+    },
+
+    replaySelected : function() {
+        return $('[name="path"]:checked').trigger('startReplaying');
     },
 
     hide : function() {
@@ -75,7 +89,6 @@ var pathlist = {
 
 var replayMode = {
     start : function (path) {
-        console.log('replay: ' + JSON.stringify(path));
         pathlist.hide()
         // copy and reverse |events|
         this.events = path.events.slice().reverse();
@@ -130,30 +143,12 @@ var replayMode = {
 
 
 var mainMode = {
-    paths : Array(),
-
-    lookupPath : function(pathID) {
-        for (var ii = 0; ii < this.paths.length; ++ii) {
-            if (this.paths[ii].key.pathID == pathID) {
-                return this.paths[ii];
-            }
-        }
-        return null;
-    },
 
     kdown : function(event) {
         if (event.keyCode == 13) { // ENTER
-            var selected = pathlist.findSelected();
-            if (selected) {
-                playMode.start(this.lookupPath(selected.valueOf()));
-            } else {
-                playMode.start();
-            }
+            pathlist.playSelected();
         } else if (event.keyCode == 82 /* 'r' */ ) {
-            var selected = pathlist.findSelected();
-            if (selected) {
-                replayMode.start(this.lookupPath(selected.valueOf()));
-            }
+            pathlist.replaySelected();
         }
     },
 
@@ -164,7 +159,6 @@ var mainMode = {
     },
 
     registerPath : function (path) {
-        this.paths.push(path);
         pathlist.add(path);
     }
 };
@@ -273,6 +267,7 @@ function init() {
     stdout.innerHTML = "Enter your username to begin.";
     document.getElementById('usernamebutton').focus();
 
+
     $('#leaderboardbutton').click(function () {
         $.ajax({type:'GET',
                 url:'getleaderboard'})
@@ -303,6 +298,10 @@ function init() {
     });
 
     $.when( gotSessionID, gotUsername ).done (function () {
+        $('#gamestartradiobutton').bind('startPlaying', function () {
+            playMode.start();
+        });
+
         mainMode.menu();
     });
 
