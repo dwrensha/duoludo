@@ -112,6 +112,7 @@ function updateCumulativeValidity (path, validity) {
                 });
             });
         });
+        return;
     } else if (path.prev.hasOwnProperty('sessionID')) {
         // wait until it has an index there
         return;
