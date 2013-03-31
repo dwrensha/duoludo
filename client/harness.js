@@ -273,6 +273,16 @@ function init() {
     stdout.innerHTML = "Enter your username to begin.";
     document.getElementById('usernamebutton').focus();
 
+    $('#leaderboardbutton').click(function () {
+        $.ajax({type:'GET',
+                url:'getleaderboard'})
+            .done( function (data) {
+                console.log(data);
+            });
+        console.log('leaderboard');
+    });
+
+
     var gotSessionID =
         $.ajax({type:'GET',
             url:'newsession',
@@ -295,6 +305,8 @@ function init() {
     $.when( gotSessionID, gotUsername ).done (function () {
         mainMode.menu();
     });
+
+
 
 
 };

@@ -14,7 +14,6 @@ function getBest(checkpoint, callback) {
                                function (err, path) {
                                    console.log('getting best for ' + checkpoint);
                                    console.log(path.endTicks);
-//                                   console.log(JSON.stringify(path) + '\n');
                                    db.close();
                                    callback(null, path);
                                });
@@ -35,10 +34,14 @@ function getLeaderboard(response) {
                 async.parallel(fns, function (err, results) {
                     console.log('done');
                     console.log(results.length);
+                    response.write(JSON.stringify(results));
+                    response.end();
                 });
             });
         });
     });
 }
 
-getLeaderboard();
+//getLeaderboard();
+
+exports.getLeaderboard = getLeaderboard;

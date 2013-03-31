@@ -4,6 +4,8 @@ var connect = require('connect');
 var database = require('./database');
 database.initialize();
 
+var leaderboard = require('./leaderboard');
+
 function start () {
     var port = 8080;
 
@@ -33,6 +35,9 @@ function start () {
         else if (urlpathname == '/newsession' && request.method == 'GET') {
             response.writeHead(200, {"Content-Type": "text/plain"});
             database.getSessionID(response);
+        } else if (urlpathname == '/getleaderboard' && request.method == 'GET') {
+            response.writeHead(200, {"Content-Type": "text/plain"});
+            leaderboard.getLeaderboard(response);
         }
     }
 
