@@ -274,7 +274,7 @@ function init() {
             url:'newsession',
            })
            .done( function (data) {
-               playMode.sessionID = data.valueOf();
+               playMode.sessionID = parseInt(data.valueOf());
                console.log('sessionID: ' + data.valueOf());
            })
            .fail( function (xhr, status, thrown) {

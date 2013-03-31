@@ -7,7 +7,7 @@ function connect (f) {
         if (err) {
             return console.dir(err);
         } else {
-            console.log("successfully connected to mongoDB");
+            console.log("connected to mongo");
             f(db);
         }
     });

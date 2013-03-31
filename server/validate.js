@@ -53,17 +53,47 @@ function validatePath (path) {
              game.atcheckpoint() == path.endCheckpoint );
 }
 
-function updateValidity (path, validity) {
-    console.log('updating validity to ' + validity);
-    var id = path._id.toString();
+
+// if path.prev is not an ObjectId or 'start', then make it the
+// appropriate ObjectId.
+function updatePrev (path) {
+    var id = path._id;
+    if (path.prev == 'start') {
+        return;
+    } else if (! path.prev.hasOwnProperty('sessionID')) {
+        return;
+    }
+
+    var sessionID = path.prev.sessionID;
+    var pathID = path.prev.pathID;
+
     database.connect(function (db) {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
-            collection.update({_id : ObjectId(id)}, {$set : {valid : validity}}, {w:1, upsert:true}, function (err, doc) {
-                if (err) {
-                    console.log('nope');
-                }
-                console.log('yep');
+            collection.findOne({'key.sessionID': sessionID, 'key.pathID': pathID}, function (err, doc) {
+                assert.equal(err, null);
+                var prevID = doc._id;
+                console.log('found the previous: ' + prevID);
+                collection.update({_id: id}, {$set : {prev : prevID}}, {w:1}, function (err, doc) {
+                    assert.equal(err, null);
+                    db.close();
+                });
+            });
+        });
+    });
+
+}
+
+
+function updateValidity (path, validity) {
+    console.log('updating validity to ' + validity);
+    var id = path._id;
+
+    database.connect(function (db) {
+        db.collection('paths', function(err, collection) {
+            assert.equal(err, null);
+            collection.update({_id : id}, {$set : {valid : validity}}, {w:1, upsert:true}, function (err, doc) {
+                assert.equal(err, null);
                 db.close();
             });
         });
@@ -82,6 +112,7 @@ function doValidation () {
                 for (var ii = 0; ii < docs.length; ++ii) {
                     var path = docs[ii];
                     var validity = validatePath(path);
+                    updatePrev(path);
                     updateValidity (path, validity);
                 }
             });
