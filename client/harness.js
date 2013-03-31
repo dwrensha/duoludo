@@ -81,7 +81,7 @@ var pathlist = {
             if (parent.children('input').is(":checked")) {
                 $('#gamestartradiobutton').prop('checked', true).trigger('change');
             }
-            parent.slideUp(250, function () {
+            parent.slideUp(100, function () {
                 parent.remove();
             });
         })
