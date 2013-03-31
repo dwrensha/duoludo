@@ -12,9 +12,13 @@ function getBest(checkpoint, callback) {
             collection.findOne({endCheckpoint : checkpoint, validFromStart:true},
                                {'sort': 'endTicks'},
                                function (err, path) {
+                                   db.close();
+                                   if (err) {
+                                       console.dir(err);
+                                       return;
+                                   }
                                    console.log('getting best for ' + checkpoint);
                                    console.log(path.endTicks);
-                                   db.close();
                                    callback(null, path);
                                });
         });
@@ -26,7 +30,7 @@ function getLeaderboard(response) {
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
-            collection.distinct('endCheckpoint', function(err, endCheckpoints) {
+            collection.distinct('endCheckpoint', {validFromStart:true}, function(err, endCheckpoints) {
                 assert.equal(err, null);
                 db.close();
                 var fns = endCheckpoints.map(
