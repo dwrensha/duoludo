@@ -207,7 +207,7 @@ var playMode = {
         if (cp) {
             this.path.startCheckpoint = cp;
         } else {
-            this.path.startCheckpoint = "none";
+            this.path.startCheckpoint = false;
         }
 
         this.ticks = 0;
@@ -233,11 +233,6 @@ var playMode = {
     tick : function () {
         game.tick();
         game.render();
-        if (game.isgameover()) {
-            stdout.innerHTML = "you're dead";
-            this.events.push(new StampedEvent(this.ticks, {'type':'gameover'}));
-            this.stop("gameover");
-        }
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);

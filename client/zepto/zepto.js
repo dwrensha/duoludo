@@ -308,14 +308,13 @@ var zepto = (function () {
 
     }
 
-    function isgameover() {
-        if (state.player.ticksDead > 10) {
-            return true;
-        }
-        return false;
-    }
-
     function atcheckpoint() {
+        if (state.player.ticksDead > 10) {
+
+            // special value indicating end of game
+            return "gameover";
+        }
+
         var x = state.player.pos.x + (playerWidth / 2);
         var y = state.player.pos.y + (playerHeight / 2);
         var w =  new Vec2(x, y);
@@ -518,7 +517,9 @@ var zepto = (function () {
                );
     }
 
-   function stateequals (state1, state2) {
+   function stateequals (state1str, state2str) {
+       var state1 = JSON.parse(state1str);
+       var state2 = JSON.parse(state2str);
        return ((state1.ticks == state2.ticks) &&
                playerequals (state1.player, state2.player))
     }
@@ -534,7 +535,6 @@ var zepto = (function () {
         tick: tick,
         kup: kup,
         kdown: kdown,
-        isgameover: isgameover,
         atcheckpoint: atcheckpoint,
         stateequals : stateequals,
         tickMillis: tickMillis
