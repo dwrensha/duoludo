@@ -16,7 +16,34 @@ function recordizeEvent(event) {
 
 var pathlist = {
 
-    add : function (path) {
+    addLocal : function (path) {
+
+        var div = this.makeElement(path);
+
+        $('#pathlist').append(div);
+
+        $.ajax({type:'POST',
+                url:'newpath',
+                data:JSON.stringify(path)
+               })
+           .done( function (data) {
+           })
+           .fail( function (xhr, status, thrown) {
+               console.log('error: ' + thrown + " " + xhr.responseText);
+           });
+    },
+
+    addRemote : function (path) {
+
+        var div = this.makeElement(path);
+
+        $('#remotepathlist').append(div);
+
+
+    },
+
+
+    makeElement : function (path) {
         var div = document.createElement('div');
         var input = document.createElement('input');
         $(input).attr('type', 'radio')
@@ -41,7 +68,7 @@ var pathlist = {
             $(input).attr('checked', 'true');
         }
         var label = document.createElement('label');
-        label.innerHTML = path.key.pathID + ': ' + path.username + ' ' + (new Date(path.startTime)).toUTCString();
+        label.innerHTML = path.username + ' ' + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
         div.appendChild(label);
 
@@ -60,17 +87,7 @@ var pathlist = {
 
         div.appendChild(closebutton);
 
-        $('#pathlist').append(div);
-
-        $.ajax({type:'POST',
-                url:'newpath',
-                data:JSON.stringify(path)
-               })
-           .done( function (data) {
-           })
-           .fail( function (xhr, status, thrown) {
-               console.log('error: ' + thrown + " " + xhr.responseText);
-           });
+        return div;
     },
 
     playSelected : function() {
@@ -82,11 +99,11 @@ var pathlist = {
     },
 
     hide : function() {
-        $('#pathlist').css('display','none');
+        $('.pathlist').css('display','none');
     },
 
     show : function() {
-        $('#pathlist').show();
+        $('.pathlist').show();
     }
 };
 
@@ -162,7 +179,7 @@ var mainMode = {
     },
 
     registerPath : function (path) {
-        pathlist.add(path);
+        pathlist.addLocal(path);
     }
 };
 
@@ -276,6 +293,10 @@ function init() {
                 url:'getleaderboard'})
             .done( function (data) {
                 console.log(data);
+                var paths = JSON.parse(data);
+                paths.forEach(function (p) {
+                    pathlist.addRemote(p);
+                });
             });
         console.log('leaderboard');
     });
