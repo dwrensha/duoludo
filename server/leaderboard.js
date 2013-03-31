@@ -1,8 +1,9 @@
 assert = require('assert');
+async = require('async');
 database = require('./database');
 
 // get the best path ending at |checkpoint|
-function getBest(checkpoint) {
+function getBest(checkpoint, callback) {
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
@@ -13,14 +14,15 @@ function getBest(checkpoint) {
                                function (err, path) {
                                    console.log('getting best for ' + checkpoint);
                                    console.log(path.endTicks);
-                                   console.log(JSON.stringify(path) + '\n');
+//                                   console.log(JSON.stringify(path) + '\n');
                                    db.close();
+                                   callback(null, path);
                                });
         });
     });
 }
 
-function getLeaderboard() {
+function getLeaderboard(response) {
     console.log('getting leaderboard');
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
@@ -28,9 +30,12 @@ function getLeaderboard() {
             collection.distinct('endCheckpoint', function(err, endCheckpoints) {
                 assert.equal(err, null);
                 db.close();
-                for (var ii = 0; ii < endCheckpoints.length; ++ii) {
-                    getBest(endCheckpoints[ii]);
-                }
+                var fns = endCheckpoints.map(
+                    function(x) { return function (cb) {getBest(x, cb)} });
+                async.parallel(fns, function (err, results) {
+                    console.log('done');
+                    console.log(results.length);
+                });
             });
         });
     });
