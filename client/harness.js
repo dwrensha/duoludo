@@ -20,6 +20,10 @@ var pathlist = {
 
         var div = this.makeElement(path);
 
+        if (path.endCheckpoint != "gameover") {
+            $(div).children('input').prop('checked', true);
+        }
+
         $('#pathlist').append(div);
 
         $.ajax({type:'POST',
@@ -64,9 +68,6 @@ var pathlist = {
             replayMode.start(path);
         });
 
-        if (path.endCheckpoint != "gameover") {
-            $(input).attr('checked', 'true');
-        }
         var label = document.createElement('label');
         label.innerHTML = path.username + ' ' + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
@@ -293,6 +294,7 @@ function init() {
                 url:'getleaderboard'})
             .done( function (data) {
                 console.log(data);
+                $('#remotepathlist div').remove();
                 var paths = JSON.parse(data);
                 paths.forEach(function (p) {
                     pathlist.addRemote(p);
