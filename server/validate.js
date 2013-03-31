@@ -1,9 +1,8 @@
+assert = require('assert');
+database = require('./database');
 game = require('../client/zepto/zepto').game;
 
-game.load();
-console.log(game.getstate());
-
-function validate (path) {
+function validatePath (path) {
 
     game.load(path.startState);
 
@@ -38,13 +37,33 @@ function validate (path) {
             stampedEvent = events[events.length - 1];
         }
 
-        if (!stop) {
+//        if (!stop) {
             game.tick();
             ++ticks;
-        }
+//        }
     }
-
 
     return ( game.stateequals(game.getstate(), path.endState) &&
              game.atcheckpoint() == path.endCheckpoint );
 }
+
+function doValidation () {
+    console.log('hello world');
+
+    database.connect (function (db) {
+        db.collection('paths', function(err, collection) {
+            assert.equal(err, null);
+            collection.find().toArray( function(err, docs) {
+                for (var ii = 0; ii < docs.length; ++ ii) {
+                    var path = docs[ii];
+                    console.log(validatePath(path));
+                }
+                db.close();
+            });
+        });
+    });
+
+}
+
+
+doValidation();

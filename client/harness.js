@@ -236,7 +236,8 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);
-            if (cp != this.path.startCheckpoint ) {
+            if (cp == 'pause' ||
+                cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
@@ -252,11 +253,6 @@ var playMode = {
     },
 
     kdown : function(event) {
-        if (event.keyCode == 88) { // x key
-            this.events.push(new StampedEvent(this.ticks, {'type':'abort'}));
-            this.stop('abort')
-        }
-
         var revent = recordizeEvent(event);
         this.events.push(new StampedEvent(this.ticks, revent));
         game.kdown(revent);

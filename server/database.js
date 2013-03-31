@@ -63,8 +63,7 @@ function initialize () {
     });
 }
 
-initialize();
-
+exports.connect = connect;
 exports.initialize = initialize;
 exports.addPath = addPath;
 exports.getSessionID = getSessionID;

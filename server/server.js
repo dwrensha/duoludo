@@ -2,7 +2,7 @@ var http = require('http');
 var url = require('url');
 var connect = require('connect');
 var database = require('./database');
-
+database.initialize();
 
 function start () {
     var port = 8080;

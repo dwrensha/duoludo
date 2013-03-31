@@ -308,11 +308,18 @@ var zepto = (function () {
 
     }
 
+    var pause = false;
+
     function atcheckpoint() {
         if (state.player.ticksDead > 10) {
 
             // special value indicating end of game
             return "gameover";
+        }
+
+        if (pause) {
+            // special value indicating pause
+            return "pause";
         }
 
         var x = state.player.pos.x + (playerWidth / 2);
@@ -406,6 +413,9 @@ var zepto = (function () {
 
     function kdown(event) {
         switch (event.keyCode) {
+            case 80: // P
+               pause = true;
+               break;
             case 37: // LEFT
               if (state.keys.left == 0) {
                   state.keys.left = 1;
@@ -472,6 +482,7 @@ var zepto = (function () {
 
     // startState is optional.
     function load(startState) {
+        pause = false;
         if (startState) {
             state = JSON.parse(startState);
         } else {
