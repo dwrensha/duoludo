@@ -31,7 +31,7 @@ function getLeaderboard(response) {
                 db.close();
                 var fns = endCheckpoints.map(
                     function(x) { return function (cb) {getBest(x, cb)} });
-                async.parallel(fns, function (err, results) {
+                async.series(fns, function (err, results) {
                     console.log('done. length = ' + results.length);
 
                     response.write(JSON.stringify(results));
