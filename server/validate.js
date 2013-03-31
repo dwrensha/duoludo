@@ -1,10 +1,10 @@
 assert = require('assert');
 database = require('./database');
 
-var mongo = require('mongodb');
+//var mongo = require('mongodb');
 //var BSON = mongo.BSONNative;
 //var ObjectId = BSON.ObjectID.createFromHexString;
-var ObjectId = require('mongodb').ObjectID
+//var ObjectId = require('mongodb').ObjectID
 game = require('../client/zepto/zepto').game;
 
 
