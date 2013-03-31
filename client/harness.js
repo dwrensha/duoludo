@@ -23,8 +23,8 @@ var pathlist = {
                 .attr('name','path')
                 .attr('pathID', path.key.pathID);
 
+        // set up the preview
         $(input).click(function () {
-            self = this;
             game.load(path.endState);
             game.render();
         });
@@ -50,6 +50,9 @@ var pathlist = {
 
         $(closebutton).click(function () {
             var parent = $(this).parent();
+            if (parent.children('input').is(":checked")) {
+                $('#gamestartradiobutton').prop('checked', true);
+            }
             parent.slideUp(250, function () {
                 parent.remove();
             });
@@ -300,7 +303,11 @@ function init() {
     $.when( gotSessionID, gotUsername ).done (function () {
         $('#gamestartradiobutton').bind('startPlaying', function () {
             playMode.start();
+        }).click (function () {
+            game.load();
+            game.render();
         });
+
 
         mainMode.menu();
     });
