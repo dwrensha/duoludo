@@ -5,6 +5,7 @@ var MongoClient = require('mongodb').MongoClient;
 function connect (f) {
     MongoClient.connect("mongodb://localhost:27017/duoludo", function (err, db) {
         if (err) {
+            console.log("error!");
             if (db) {
                 db.close();
             }
