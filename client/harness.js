@@ -378,7 +378,7 @@ function init() {
                     pathlist.refreshPreview();
                 });
 
-                $('#leaderboardbutton').html('refresh leaderbord');
+                $('#leaderboardbutton').html('refresh leaderboard');
             });
     });
 
