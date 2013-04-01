@@ -43,7 +43,6 @@ var pathlist = {
         var div = this.makeElement(path);
 
         $('#remotepathlist').append(div);
-
     },
 
 
@@ -144,9 +143,13 @@ var pathlist = {
         $('[name="path"]').each (function (idx, elt) {
             if ($(elt).is(':checked')) {
                 $(elt).trigger('change');
-                $(elt).parent().css('border', '2px solid');
+                $(elt).parent().children('label')
+                   .css('border', '1px solid')
+                   .css('color', '#FFFFFF');
             } else {
-                $(elt).parent().css('border', 'none');
+                $(elt).parent().children('label')
+                   .css('border', 'none')
+                   .css('color', '#AAAAAA');
             }
         });
 
@@ -373,6 +376,7 @@ function init() {
                 var paths = JSON.parse(data);
                 paths.forEach(function (p) {
                     pathlist.addRemote(p);
+                    pathlist.refreshPreview();
                 });
             });
         console.log('leaderboard');
