@@ -27,6 +27,10 @@ function getLeaderboard(response) {
                 async.series(fns, function (err, results) {
                     db.close();
                     console.log('done. length = ' + results.length);
+                    results.sort(function cmp (a,b) {
+                        // want the long runs on top
+                        return b.endTicks - a.endTicks;
+                    });
                     response.write(JSON.stringify(results));
                     response.end();
                 });
