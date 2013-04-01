@@ -73,8 +73,6 @@ var pathlist = {
                          ' to ' + path.endCheckpoint +
                          ' at ' + path.endTicks + ' ticks ';
 // + (new Date(path.startTime)).toUTCString();
-        div.appendChild(input);
-        div.appendChild(label);
 
         var closebutton = document.createElement('button');
         closebutton.innerHTML = '&times;';
@@ -92,7 +90,13 @@ var pathlist = {
             });
         })
 
+        $(closebutton).css('float', 'right');
+        $(closebutton).css('clear', 'both');
+
         div.appendChild(closebutton);
+
+        div.appendChild(input);
+        div.appendChild(label);
 
         return div;
     },
