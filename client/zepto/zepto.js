@@ -308,7 +308,7 @@ var zepto = (function () {
 
     }
 
-    var pause = false;
+    var abort = false;
 
     function atcheckpoint() {
         if (state.player.ticksDead > 10) {
@@ -317,9 +317,9 @@ var zepto = (function () {
             return "gameover";
         }
 
-        if (pause) {
-            // special value indicating pause
-            return "pause";
+        if (abort) {
+            // special value indicating abort
+            return "abort";
         }
 
         var x = state.player.pos.x + (playerWidth / 2);
@@ -415,7 +415,7 @@ var zepto = (function () {
     function kdown(event) {
         switch (event.keyCode) {
             case 88: // X
-               pause = true;
+               abort = true;
                break;
             case 37: // LEFT
               if (state.keys.left == 0) {
@@ -483,7 +483,7 @@ var zepto = (function () {
 
     // startState is optional.
     function load(startState) {
-        pause = false;
+        abort = false;
         if (startState) {
             state = JSON.parse(startState);
         } else {
@@ -499,6 +499,8 @@ var zepto = (function () {
                 musicTime: 0
             };
         }
+
+        adjustCamera(state.player, state.camera);
     }
 
 

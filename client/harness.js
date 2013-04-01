@@ -43,7 +43,6 @@ var pathlist = {
 
         $('#remotepathlist').append(div);
 
-
     },
 
 
@@ -80,17 +79,29 @@ var pathlist = {
 
         $(closebutton).click(function () {
             var parent = $(this).parent();
+
             if (parent.children('input').is(":checked")) {
-                $('#gamestartradiobutton').prop('checked', true).trigger('change');
+                pathlist.selectGameStart();
             }
+
             parent.slideUp(100, function () {
                 parent.remove();
+                pathlist.refreshPreview();
             });
         })
 
         div.appendChild(closebutton);
 
         return div;
+    },
+
+    selectGameStart : function () {
+        $('#gamestartradiobutton').prop('checked', true);
+        pathlist.refreshPreview();
+    },
+
+    refreshPreview : function () {
+        $('[name="path"]:checked').trigger('change');
     },
 
     playSelected : function() {
@@ -240,14 +251,18 @@ var playMode = {
         pathlist.show();
         game.prestop();
         game.stop();
-        this.path.endCheckpoint = endCheckpoint;
-        this.path.events = this.events;
-        this.path.endState = game.getstate();
-        this.path.endTicks = this.ticks;
-        this.path.key = {
-            sessionID: this.sessionID,
-            pathID : this.getPathID()};
-        mainMode.registerPath(this.path);
+        if (endCheckpoint != 'abort') {
+            this.path.endCheckpoint = endCheckpoint;
+            this.path.events = this.events;
+            this.path.endState = game.getstate();
+            this.path.endTicks = this.ticks;
+            this.path.key = {
+                sessionID: this.sessionID,
+                pathID : this.getPathID()};
+            mainMode.registerPath(this.path);
+        } else {
+            pathlist.refreshPreview();
+        }
         mainMode.menu();
     },
 
@@ -257,8 +272,7 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);
-            if (cp == 'pause' ||
-                cp != this.path.startCheckpoint ) {
+            if (cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
@@ -287,7 +301,7 @@ function init() {
     gameDiv = document.getElementById('game')
 
     game.init(gameDiv);
-    stdout.innerHTML = "Enter your username to begin.";
+    stdout.innerHTML = "Enter your name to begin.";
     document.getElementById('usernamebutton').focus();
 
 
@@ -296,6 +310,10 @@ function init() {
                 url:'getleaderboard'})
             .done( function (data) {
                 console.log(data);
+                if ($('#remotepathlist div input:checked').length > 0) {
+                    pathlist.selectGameStart();
+                }
+
                 $('#remotepathlist div').remove();
                 var paths = JSON.parse(data);
                 paths.forEach(function (p) {
@@ -321,7 +339,7 @@ function init() {
     var gotUsername = $.Deferred();
     $('#usernamebutton').click(function () {
         var username = $('#usernameinput').val();
-        $('#username').html('username: ' + username).attr('value', username);
+        $('#username').html('name: ' + username).attr('value', username);
         gotUsername.resolve();
     });
 
