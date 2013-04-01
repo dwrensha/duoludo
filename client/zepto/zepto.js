@@ -465,6 +465,21 @@ var zepto = (function () {
             context = canvas.getContext('2d');
         }
 
+
+        // load a title page.
+
+        state = {
+            player: new Player(35, worldHeight - 30),
+            camera: new Camera(1478.5 * pixelsPerTile, 8 * pixelsPerTile),
+            ticks: 0,
+            keys: { left : 0,
+                    right : 0,
+                    spacebar : 0
+                  },
+            musicTime: 0
+        };
+        render();
+
     }
 
 
