@@ -148,7 +148,9 @@ function doValidation () {
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
             assert.equal(err, null);
-            collection.find().toArray( function(err, docs) {
+
+            // records that have the 'validFromStartField' are already done being processed.
+            collection.find({validFromStart : {$exists : false}}).toArray( function(err, docs) {
                 db.close();
                 for (var ii = 0; ii < docs.length; ++ii) {
                     var path = docs[ii];
