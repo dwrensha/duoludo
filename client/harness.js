@@ -59,6 +59,7 @@ var pathlist = {
             game.render();
         });
 
+
         $(input).bind('startPlaying', function () {
             playMode.start(path);
         });
@@ -73,6 +74,13 @@ var pathlist = {
                          ' to ' + path.endCheckpoint +
                          ' at ' + path.endTicks + ' ticks ';
 // + (new Date(path.startTime)).toUTCString();
+
+
+        $(label).click(function (){
+            $(input).prop('checked', true);
+            pathlist.refreshPreview();
+        });
+
 
         var closebutton = document.createElement('button');
         closebutton.innerHTML = '&times;';
@@ -90,8 +98,6 @@ var pathlist = {
             });
         })
 
-        $(closebutton).css('float', 'right');
-        $(closebutton).css('clear', 'both');
 
         div.appendChild(closebutton);
 
@@ -358,6 +364,9 @@ function init() {
             game.render();
         });
 
+        $('#gamestartlabel').click(function (){
+            pathlist.selectGameStart();
+        });
 
         mainMode.menu();
     });
