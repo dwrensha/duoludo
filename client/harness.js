@@ -242,7 +242,7 @@ var playMode = {
         if (cp) {
             this.path.startCheckpoint = cp;
         } else {
-            this.path.startCheckpoint = false;
+            this.path.startCheckpoint = 'start';
         }
 
         this.events = Array();
