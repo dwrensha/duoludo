@@ -16,8 +16,6 @@ function recordizeEvent(event) {
 
 var pathlist = {
 
-//    gameStartElement : null,
-
     addLocal : function (path) {
 
         var div = this.makeElement(path);
@@ -27,6 +25,7 @@ var pathlist = {
         }
 
         $('#pathlist').append(div);
+        pathlist.refreshPreview();
 
         $.ajax({type:'POST',
                 url:'newpath',
@@ -65,6 +64,10 @@ var pathlist = {
             endState = path.endState;
         }
 
+        $(input).css('display', 'none');
+
+        div.appendChild(input);
+
         // set up the preview
         $(input).change(function () {
             game.load(endState);
@@ -102,6 +105,7 @@ var pathlist = {
         var closebutton = document.createElement('button');
         closebutton.innerHTML = '&times;';
 
+
         if (!path) {
             $(closebutton).prop('disabled', true);
         }
@@ -137,7 +141,15 @@ var pathlist = {
     },
 
     refreshPreview : function () {
-        $('[name="path"]:checked').trigger('change');
+        $('[name="path"]').each (function (idx, elt) {
+            if ($(elt).is(':checked')) {
+                $(elt).trigger('change');
+                $(elt).parent().css('border', '2px solid');
+            } else {
+                $(elt).parent().css('border', 'none');
+            }
+        });
+
     },
 
     playSelected : function() {
@@ -388,11 +400,12 @@ function init() {
 
     $.when( gotSessionID, gotUsername ).done (function () {
 
-         var div = pathlist.makeElement();
-         $('#pathlist').append(div);
-         $(div).children('input').prop('checked', true);
+        var div = pathlist.makeElement();
+        $('#pathlist').append(div);
+        $(div).children('input').prop('checked', true);
 
         pathlist.show();
+        pathlist.selectGameStart();
 
         mainMode.menu();
     });

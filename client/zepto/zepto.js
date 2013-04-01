@@ -311,7 +311,7 @@ var zepto = (function () {
     var abort = false;
 
     function atcheckpoint() {
-        if (state.player.ticksDead > 10) {
+        if (state.player.ticksDead > 15) {
 
             // special value indicating end of game
             return "gameover";
