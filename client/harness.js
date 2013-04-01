@@ -136,10 +136,11 @@ var replayMode = {
     },
 
    stop : function () {
-        clearInterval(this.ticker);
-        pathlist.show();
-        game.stop();
-        mainMode.menu();
+       clearInterval(this.ticker);
+       pathlist.show();
+       game.stop();
+       pathlist.refreshPreview();
+       mainMode.menu();
     },
 
     tick : function () {
