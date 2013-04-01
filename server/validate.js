@@ -136,12 +136,12 @@ function updateCumulativeValidity (path, db) {
 
 }
 
-function doValidation () {
+function doValidation (callback) {
     console.log('hello world');
 
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
-            assert.equal(err, null);
+            if(err) {return callback(err,null);}
 
             // records that have the 'validFromStartField' are already done being processed.
             collection.find({validFromStart : {$exists : false}}).toArray( function(err, docs) {
@@ -151,11 +151,7 @@ function doValidation () {
                 var fns3 = docs.map(function (path) {return updateCumulativeValidity(path, db);});
                 async.series(fns1.concat(fns2.concat(fns3)), function (err, results) {
                     db.close();
-                    console.log('done.');
-                    if (err) {
-                        console.log('error: ');
-                        console.dir(err);
-                    }
+                    return callback(err,results);
                 });
             });
         });
@@ -163,7 +159,24 @@ function doValidation () {
 
 }
 
+function doAllValidation () {
+    doValidation (function (err, results) {
+        if (err) {
+            console.log('Error!');
+            console.dir(err);
+            return;
+        } else if (results.length == 0) {
+            console.log('done');
+            return;
+        } else {
+            console.log('more to do');
+            doAllValidation();
+        }
+    });
+}
 
-doValidation();
 
-//setInterval(doValidation, 5000);
+//doValidation();
+
+// do it every ten seconds
+setInterval(doAllValidation, 10000);
