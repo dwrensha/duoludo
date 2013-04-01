@@ -9,4 +9,5 @@ body { font-family: Helvetica, Sans, Arial;
      }
 .pathlist {
     text-align: left;
+    display: none;
 }

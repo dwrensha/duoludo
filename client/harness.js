@@ -16,6 +16,8 @@ function recordizeEvent(event) {
 
 var pathlist = {
 
+//    gameStartElement : null,
+
     addLocal : function (path) {
 
         var div = this.makeElement(path);
@@ -46,16 +48,26 @@ var pathlist = {
     },
 
 
+    // if path is null, make the 'Game Start' element
     makeElement : function (path) {
         var div = document.createElement('div');
+
         var input = document.createElement('input');
         $(input).attr('type', 'radio')
-                .attr('name','path')
-                .attr('pathID', path.key.pathID);
+                .attr('name','path');
+
+        if (!path) {
+            this.gameStartRadioButton = input;
+        }
+
+        var endState = undefined;
+        if (path) {
+            endState = path.endState;
+        }
 
         // set up the preview
         $(input).change(function () {
-            game.load(path.endState);
+            game.load(endState);
             game.render();
         });
 
@@ -65,15 +77,21 @@ var pathlist = {
         });
 
         $(input).bind('startReplaying', function () {
-            replayMode.start(path);
+            if (path) {
+                replayMode.start(path);
+            }
         });
 
         var label = document.createElement('label');
-        label.innerHTML = path.username + ': from ' + path.startCheckpoint +
-                         ' at ' + path.startTicks + ' ticks ' +
-                         ' to ' + path.endCheckpoint +
-                         ' at ' + path.endTicks + ' ticks ';
-// + (new Date(path.startTime)).toUTCString();
+        if (path) {
+            label.innerHTML = path.username + ': from ' + path.startCheckpoint +
+                ' at ' + path.startTicks + ' ticks ' +
+                ' to ' + path.endCheckpoint +
+                ' at ' + path.endTicks + ' ticks ';
+            // + (new Date(path.startTime)).toUTCString();
+        } else {
+            label.innerHTML = "Game Start";
+        }
 
 
         $(label).click(function (){
@@ -81,9 +99,13 @@ var pathlist = {
             pathlist.refreshPreview();
         });
 
-
         var closebutton = document.createElement('button');
         closebutton.innerHTML = '&times;';
+
+        if (!path) {
+            $(closebutton).prop('disabled', true);
+        }
+
 
         $(closebutton).click(function () {
             var parent = $(this).parent();
@@ -107,8 +129,10 @@ var pathlist = {
         return div;
     },
 
+    gameStartRadioButton : null,
+
     selectGameStart : function () {
-        $('#gamestartradiobutton').prop('checked', true);
+        $(this.gameStartRadioButton).prop('checked', true);
         pathlist.refreshPreview();
     },
 
@@ -357,16 +381,12 @@ function init() {
     });
 
     $.when( gotSessionID, gotUsername ).done (function () {
-        $('#gamestartradiobutton').bind('startPlaying', function () {
-            playMode.start();
-        }).change (function () {
-            game.load();
-            game.render();
-        });
 
-        $('#gamestartlabel').click(function (){
-            pathlist.selectGameStart();
-        });
+         var div = pathlist.makeElement();
+         $('#pathlist').append(div);
+         $(div).children('input').prop('checked', true);
+
+        pathlist.show();
 
         mainMode.menu();
     });
