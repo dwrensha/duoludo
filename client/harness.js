@@ -69,7 +69,9 @@ var pathlist = {
         });
 
         var label = document.createElement('label');
-        label.innerHTML = path.username + ' ' + (new Date(path.startTime)).toUTCString();
+        label.innerHTML = path.username + ': from ' + path.startCheckpoint +
+                         ' to ' + path.endCheckpoint;
+// + (new Date(path.startTime)).toUTCString();
         div.appendChild(input);
         div.appendChild(label);
 

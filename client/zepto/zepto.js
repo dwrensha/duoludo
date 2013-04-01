@@ -327,7 +327,8 @@ var zepto = (function () {
         var w =  new Vec2(x, y);
 
         if ( 1 == getWorldTile(map, w)) {
-            return JSON.stringify(worldToMap(w));
+            var mapv = worldToMap(w);
+            return '(' + mapv.x + ',' + mapv.y + ')';
         }
 
         return false;
