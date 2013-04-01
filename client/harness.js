@@ -259,10 +259,6 @@ var playMode = {
             game.load();
             prev = "start";
         }
-        game.start();
-        $(window).off('keyup keydown');
-        $(window).keyup(this.kup.bind(this));
-        $(window).keydown(this.kdown.bind(this));
 
         var username = $('#username').attr('value');
 
@@ -272,12 +268,21 @@ var playMode = {
                      startTicks : this.ticks,
                      prev : prev};
 
+
         cp = game.atcheckpoint();
         if (cp) {
             this.path.startCheckpoint = cp;
         } else {
             this.path.startCheckpoint = 'start';
         }
+
+
+        game.start();
+
+        $(window).off('keyup keydown');
+        $(window).keyup(this.kup.bind(this));
+        $(window).keydown(this.kdown.bind(this));
+
 
         this.events = Array();
         this.ticker = window.setInterval(this.tick.bind(this), game.tickMillis);
@@ -309,7 +314,8 @@ var playMode = {
         cp = game.atcheckpoint();
         if (cp) {
             console.log("at checkpoint: " + cp);
-            if (cp != this.path.startCheckpoint ) {
+            if (cp == 'gameover' ||
+                cp != this.path.startCheckpoint ) {
                 this.events.push(new StampedEvent(this.ticks, {'type':'checkpoint'}));
                 this.stop(cp);
             }
