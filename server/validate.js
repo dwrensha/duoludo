@@ -152,6 +152,7 @@ function doValidation () {
             // records that have the 'validFromStartField' are already done being processed.
             collection.find({validFromStart : {$exists : false}}).toArray( function(err, docs) {
                 db.close();
+                console.log('working to validate this many: ' + docs.length);
                 for (var ii = 0; ii < docs.length; ++ii) {
                     var path = docs[ii];
                     updatePrev(path);
@@ -172,3 +173,5 @@ function doValidation () {
 
 
 doValidation();
+
+//setInterval(doValidation, 5000);
