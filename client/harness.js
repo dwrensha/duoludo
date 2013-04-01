@@ -239,7 +239,7 @@ var mainMode = {
     },
 
     menu : function () {
-        stdout.innerHTML = "MAIN MENU. PRESS ENTER TO PLAY";
+        stdout.innerHTML = "Press ENTER to play or 'R' to replay.";
         $(window).off('keydown keyup');
         $(window).keydown(this.kdown.bind(this));
     },
