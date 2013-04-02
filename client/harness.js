@@ -177,7 +177,7 @@ var replayMode = {
         pathlist.hide()
         // copy and reverse |events|
         this.events = path.events.slice().reverse();
-        stdout.innerHTML = "REPLAY";
+        stdout.innerHTML = "REPLAY. Press 'X' to stop.";
         game.load(path.startState);
         game.start()
         $(window).off('keyup keydown');
