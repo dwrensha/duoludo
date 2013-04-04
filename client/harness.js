@@ -195,6 +195,8 @@ var replayMode = {
     },
 
     tick : function () {
+        ++this.ticks;
+
         var stampedEvent = this.events[this.events.length - 1];
         while(stampedEvent && (stampedEvent.t <= this.ticks) &&
               (this.events.length > 0)) {
@@ -207,17 +209,21 @@ var replayMode = {
             case "keyup":
                 game.kup(event);
                 break;
-            case "gameover":
-            case "abort":
             case "checkpoint":
-                this.stop();
+                game.prestop();
+                break;
             }
             stampedEvent = this.events[this.events.length - 1];
         }
 
+        if(this.events.length == 0) {
+            this.stop();
+        }
+
         game.tick();
         game.render();
-        ++this.ticks;
+
+
     },
 
     kdown : function (event) {
@@ -327,6 +333,7 @@ var playMode = {
         game.tick();
         game.render();
         cp = game.atcheckpoint();
+
         if (cp) {
             console.log("at checkpoint: " + cp);
             if (cp == 'gameover' ||
@@ -381,6 +388,17 @@ function init() {
                 $('#leaderboardbutton').html('refresh leaderboard');
             });
     });
+
+    $('#bestpathbutton').click(function () {
+        $.ajax({type:'GET',
+                url:'getbestpath'})
+            .done( function (data) {
+                if (data != 'none') {
+                    replayMode.start(JSON.parse(data));
+                }
+            });
+    });
+
 
 
     var gotSessionID =
