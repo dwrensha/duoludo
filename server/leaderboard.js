@@ -35,27 +35,19 @@ function findBestPaths(db, callback) {
     });
 }
 
-function getLeaderboard(response) {
-    console.log('getting leaderboard');
-    database.connect (function (db) {
-        findBestPaths(db, function (err, results) {
-            db.close();
-            assert.equal(err, null);
-            response.write(JSON.stringify(results));
-            response.end();
-        });
-    });
-}
 
 function stitchPaths (paths) {
-//    paths = paths.slice(10);
-    var result = JSON.parse(JSON.stringify(paths[0]));
+    var result = {username : '[stiched together]',
+                  startCheckpoint : paths[0].startCheckpoint,
+                  startTicks : paths[0].startTicks,
+                  startState : paths[0].startState,
+                  endTicks : paths[paths.length - 1].endTicks,
+                  endState : paths[paths.length - 1].endState,
+                  endCheckpoint : paths[paths.length - 1].endCheckpoint,
+        }
     var resultEvents = [];
     for (var ii = 0; ii < paths.length; ++ii) {
         resultEvents = resultEvents.concat(paths[ii].events);
-        var finalEvent = resultEvents[resultEvents.length - 1];
-        console.log(finalEvent);
-//        finalEvent.t = finalEvent.t + 1;
     }
     result.events = resultEvents;
     return result;
@@ -79,20 +71,22 @@ function buildBestPath (db, soFar, current, callback) {
 
 }
 
-function getBestPath(response) {
-    console.log('getting best path');
+function getLeaderboard(response) {
+    console.log('getting leaderboard');
     database.connect (function (db) {
-        findBestPaths(db, function(err, results) {
+        findBestPaths(db, function (err, results) {
             assert.equal(err, null);
-            if(results.length == 0) {
+            if (results.length == 0) {
                 db.close();
                 response.write('none');
                 response.end();
             } else {
-                buildBestPath(db, [], results[0], function (err, result) {
+                buildBestPath(db, [], results[0], function (err, bestCumulative) {
                     db.close();
+                    var result =
+                        {cumulative: bestCumulative,
+                         pieces : results}
                     console.log('done');
-                    console.log(JSON.stringify(result));
                     response.write(JSON.stringify(result));
                     response.end();
                 });
@@ -101,6 +95,4 @@ function getBestPath(response) {
     });
 }
 
-
 exports.getLeaderboard = getLeaderboard;
-exports.getBestPath = getBestPath;

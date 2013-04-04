@@ -38,9 +38,6 @@ function start () {
         } else if (urlpathname == '/getleaderboard' && request.method == 'GET') {
             response.writeHead(200, {"Content-Type": "text/plain"});
             leaderboard.getLeaderboard(response);
-        } else if (urlpathname == '/getbestpath' && request.method == 'GET' ) {
-            response.writeHead(200, {"Content-Type": "text/plain"});
-            leaderboard.getBestPath(response);
         }
     }
 

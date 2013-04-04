@@ -382,26 +382,17 @@ function init() {
                 }
 
                 $('#remotepathlist div').remove();
-                var paths = JSON.parse(data);
-                paths.forEach(function (p) {
+                var result = JSON.parse(data);
+                if (result == 'none') { return; }
+                pathlist.addRemote(result.cumulative);
+                result.pieces.forEach(function (p) {
                     pathlist.addRemote(p);
-                    pathlist.refreshPreview();
                 });
+                pathlist.refreshPreview();
 
                 $('#leaderboardbutton').html('refresh leaderboard');
             });
     });
-
-    $('#bestpathbutton').click(function () {
-        $.ajax({type:'GET',
-                url:'getbestpath'})
-            .done( function (data) {
-                if (data != 'none') {
-                    replayMode.start(JSON.parse(data));
-                }
-            });
-    });
-
 
 
     var gotSessionID =
