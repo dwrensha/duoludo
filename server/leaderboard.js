@@ -37,13 +37,18 @@ function findBestPaths(db, callback) {
 
 
 function stitchPaths (paths) {
-    var result = {username : '[stiched together]',
+    var result = {username : '[stitched together]',
                   startCheckpoint : paths[0].startCheckpoint,
                   startTicks : paths[0].startTicks,
                   startState : paths[0].startState,
+                  prev : paths[0].prev,
                   endTicks : paths[paths.length - 1].endTicks,
                   endState : paths[paths.length - 1].endState,
                   endCheckpoint : paths[paths.length - 1].endCheckpoint,
+        // Set these fields so it's possible to start playing from this path.
+        // TODO figure out a saner way to do this.
+                  _id : paths[paths.length - 1]._id.toString(),
+                  key : paths[paths.length - 1].key,
         }
     var resultEvents = [];
     for (var ii = 0; ii < paths.length; ++ii) {

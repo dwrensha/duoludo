@@ -382,8 +382,8 @@ function init() {
                 }
 
                 $('#remotepathlist div').remove();
+                if (data == 'none') { return; }
                 var result = JSON.parse(data);
-                if (result == 'none') { return; }
                 pathlist.addRemote(result.cumulative);
                 result.pieces.forEach(function (p) {
                     pathlist.addRemote(p);
