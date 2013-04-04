@@ -195,7 +195,6 @@ var replayMode = {
     },
 
     tick : function () {
-        ++this.ticks;
 
         var stampedEvent = this.events[this.events.length - 1];
         while(stampedEvent && (stampedEvent.t <= this.ticks) &&
@@ -222,6 +221,8 @@ var replayMode = {
 
         game.tick();
         game.render();
+
+        ++this.ticks;
 
 
     },
@@ -334,6 +335,8 @@ var playMode = {
         game.render();
         cp = game.atcheckpoint();
 
+        ++this.ticks;
+
         if (cp) {
             console.log("at checkpoint: " + cp);
             if (cp == 'gameover' ||
@@ -343,7 +346,7 @@ var playMode = {
             }
         }
 
-        ++this.ticks;
+
     },
 
     kup : function (event) {

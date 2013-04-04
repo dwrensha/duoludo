@@ -48,7 +48,7 @@ function getLeaderboard(response) {
 }
 
 function stitchPaths (paths) {
-    paths = paths.slice(10);
+//    paths = paths.slice(10);
     var result = JSON.parse(JSON.stringify(paths[0]));
     var resultEvents = [];
     for (var ii = 0; ii < paths.length; ++ii) {

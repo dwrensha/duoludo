@@ -34,8 +34,6 @@ function validatePath (path) {
             case "keyup":
                 game.kup(event);
                 break;
-            case "gameover":
-            case "abort":
             case "checkpoint":
                 stop = true;
                 break;
@@ -44,10 +42,10 @@ function validatePath (path) {
             stampedEvent = events[events.length - 1];
         }
 
-//        if (!stop) {
+       if (!stop) {
             game.tick();
             ++ticks;
-//        }
+        }
     }
 
     return ( game.stateequals(game.getstate(), path.endState) &&
