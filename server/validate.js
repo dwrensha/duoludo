@@ -198,11 +198,4 @@ function wakeUp() {
     }
 }
 
-
-
-//doValidation();
-
-// do it every ten seconds
-//setInterval(doAllValidation, 10000);
-
 exports.wakeUp = wakeUp;
