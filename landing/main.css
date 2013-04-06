@@ -10,5 +10,11 @@ body { font-family: Helvetica, Sans, Arial;
      }
 body h1 {
     text-align: center;
+    font-size: 500%;
+}
+
+body h2 {
+    text-align: center;
+    font-size: 250%;
 }
 
