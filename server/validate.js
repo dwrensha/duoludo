@@ -173,8 +173,36 @@ function doAllValidation () {
     });
 }
 
+var ticksSinceLastRequest = 0;
+var intervalID = null;
+
+function tick() {
+    if (++ticksSinceLastRequest > 10) {
+        console.log('validator is going to sleep');
+        clearInterval(intervalID);
+        intervalID = null;
+    } else {
+        doAllValidation();
+    }
+}
+
+function wakeUp() {
+    ticksSinceLastRequest = 0;
+
+    if (intervalID) {
+        return;
+    } else {
+        console.log('waking up the validator');
+        // five seconds
+        intervalID = setInterval(tick, 5000);
+    }
+}
+
+
 
 //doValidation();
 
 // do it every ten seconds
-setInterval(doAllValidation, 10000);
+//setInterval(doAllValidation, 10000);
+
+exports.wakeUp = wakeUp;

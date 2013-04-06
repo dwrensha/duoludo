@@ -4,11 +4,12 @@ var connect = require('connect');
 var database = require('./database');
 database.initialize();
 
+var validate = require('./validate');
+
 var leaderboard = require('./leaderboard');
 
 function start () {
     var port = 8080;
-
 
     var processPath = function(request, response) {
         console.log('new path!');
@@ -31,6 +32,7 @@ function start () {
 
         if (urlpathname == '/newpath' && request.method == 'POST') {
             processPath(request, response);
+            validate.wakeUp();
         }
         else if (urlpathname == '/newsession' && request.method == 'GET') {
             response.writeHead(200, {"Content-Type": "text/plain"});
