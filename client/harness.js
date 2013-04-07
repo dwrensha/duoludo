@@ -274,7 +274,11 @@ var playMode = {
         var prev;
         if (prevPath) {
             game.load(prevPath.endState);
-            prev = prevPath.key;
+            if (prevPath.hasOwnProperty('_id')) {
+                prev = prevPath._id;
+            } else {
+                prev = prevPath.key;
+            }
             this.ticks = prevPath.endTicks;
         } else {
             this.ticks = 0;
