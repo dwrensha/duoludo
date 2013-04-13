@@ -18,11 +18,17 @@ function start () {
             data = data + stream;
         });
         request.on('end', function () {
-            database.addPath(data);
+            database.addPath(data, function (err, result) {
+                if (err) {
+                    response.writeHead(400, {"Content-Type": "text/plain"});
+                    response.write(err);
+                } else {
+                    response.writeHead(200, {"Content-Type": "text/plain"});
+                    response.write("success");
+                }
+                response.end();
+            });
         });
-        response.writeHead(200, {"Content-Type": "text/plain"});
-        response.write("got it");
-        response.end();
     }
 
     var route = function(request, response) {

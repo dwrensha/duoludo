@@ -1,6 +1,7 @@
 assert = require('assert');
 
 var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID
 
 function connect (f) {
     MongoClient.connect("mongodb://localhost:27017/duoludo", function (err, db) {
@@ -17,26 +18,74 @@ function connect (f) {
     });
 }
 
-function addPath (pathString) {
-    path = JSON.parse(pathString);
+function validateClientPath (path) {
 
-    // TODO some basic validation of the path
+    // some basic validation of the path
     if (path.hasOwnProperty('valid') || path.hasOwnProperty('validFromStart')){
         // the client should not set those fields.
         return false;
     }
 
+    if ( (!path.hasOwnProperty('prev')) ||
+         (!path.hasOwnProperty('username')) ||
+         (!path.hasOwnProperty('startTicks')) ||
+         (!path.hasOwnProperty('startCheckpoint'))
+         // ... TODO check each field
+       ) {
+        // the client should not set those fields.
+        return false;
+    }
+
+    return true;
+
+}
+
+function addPath (pathString, callback) {
+    var path = JSON.parse(pathString);
+
+    if (!validateClientPath(path)) {
+        return callback("invalid path", null);
+    }
+
+    var prev = path.prev;
+
     connect(function(db) {
         db.collection('paths', function (err, collection) {
-            collection.insert(path, {w:1}, function (err, collection) {
-                db.close();
-                if (err) {
-                    console.log('error');
-                    return console.dir(err);
-                } else {
-                    console.log("sucessfully inserted path");
-                }
-            });
+            if (prev == 'start') {
+                collection.insert(path, {w:1}, function (err, collection) {
+                    db.close();
+                    return callback(err, path);
+                });
+            }
+            else if (!prev.hasOwnProperty('sessionID')) {
+                // then |prev| is an _id. check that it exists.
+                collection.findOne({'_id': ObjectId(prev)}, function (err, doc) {
+                    if(err || (!doc) ) {db.close();
+                                        return callback("previous path not found",null); };
+                    collection.insert(path, {w:1}, function (err, collection) {
+                        db.close();
+                        return callback(null, path);
+                    });
+                });
+
+            } else {
+
+                var sessionID = prev.sessionID;
+                var pathID = prev.pathID;
+
+                collection.findOne({'key.sessionID': sessionID, 'key.pathID': pathID}, function (err, doc) {
+                    if(err) {db.close(); return callback(err,null); };
+                    if(!doc) {
+                        db.close();
+                        return callback("previous path not found", null);
+                    }
+                    path.prev = doc._id.toString();
+                    collection.insert(path, {w:1}, function (err, collection) {
+                        db.close();
+                        return callback(null, path);
+                    });
+                });
+            }
         });
     });
 }

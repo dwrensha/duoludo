@@ -53,40 +53,6 @@ function validatePath (path) {
 }
 
 
-// if path.prev is not an ObjectId or 'start', then make it the
-// appropriate ObjectId.
-function updatePrev (path, db) {
-  return function (callback) {
-    var id = path._id;
-    if (path.prev == 'start') {
-        return callback(null, {});
-    } else if (! path.prev.hasOwnProperty('sessionID')) {
-        return callback(null, {});
-    }
-
-    // if we are here, path.prev must be a record with a session ID and a pathID
-    var sessionID = path.prev.sessionID;
-    var pathID = path.prev.pathID;
-
-    console.log("looking for: " + sessionID + " " + pathID);
-      console.log(path.prev.toString());
-
-    db.collection('paths', function(err, collection) {
-        if(err) {return callback(err,null); };
-        collection.findOne({'key.sessionID': sessionID, 'key.pathID': pathID}, function (err, doc) {
-            if(err) {return callback(err,null); };
-            if(!doc) {
-                console.log("that's odd.");
-                return callback(null, null);
-            }
-            var prevID = doc._id;
-            console.log('found the previous: ' + prevID);
-            collection.update({_id: id}, {$set : {prev : prevID.toString()}}, {w:1}, callback);
-        });
-    });
-  };
-}
-
 function updateValidity (path, db) {
     return function (callback) {
         if (path.hasOwnProperty('valid')) {
@@ -148,10 +114,9 @@ function doValidation (callback) {
             // records that have the 'validFromStartField' are already done being processed.
             collection.find({validFromStart : {$exists : false}}).toArray( function(err, docs) {
                 console.log('working to validate this many: ' + docs.length);
-                var fns1 = docs.map(function (path) {return updatePrev(path, db);});
                 var fns2 = docs.map(function (path) {return updateValidity (path, db);});
                 var fns3 = docs.map(function (path) {return updateCumulativeValidity(path, db);});
-                async.series(fns1.concat(fns2.concat(fns3)), function (err, results) {
+                async.series(fns2.concat(fns3), function (err, results) {
                     db.close();
                     return callback(err,results);
                 });

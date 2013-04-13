@@ -16,6 +16,20 @@ function recordizeEvent(event) {
 
 var pathlist = {
 
+    doUpload : function (div, path) {
+        $.ajax({type:'POST',
+                url:'newpath',
+                data:JSON.stringify(path)
+               })
+           .done( function (data) {
+               console.log("done: " + data);
+           })
+           .fail( function (xhr, status, thrown) {
+               console.log('error: ' + thrown + " " + xhr.responseText);
+               pathlist.uploadFailed(div, xhr.responseText, path);
+           });
+    },
+
     addLocal : function (path) {
 
         var div = this.makeElement(path);
@@ -27,21 +41,29 @@ var pathlist = {
         $('#pathlist').append(div);
         pathlist.refreshPreview();
 
-        $.ajax({type:'POST',
-                url:'newpath',
-                data:JSON.stringify(path)
-               })
-           .done( function (data) {
-           })
-           .fail( function (xhr, status, thrown) {
-               console.log('error: ' + thrown + " " + xhr.responseText);
-           });
+        pathlist.doUpload(div, path);
+
+    },
+
+    uploadFailed : function (div, text, path) {
+        var errordiv = document.createElement('div');
+        $(errordiv).addClass('error');
+        errordiv.innerHTML = text;
+        div.appendChild(errordiv);
+        var resendbutton = document.createElement('button');
+        resendbutton.innerHTML = 'resend';
+        $(resendbutton).click(function() {
+            console.log('click');
+            $(errordiv).remove();
+            pathlist.doUpload(div, path);
+        });
+        errordiv.appendChild(resendbutton);
+        div.appendChild(errordiv);
     },
 
     addRemote : function (path) {
 
         var div = this.makeElement(path);
-
         $('#remotepathlist').append(div);
     },
 

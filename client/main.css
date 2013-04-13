@@ -11,5 +11,8 @@ body { font-family: Helvetica, Sans, Arial;
     text-align: left;
     display: none;
 }
+.error {
+    color: #FF3030;
+}
 
 
