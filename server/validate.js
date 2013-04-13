@@ -75,6 +75,10 @@ function updatePrev (path, db) {
         if(err) {return callback(err,null); };
         collection.findOne({'key.sessionID': sessionID, 'key.pathID': pathID}, function (err, doc) {
             if(err) {return callback(err,null); };
+            if(!doc) {
+                console.log("that's odd.");
+                callback("couldn't update prev", null);
+            }
             var prevID = doc._id;
             console.log('found the previous: ' + prevID);
             collection.update({_id: id}, {$set : {prev : prevID.toString()}}, {w:1}, callback);
