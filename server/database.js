@@ -21,6 +21,10 @@ function addPath (pathString) {
     path = JSON.parse(pathString);
 
     // TODO some basic validation of the path
+    if (path.hasOwnProperty('valid') || path.hasOwnProperty('validFromStart')){
+        // the client should not set those fields.
+        return false;
+    }
 
     connect(function(db) {
         db.collection('paths', function (err, collection) {
