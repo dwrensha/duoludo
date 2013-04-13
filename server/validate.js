@@ -77,7 +77,7 @@ function updatePrev (path, db) {
             if(err) {return callback(err,null); };
             if(!doc) {
                 console.log("that's odd.");
-                callback("couldn't update prev", null);
+                return callback(null, null);
             }
             var prevID = doc._id;
             console.log('found the previous: ' + prevID);
