@@ -109,7 +109,7 @@ function doValidation (callback) {
 
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
-            if(err) {return callback(err,null);}
+            if(err) {db.close(); return callback(err,null);}
 
             // records that have the 'validFromStartField' are already done being processed.
             collection.find({validFromStart : {$exists : false}}).toArray( function(err, docs) {

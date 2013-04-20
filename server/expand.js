@@ -18,7 +18,6 @@ function expandPath (path) {
     var stop = false;
     while (! stop) {
 
-
         states.push({username: path.username,
                      ticks : ticks,
                      state : game.getstate()
@@ -53,3 +52,33 @@ function expandPath (path) {
     return states;
 
 }
+
+function expandAndInsertPath (db, path) {
+    return function (callback) {
+        db.collection('states', function (err, collection) {
+            if (err) {console.log('error'); return callback(err, null);}
+            collection.insert(expandPath(path), callback);
+        });
+    };
+}
+
+function expandAllPaths (db, callback) {
+
+    db.collection('paths', function (err, collection) {
+        if (err) {return;}
+        collection.find({}).toArray(function (err, docs) {
+            if(err) {return callback(err, null)}
+            console.log('this many: ' + docs.length);
+            var fns = docs.map( function (path) { return expandAndInsertPath(db, path);});
+            async.series(fns, callback);
+
+        });
+    });
+
+}
+
+database.connect ( function(db) {
+    expandAllPaths(db, function (err, states) {
+        db.close();
+    });
+});
