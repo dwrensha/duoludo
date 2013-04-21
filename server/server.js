@@ -67,13 +67,20 @@ function start () {
                    && request.method == 'POST' ) {
             console.log('doing it');
 
+            // string
+            var ticks = urlquery.ticks;
+            while (ticks.length < 6) {
+                ticks = '0' + ticks
+            }
+            var filename = 'frames/out' + ticks + '.png'
+
             var data = '';
             request.on('data', function (stream) {
                 data = data + stream;
             });
             request.on('end', function () {
                 var base64Data = data.replace(/^data:image\/png;base64,/,"");
-                require("fs").writeFile("frames/out.png", base64Data, 'base64', function(err) {
+                require("fs").writeFile(filename, base64Data, 'base64', function(err) {
                     console.log(err);
                 });
                 response.writeHead(200, {"Content-Type": "text/plain"});
