@@ -95,7 +95,6 @@ function getStates (ticks, response) {
         db.collection('states', function (err, collection) {
             collection.find({'ticks' : ticks}).toArray(function (err, docs) {
                 response.write(JSON.stringify(docs));
-                console.log(docs);
                 db.close();
                 response.end();
             });
