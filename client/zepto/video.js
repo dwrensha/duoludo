@@ -91,6 +91,16 @@ function drawStates(states, ticks) {
 
     }
 
+
+    console.log(canvas.toDataURL());
+    $.ajax({type:'POST',
+            url:'../videoframe?ticks=1500',
+            data: canvas.toDataURL()
+           })
+    .done( function (data) {
+        console.log("success!");
+    })
+
 }
 
 

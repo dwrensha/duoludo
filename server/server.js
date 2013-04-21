@@ -1,6 +1,7 @@
 var http = require('http');
 var url = require('url');
 var connect = require('connect');
+
 var database = require('./database');
 database.initialize();
 
@@ -9,6 +10,7 @@ var validate = require('./validate');
 var leaderboard = require('./leaderboard');
 
 function start () {
+
     var port = 8080;
 
     var processPath = function(request, response) {
@@ -61,6 +63,24 @@ function start () {
                 response.write('need to specify ticks');
                 response.end();
             }
+        } else if (process.argv[2] == 'video' && urlpathname=='/videoframe'
+                   && request.method == 'POST' ) {
+            console.log('doing it');
+
+            var data = '';
+            request.on('data', function (stream) {
+                data = data + stream;
+            });
+            request.on('end', function () {
+                var base64Data = data.replace(/^data:image\/png;base64,/,"");
+                require("fs").writeFile("frames/out.png", base64Data, 'base64', function(err) {
+                    console.log(err);
+                });
+                response.writeHead(200, {"Content-Type": "text/plain"});
+                response.end();
+
+            });
+
         }
     }
 
