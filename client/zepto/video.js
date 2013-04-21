@@ -18,7 +18,13 @@ function drawStates(states, ticks) {
     states.sort(function (a,b) {return b.player.pos.x - a.player.pos.x;});
     console.log(states);
 
-    var rightedge = states[0].player.pos.x + canvas.width / 4;
+    var cameraX = states[0].player.pos.x + canvas.width / 4 - canvas.width;
+    if (cameraX < 0) {
+        cameraX = 0;
+    }
+    else if (cameraX + canvas.width > worldWidth){
+        cameraX = worldWidth - canvas.width;
+    }
 
     context.fillStyle = map.backgroundColor;
     context.fillRect(0, 0, canvas.width, canvas.height);
@@ -26,7 +32,7 @@ function drawStates(states, ticks) {
     for (var ii = 0; ii < map.columns; ++ii) {
         for (var jj = 0; jj < map.rows; ++jj) {
 
-            var leftedge = ii * pixelsPerTile;
+            var leftedge = ii * pixelsPerTile - cameraX;
             var topedge = jj * pixelsPerTile;
 
             if (leftedge <= canvas.width &&
@@ -61,31 +67,26 @@ function drawStates(states, ticks) {
 
         if (player.ticksDead < 0) { // not dead
             context.fillStyle = map.playerOutlineColor;
-            context.fillRect(player.pos.x, player.pos.y,
+            context.fillRect(player.pos.x - cameraX, player.pos.y,
                              playerWidth, playerHeight);
             context.fillStyle = map.playerColor;
-            context.fillRect(player.pos.x + 1,
+            context.fillRect(player.pos.x  - cameraX + 1,
                              player.pos.y + 1,
                              playerWidth - 2, playerHeight - 2 );
         } else {
             context.fillStyle = map.dangerColor;
-            context.fillRect(player.pos.x , player.pos.y,
+            context.fillRect(player.pos.x  - cameraX, player.pos.y,
                              playerWidth, playerHeight);
 
             t = Math.floor(player.ticksDead / 2);
             if (t * 2 < playerWidth) {
 
                 context.fillStyle = map.playerColor;
-                context.fillRect(player.pos.x  + t,
+                context.fillRect(player.pos.x  - cameraX + t,
                                  player.pos.y  + t,
                                  playerWidth - (2 * t),
                                  playerHeight - (2 * t));
-            } else {
-                context.fillStyle = map.gameoverColor;
-                context.fillRect(0,0,canvas.width, canvas.height);
             }
-
-
         }
 
     }
@@ -98,12 +99,12 @@ function init() {
     context = canvas.getContext('2d');
 
     $.ajax({type:'GET',
-            url:'../getstates?ticks=500'
+            url:'../getstates?ticks=1500'
            })
     .done( function (data) {
         console.log("success!");
         console.log(data);
-        drawStates(JSON.parse(data), 100);
+        drawStates(JSON.parse(data), 1500);
     })
     .fail( function (xhr, status, thrown) {
         console.log("failure");
