@@ -90,6 +90,19 @@ function addPath (pathString, callback) {
     });
 }
 
+function getStates (ticks, response) {
+    connect (function (db) {
+        db.collection('states', function (err, collection) {
+            collection.find({'ticks' : ticks}).toArray(function (err, docs) {
+                response.write(JSON.stringify(docs));
+                console.log(docs);
+                db.close();
+                response.end();
+            });
+        });
+    });
+}
+
 function getSessionID (response) {
     connect (function (db) {
         db.collection('sessions', function (err, collection) {
@@ -124,3 +137,4 @@ exports.connect = connect;
 exports.initialize = initialize;
 exports.addPath = addPath;
 exports.getSessionID = getSessionID;
+exports.getStates = getStates;
