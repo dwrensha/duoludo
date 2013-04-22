@@ -7,6 +7,8 @@ var worldHeight = map.rows * pixelsPerTile;
 var playerWidth = 10;
 var playerHeight = 10;
 
+var nameColor = 'rgba(255,255,255, 0.75)';
+
 
 function drawStates(states, ticks, prevCameraX) {
 
@@ -69,6 +71,19 @@ function drawStates(states, ticks, prevCameraX) {
         }
     }
 
+    context.fillStyle = nameColor;
+    context.font = '9px sans-serif';
+//    context.textBaseline='bottom';
+    for (var ii = 0; ii < states.length; ++ii) {
+        var player = states[ii].player;
+
+        if (player.pos.x > cameraX - 10 * playerWidth &&
+            player.pos.x < cameraX + 10 * playerWidth + canvas.width) {
+            context.fillText(states[ii].username, player.pos.x - cameraX - 2,
+                             player.pos.y - 5);
+        }
+    }
+
 
     for (var ii = 0; ii < states.length; ++ii) {
         var player = states[ii].player;
@@ -110,7 +125,7 @@ function drawStates(states, ticks, prevCameraX) {
 
 function processFrame (ticks, cameraX) {
 
-    if (ticks > 400) {return;}
+    if (ticks > 16000) {return;}
 
     $.ajax({type:'GET',
             url:'../getstates?ticks=' + ticks
@@ -144,6 +159,6 @@ function init() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
-    processFrame(0, 0);
+    processFrame(15001, 10000000);
 
 }
