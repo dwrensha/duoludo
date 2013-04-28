@@ -20,13 +20,14 @@ function drawStates(states, ticks, prevCameraX) {
     states.sort(function (a,b) {return b.player.pos.x - a.player.pos.x;});
     console.log(states);
 
+    var cameraY = 6
     var cameraX = prevCameraX;
 
     if (cameraX < states[0].player.pos.x + canvas.width / 8 - canvas.width) {
         cameraX = states[0].player.pos.x + canvas.width / 8 - canvas.width;
     }
-    else if (cameraX > states[0].player.pos.x - canvas.width / 8) {
-        cameraX = states[0].player.pos.x - canvas.width / 8;
+    else if (cameraX > states[0].player.pos.x - canvas.width / 2) {
+        cameraX = states[0].player.pos.x - canvas.width / 2;
     }
 
     if (cameraX < 0) {
@@ -43,7 +44,7 @@ function drawStates(states, ticks, prevCameraX) {
         for (var jj = 0; jj < map.rows; ++jj) {
 
             var leftedge = ii * pixelsPerTile - cameraX;
-            var topedge = jj * pixelsPerTile;
+            var topedge = jj * pixelsPerTile - cameraY;
 
             if (leftedge <= canvas.width &&
                 topedge <= canvas.height &&
@@ -80,7 +81,7 @@ function drawStates(states, ticks, prevCameraX) {
         if (player.pos.x > cameraX - 10 * playerWidth &&
             player.pos.x < cameraX + 10 * playerWidth + canvas.width) {
             context.fillText(states[ii].username, player.pos.x - cameraX - 2,
-                             player.pos.y - 5);
+                             player.pos.y - cameraY - 5);
         }
     }
 
@@ -93,15 +94,15 @@ function drawStates(states, ticks, prevCameraX) {
 
             if (player.ticksDead < 0) { // not dead
                 context.fillStyle = map.playerOutlineColor;
-                context.fillRect(player.pos.x - cameraX, player.pos.y,
+                context.fillRect(player.pos.x - cameraX, player.pos.y - cameraY,
                                  playerWidth, playerHeight);
                 context.fillStyle = map.playerColor;
                 context.fillRect(player.pos.x  - cameraX + 1,
-                                 player.pos.y + 1,
+                                 player.pos.y - cameraY + 1,
                                  playerWidth - 2, playerHeight - 2 );
             } else {
                 context.fillStyle = map.dangerColor;
-                context.fillRect(player.pos.x  - cameraX, player.pos.y,
+                context.fillRect(player.pos.x  - cameraX, player.pos.y - cameraY,
                                  playerWidth, playerHeight);
 
                 t = Math.floor(player.ticksDead / 2);
@@ -109,7 +110,7 @@ function drawStates(states, ticks, prevCameraX) {
 
                     context.fillStyle = map.playerColor;
                     context.fillRect(player.pos.x  - cameraX + t,
-                                     player.pos.y  + t,
+                                     player.pos.y  - cameraY + t,
                                      playerWidth - (2 * t),
                                      playerHeight - (2 * t));
                 }
@@ -125,7 +126,7 @@ function drawStates(states, ticks, prevCameraX) {
 
 function processFrame (ticks, cameraX) {
 
-    if (ticks > 16000) {return;}
+    if (ticks > 22000) {return;}
 
     $.ajax({type:'GET',
             url:'../getstates?ticks=' + ticks
@@ -142,6 +143,10 @@ function processFrame (ticks, cameraX) {
         .done( function (data) {
             console.log("success!");
             processFrame(ticks+1, newCameraX);
+        })
+        .fail ( function (xhr, status, thrown) {
+            console.log("post failure");
+            processFrame(ticks, cameraX);
         });
 
 
@@ -149,6 +154,7 @@ function processFrame (ticks, cameraX) {
     .fail( function (xhr, status, thrown) {
         console.log("failure");
         console.log(thrown);
+        processFrame(ticks, cameraX);
     });
 
 
@@ -159,6 +165,6 @@ function init() {
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
 
-    processFrame(15001, 10000000);
+    processFrame(20001, 0);
 
 }
