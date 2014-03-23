@@ -92,7 +92,7 @@ function start () {
     }
 
     connect()
-    .use(connect.logger('dev'))
+    .use(connect.logger('short'))
     .use(connect.static( __dirname + '/../client'))
     .use(route)
     .listen(port);
