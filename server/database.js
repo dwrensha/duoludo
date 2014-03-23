@@ -117,19 +117,6 @@ function getSessionID (response) {
     });
 }
 
-function ensureIndexes(db) {
-    db.collection('paths', function(err,collection) {
-       if(err) {
-          console.log('failed to ensure index');
-          db.close();
-       }
-       collection.ensureIndex({'_id' : 1}, function (err, res) {
-          console.log('ensured index');
-	  db.close();
-       });
-    });
-}
-
 function initialize () {
     connect (function (db) {
         db.collection('sessions', function (err, collection) {
@@ -138,7 +125,7 @@ function initialize () {
                 if (docs.length < 1) {
                     collection.insert({'latestID':0}, {w:1}, function (err, doc) {
                         console.log('initialized the sessions collection');
-                        ensureIndexes(db);
+			db.close();
                     });
                 }
             });
