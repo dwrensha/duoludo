@@ -400,6 +400,7 @@ function init() {
 
 
     $('#leaderboardbutton').click(function () {
+        $('#leaderboardbutton').html('please wait...');
         $.ajax({type:'GET',
                 url:'getleaderboard'})
             .done( function (data) {
