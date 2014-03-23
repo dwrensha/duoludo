@@ -39,7 +39,7 @@ var pathlist = {
         }
 
         $('#pathlist').append(div);
-        pathlist.refreshPreview();
+        pathlist.refreshPreview(true);
 
         pathlist.doUpload(div, path);
 
@@ -120,7 +120,7 @@ var pathlist = {
 
         $(label).click(function (){
             $(input).prop('checked', true);
-            pathlist.refreshPreview();
+            pathlist.refreshPreview(true);
         });
 
         var closebutton = document.createElement('button');
@@ -141,7 +141,7 @@ var pathlist = {
 
             parent.slideUp(100, function () {
                 parent.remove();
-                pathlist.refreshPreview();
+                pathlist.refreshPreview(true);
             });
         })
 
@@ -158,13 +158,13 @@ var pathlist = {
 
     selectGameStart : function () {
         $(this.gameStartRadioButton).prop('checked', true);
-        pathlist.refreshPreview();
+        pathlist.refreshPreview(true);
     },
 
-    refreshPreview : function () {
+    refreshPreview : function (triggerChange) {
         $('[name="path"]').each (function (idx, elt) {
             if ($(elt).is(':checked')) {
-                $(elt).trigger('change');
+                if (triggerChange) { $(elt).trigger('change'); }
                 $(elt).parent().children('label')
                    .css('border', '1px solid')
                    .css('color', '#FFFFFF');
@@ -212,7 +212,7 @@ var replayMode = {
        clearInterval(this.ticker);
        pathlist.show();
        game.stop();
-       pathlist.refreshPreview();
+       pathlist.refreshPreview(true);
        mainMode.menu();
     },
 
@@ -351,7 +351,7 @@ var playMode = {
                 pathID : this.getPathID()};
             mainMode.registerPath(this.path);
         } else {
-            pathlist.refreshPreview();
+            pathlist.refreshPreview(true);
         }
         mainMode.menu();
     },
@@ -415,7 +415,7 @@ function init() {
                 result.pieces.forEach(function (p) {
                     pathlist.addRemote(p);
                 });
-                pathlist.refreshPreview();
+                pathlist.refreshPreview(false);
 
                 $('#leaderboardbutton').html('refresh leaderboard');
             });
