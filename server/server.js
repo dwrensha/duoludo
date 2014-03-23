@@ -32,7 +32,7 @@ function start () {
             });
         });
     }
-
+    
     var route = function(request, response) {
         console.log(request.headers);
         var requestUrl = url.parse(request.url, true)
@@ -92,6 +92,7 @@ function start () {
     }
 
     connect()
+    .use(connect.logger('dev'))
     .use(connect.static( __dirname + '/../client'))
     .use(route)
     .listen(port);
