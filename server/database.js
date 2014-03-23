@@ -138,8 +138,7 @@ function initialize () {
                 if (docs.length < 1) {
                     collection.insert({'latestID':0}, {w:1}, function (err, doc) {
                         console.log('initialized the sessions collection');
-			ensureIndexes(db)
-			
+                        ensureIndexes(db);
                     });
                 }
             });
