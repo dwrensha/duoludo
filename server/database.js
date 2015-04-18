@@ -108,7 +108,7 @@ function getSessionID (response) {
             collection.findAndModify({}, [['latestID', 1]],
                                      {$inc : {latestID : 1}},
                                      {new:true, w:1}, function (err, doc) {
-                                         response.write(JSON.stringify(doc.latestID));
+                                         response.write(JSON.stringify(doc.value.latestID));
                                          response.end();
                                          db.close()
                                      });

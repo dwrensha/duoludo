@@ -1,0 +1,10 @@
+{
+  "name": "duoludo"
+  , "version": "0.0.1"
+  , "private": false
+  , "dependencies": {
+    "async": "^0.9"
+    , "connect": "^2"
+    , "mongodb": "^2"
+  }
+}
