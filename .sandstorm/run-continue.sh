@@ -26,7 +26,8 @@ if [ -d /var/lib/mongodb.wiredTiger/journal ]; then
     rm -rf /var/lib/mongodb.wiredTiger/journal
 fi
 
-# WiredTiger can be configured in expert-mode like this:
-# mongo duoludo --eval 'db.adminCommand({"setParameter": 1, "wiredTigerEngineRuntimeConfig": "cache_size=1M"})'
+# By default, Mongo configures WiredTiger to make a checkpoint only every 60 seconds.
+# Here we use an expert-mode configuration option to set that to 5 seconds.
+mongo duoludo --eval 'db.adminCommand({"setParameter": 1, "wiredTigerEngineRuntimeConfig": "checkpoint=(wait=5)"})'
 
 node /opt/app/server/index.js
