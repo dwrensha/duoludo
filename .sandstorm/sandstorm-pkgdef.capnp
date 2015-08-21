@@ -19,8 +19,8 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "Duoludo"),
 
-    appVersion = 2,  # Increment this for every release.
-    appMarketingVersion = (defaultText = "2015.08.21"),
+    appVersion = 3,  # Increment this for every release.
+    appMarketingVersion = (defaultText = "2015.08.21.a"),
 
     metadata = (
       icons = (
