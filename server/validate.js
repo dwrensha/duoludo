@@ -105,8 +105,6 @@ function updateCumulativeValidity (path, db) {
 }
 
 function doValidation (callback) {
-    console.log('hello world');
-
     database.connect (function (db) {
         db.collection('paths', function(err, collection) {
             if(err) {db.close(); return callback(err,null);}
@@ -123,7 +121,6 @@ function doValidation (callback) {
             });
         });
     });
-
 }
 
 function doAllValidation () {

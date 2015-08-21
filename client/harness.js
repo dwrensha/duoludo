@@ -404,10 +404,10 @@ function init() {
         $.ajax({type:'GET',
                 url:'getleaderboard'})
             .done( function (data) {
+                $('#leaderboardbutton').html('refresh leaderboard');
                 if ($('#remotepathlist div input:checked').length > 0) {
                     pathlist.selectGameStart();
                 }
-
                 $('#remotepathlist div').remove();
                 if (data == 'none') { return; }
                 var result = JSON.parse(data);
@@ -416,11 +416,8 @@ function init() {
                     pathlist.addRemote(p);
                 });
                 pathlist.refreshPreview(false);
-
-                $('#leaderboardbutton').html('refresh leaderboard');
             });
     });
-
 
     var gotSessionID =
         $.ajax({type:'GET',

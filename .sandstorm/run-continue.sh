@@ -20,5 +20,13 @@ else
   mongod -f /etc/mongod.wiredTiger.conf --fork
 fi
 
+# When we first switched to WiredTiger, we originally had journaling on.
+# But that takes a lot of space on disk! Clean up any journal files that might still exist.
+if [ -d /var/lib/mongodb.wiredTiger/journal ]; then
+    rm -rf /var/lib/mongodb.wiredTiger/journal
+fi
+
+# WiredTiger can be configured in expert-mode like this:
+# mongo duoludo --eval 'db.adminCommand({"setParameter": 1, "wiredTigerEngineRuntimeConfig": "cache_size=1M"})'
 
 node /opt/app/server/index.js
