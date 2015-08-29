@@ -1,3 +1,6 @@
+### v2015.08.29
+- Fix gameplay (without audio) on Internet Explorer 11.
+- Minor CSS improvements.
 ### v2015.08.21.a
 - Turn journaling back on in WiredTiger.
 - Use "log=(prealloc=false, filemax=200KB)" to control disk usage.

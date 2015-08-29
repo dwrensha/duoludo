@@ -19,8 +19,8 @@ const pkgdef :Spk.PackageDefinition = (
 
     appTitle = (defaultText = "Duoludo"),
 
-    appVersion = 3,  # Increment this for every release.
-    appMarketingVersion = (defaultText = "2015.08.21.a"),
+    appVersion = 4,  # Increment this for every release.
+    appMarketingVersion = (defaultText = "2015.08.29"),
 
     metadata = (
       icons = (
@@ -38,6 +38,7 @@ const pkgdef :Spk.PackageDefinition = (
       ),
       pgpKeyring = embed "pgp-keyring",
       description = (defaultText = embed "description.md"),
+      shortDescription = (defaultText = "Platform game"),
       screenshots = [(width = 448, height = 359, png = embed "screenshot.png")],
       changeLog = (defaultText = embed "changeLog.md"),
     ),
@@ -45,7 +46,7 @@ const pkgdef :Spk.PackageDefinition = (
 
     actions = [
       ( title = (defaultText = "New Duoludo game"),
-        nounPhrase = (defaultText = "Duoludo game"),
+        nounPhrase = (defaultText = "game"),
         command = .startCommand
       )
     ],
