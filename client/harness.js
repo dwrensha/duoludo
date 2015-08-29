@@ -107,6 +107,7 @@ var pathlist = {
         });
 
         var label = document.createElement('label');
+        label.className = "clickable-path";
         if (path) {
             label.innerHTML = path.username + ': from ' + path.startCheckpoint +
                 ' at ' + path.startTicks + ' ticks ' +
