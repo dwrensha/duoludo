@@ -520,7 +520,12 @@ var zepto = (function () {
 
 
     function start() {
-        audio.currentTime = state.musicTime;
+        try {
+          audio.currentTime = state.musicTime;
+        } catch (e) {
+          // This can happen in the Sandstorm app, where range requests are not supported.
+          console.error(e);
+        }
         if (audio.readyState == 4){
             audio.play();
         } else {
